@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Project files
+.idea/
+.vscode/
+
+# Testing
+.tox/
+
+# Dev data
+api_keys.txt
+utils/
+types/
+test/
