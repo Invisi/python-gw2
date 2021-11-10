@@ -1,5 +1,3 @@
-import dataclasses
-
 # TODO: Ignore unexpected keywords via custom global __init__
 import datetime
 import enum

@@ -11,7 +11,7 @@ Since this project is currently not released on PyPi, the easiest way of install
 is as follows:
 ```bash
 # With poetry
-$ poetry add https://github.com/Invisi/python-gw2.git
+$ poetry add git+https://github.com/Invisi/python-gw2.git
 # With pip
 $ pip install git+https://github.com/Invisi/python-gw2.git#egg=gw2
 ```

@@ -25,5 +25,14 @@ class BuildManifest:
                 "http://assetcdn.101.arenanetworks.com/latest64/101"
             )
 
-            data = response.text.split(" ")
-            return models.BuildManifest(*[int(_) for _ in data])
+            try:
+                data = response.text.split(" ")
+                return models.BuildManifest(
+                    build_id=data[0],
+                    exe_id=data[1],
+                    exe_size=data[2],
+                    manifest_id=data[3],
+                    manifest_size=data[4],
+                )
+            except IndexError:
+                raise ValueError

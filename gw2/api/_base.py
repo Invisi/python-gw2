@@ -2,7 +2,6 @@ import functools
 import logging
 from typing import (
     Any,
-    AsyncGenerator,
     AsyncIterator,
     Dict,
     Generic,
@@ -16,7 +15,8 @@ from typing import (
 )
 
 import httpx
-import pkg_resources
+import pkg_resources  # type: ignore
+from pydantic import ValidationError
 
 from gw2 import errors
 from gw2.utils import chunks
@@ -38,6 +38,7 @@ LOG = logging.getLogger(__name__)
 EndpointModel = TypeVar("EndpointModel")
 
 # IDs on endpoints. May be integer or (e.g.) a character name
+EndpointId = TypeVar("EndpointId", str, int)
 IdsVariant = TypeVar("IdsVariant", str, int)
 IdsParameter = Union[str, int, None]
 
@@ -59,9 +60,6 @@ def _create_session() -> httpx.AsyncClient:
 
 
 class _Base(Generic[EndpointModel]):
-    # Optional suffix for the base url, the class name is the default
-    suffix: Optional[str] = None
-
     # Cache expiry, may be set on the endpoint itself
     expiry: Optional[int] = 5 * 60
 
@@ -82,25 +80,42 @@ class _Base(Generic[EndpointModel]):
             cls._types[f"{cls.__module__}.{cls.__name__}"] = _type
 
     @functools.cached_property
+    def suffix(self) -> str:
+        """
+        Suffix for the base url, the class name is the default
+        """
+
+        return self.__class__.__name__.lower()
+
+    @functools.cached_property
     def url(self) -> str:
         """
         Generates endpoint URL
         """
 
-        if self.suffix is not None:
-            return f"{BASE_URL}/{self.suffix}"
+        return f"{BASE_URL}/{self.suffix}"
 
-        return f"{BASE_URL}/{self.__class__.__name__.lower()}"
-
-    def cast(self, data: Dict[str, Any]) -> EndpointModel:
+    def _cast(self, data: Dict[str, Any]) -> EndpointModel:
         """
         Casts data into model
+
+        *May be overridden inside the model itself*
         """
 
         type_key = f"{self.__module__}.{self.__class__.__name__}"
         assert type_key in self._types, "Endpoint is missing type definition."
 
-        return cast(EndpointModel, self._types[type_key](**data))
+        klass = self._types[type_key]
+        try:
+            if isinstance(data, list):
+                return cast(EndpointModel, klass(*data))
+            elif isinstance(data, dict):
+                return cast(EndpointModel, klass(**data))
+
+            return cast(EndpointModel, klass(data))
+        except (TypeError, ValidationError):
+            LOG.exception("Failed to coerce data into model")
+            raise NotImplementedError()
 
     # region _get()
     @overload
@@ -165,11 +180,13 @@ class _Base(Generic[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPStatusError: The server responded with a 4xx or 5xx and
-                                    it's not because of an invalid API key
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
                             server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
         """
 
         # TODO: Check if authentication is required
@@ -182,7 +199,7 @@ class _Base(Generic[EndpointModel]):
             params["id"] = _id
 
         if ids is not None:
-            params["ids"] = ids
+            params["ids"] = ",".join(str(_) for _ in ids)
 
         try:
             response = await self._session.get(
@@ -206,14 +223,14 @@ class _Base(Generic[EndpointModel]):
                 return response.json()
 
             if ids is None:
-                return self.cast(response.json())
+                return self._cast(response.json())
             else:
-                return [self.cast(_data) for _data in response.json()]
+                return [self._cast(_data) for _data in response.json()]
 
         response.raise_for_status()
 
         # Raise again because mypy complains otherwise
-        raise httpx.HTTPStatusError
+        raise httpx.HTTPError("Unknown API error")
 
     # endregion _get()
 
@@ -239,17 +256,7 @@ class _Base(Generic[EndpointModel]):
 
 
 class Base(_Base[EndpointModel]):
-    @overload
-    async def get(self, *, _raw: Literal[True]) -> Any:
-        ...
-
-    @overload
     async def get(self) -> EndpointModel:
-        ...
-
-    async def get(self, *, _raw: bool = False) -> Union[Any, EndpointModel]:
-        if _raw:
-            return await self._get(_raw=True)
         return await self._get()
 
 
@@ -259,39 +266,104 @@ class ListBase(_Base[EndpointModel]):
     like /account/achievements.
     """
 
-    @overload
-    async def get(self, _id: None = None, *, _raw: Literal[True]) -> List[Any]:
-        ...
+    async def get(self) -> Union[List[EndpointModel]]:
+        """
+        Returns a list of models
 
-    @overload
-    async def get(
-        self, _id: None = None, *, _raw: Literal[False] = False
-    ) -> List[EndpointModel]:
-        ...
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
 
-    @overload
-    async def get(self, _id: Union[str, int], *, _raw: Literal[True]) -> Any:
-        ...
+        # Do casting here since _get would otherwise try to do the casting
+        # wrongly
+        _ = cast(List[Dict[str, Any]], await super()._get(_raw=True))
+        return [self._cast(_data) for _data in _]
 
-    @overload
-    async def get(
-        self, _id: Union[str, int], *, _raw: Literal[False] = False
-    ) -> EndpointModel:
-        ...
 
-    async def get(
-        self, _id: IdsParameter = None, *, _raw: bool = False
-    ) -> Union[EndpointModel, List[EndpointModel], Any, List[Any]]:
-        data = await super()._get(_id=_id, _raw=True)
+class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
+    """
+    Base class for endpoints that return IDs (or names in case of the
+    character endpoint) if requested without any special parameters.
+    """
 
-        if _id is None:
-            if _raw is True:
-                return cast(List[Any], data)
+    async def ids(self) -> List[EndpointId]:
+        """
+        Returns a list of IDs for this endpoint
+        """
 
-            return [self.cast(_data) for _data in data]
-        else:
-            if _raw is True:
-                return cast(Any, data)
+        return cast(List[EndpointId], await super()._get(_raw=True))
 
-            return self.cast(data)
+    async def one(self, _id: EndpointId) -> EndpointModel:
+        """
+        Return a model for a given ID
 
+        Args:
+            _id: The id which should be retrieved
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+        return cast(EndpointModel, await super()._get(_id=_id))
+
+    async def many(self, ids: List[EndpointId]) -> AsyncIterator[EndpointModel]:
+        """
+        Returns an async generator for the requested objects
+
+        Args:
+            ids: A list of IDs. String or integer
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        for chunk in chunks(ids, 200):
+            for _model in await self._get(ids=chunk):
+                yield _model
+
+    async def all(self) -> AsyncIterator[EndpointModel]:
+        """
+        Returns an async iterator for all objects on this endpoint
+
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        # TODO: Use ?ids=all on endpoints where that is supported
+
+        # Grab all IDs
+        ids = await self.ids()
+
+        # Just throw them into many()
+        return self.many(ids=ids)
+
+    # TODO: Maybe add a .count property that pre-caches ids?
