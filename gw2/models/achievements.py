@@ -43,7 +43,7 @@ class Achievement(BaseModel):
         region: Optional[Region]
 
     class Bit(BaseModel):
-        type: Literal["Text", "Item", "Minipet", "Skin"]
+        type: Optional[Literal["Text", "Item", "Minipet", "Skin"]]
         id: Optional[int]
         text: Optional[str]
 
