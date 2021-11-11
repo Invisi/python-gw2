@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gw2"
-version = "0.0.3"
+version = "0.0.4"
 description = ""
 repository = "https://github.com/invisi/python-gw2"
 authors = ["Yannick Linke <invisi@0x0f.net>"]
