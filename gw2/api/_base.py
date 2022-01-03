@@ -211,8 +211,8 @@ class _Base(Generic[EndpointModel]):
 
         # Raise error if the key is reported as invalid
         if (
-            response.status_code in [400, 403]
-            and "authentication" in self._session.headers
+            400 <= response.status_code <= 403
+            and "authorization" in self._session.headers
             and "invalid" in response.text.lower()
         ):
             raise errors.InvalidKeyError
