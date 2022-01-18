@@ -62,9 +62,10 @@ def _create_session() -> httpx.AsyncClient:
 class _Base(Generic[EndpointModel]):
     # Cache expiry, may be set on the endpoint itself
     expiry: Optional[int] = 5 * 60
-
-    _session = _create_session()
     _types: Dict[str, Any] = {}
+
+    def __init__(self) -> None:
+        self._session = _create_session()
 
     def __init_subclass__(cls, _type: Optional[Any] = None):
         """

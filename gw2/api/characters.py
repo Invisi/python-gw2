@@ -11,6 +11,7 @@ class Characters(IdsBase[models.Character, str], _type=models.Character):
 class Character(Base[models.Character], _type=models.Character):
     def __init__(self, character_name: str):
         self.character_name = character_name
+        super().__init__()
 
     @functools.cached_property
     def suffix(self) -> str:
