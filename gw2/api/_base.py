@@ -8,6 +8,7 @@ from typing import (
     List,
     Literal,
     Optional,
+    Type,
     TypeVar,
     Union,
     cast,
@@ -66,6 +67,17 @@ class _Base(Generic[EndpointModel]):
 
     def __init__(self) -> None:
         self._session = _create_session()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Type[BaseException] = None,
+        exc_value: BaseException = None,
+        traceback: Any = None,
+    ):
+        await self._session.aclose()
 
     def __init_subclass__(cls, _type: Optional[Any] = None):
         """
