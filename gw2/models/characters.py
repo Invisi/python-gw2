@@ -1,12 +1,13 @@
 import datetime
 import enum
+import uuid
 from typing import Dict, List, Literal, Optional
 
 from pydantic import conlist
 
 from gw2.models._base import BaseModel
 
-
+# TODO: Replace enums with literals
 class Race(enum.Enum):
     ASURA = "Asura"
     CHARR = "Charr"
@@ -59,7 +60,8 @@ Binding = Literal["Account", "Character"]
 class Location(enum.Enum):
     EQUIPPED = "Equipped"
     ARMORY = "Armory"
-    EQUIPPEDFROMLEGENDARYARMORY = "EquippedFromLegendaryArmory"
+    EQUIPPED_FROM_LEGENDARY_ARMORY = "EquippedFromLegendaryArmory"
+    LEGENDARY_ARMORY = "LegendaryArmory"
 
 
 # --- Enums above, scary things below
@@ -178,7 +180,7 @@ class Character(BaseModel):
     flags: List[str]
     profession: Profession
     level: int
-    guild: Optional[str]
+    guild: Optional[uuid.UUID]
     age: int
 
     deaths: int
@@ -205,3 +207,35 @@ class Character(BaseModel):
     bags: List[Optional[Bag]]
 
     # TODO: Simplified access to inventory
+
+
+# -- separate endpoints
+class CharacterBackstory(BaseModel):
+    backstory: List[str]
+
+
+class CharacterCore(BaseModel):
+    name: str
+    race: Race
+    gender: Gender
+    profession: Profession
+    level: int
+    guild: Optional[uuid.UUID]
+    age: int
+    deaths: int
+    title: Optional[int]
+
+    created: datetime.datetime
+    last_modified: datetime.datetime
+
+
+class CharacterCrafting(BaseModel):
+    crafting: List[Crafting]
+
+
+class CharacterEquipment(BaseModel):
+    equipment: List[Equipment]
+
+
+class CharacterBuildTab(BuildTab):
+    pass

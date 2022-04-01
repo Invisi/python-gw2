@@ -18,16 +18,29 @@ $ pip install git+https://github.com/Invisi/python-gw2.git#egg=gw2
 
 ## Basic usage
 ```python
-from gw2.api import Account
+from gw2.api import Account, Character
 
-client = Account()
+async with Account() as client:
+    # Authenticates *this instance* for this endpoint
+    client.auth("ABCDE-...")
+    data = await client.get()
 
-# Authenticates globally for all endpoints
-client.auth("ABCDE-...")
+    print(data.commander)  # True
+    print(data.last_modified)  # a datetime instance
 
-data = await client.get()
-print(data.commander)  # True
-print(data.last_modified)  # a datetime instance
+async with Account() as client:
+    # Authenticate for this instance and all following instances
+    client.global_auth("ABCDE-...")
+    data = await client.get()
+    
+    print(data.last_modified)  # still a datetime instance
+
+async with Character("Some Character") as client:
+    # Retrieve data with previously set API key
+    data = await client.get()
+
+    print(data.profession)  # Profession.ELEMENTALIST
+
 # ...
 ```
 
@@ -35,6 +48,9 @@ print(data.last_modified)  # a datetime instance
 - /v2/account
 - /v2/account/achievements
 - /v2/build
+- /v2/characters (without detail endpoints)
+- /v2/guild
+- /v2/tokeninfo
 - (The asset CDN for the build id in case the API is down)
 
 ## Planned features

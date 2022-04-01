@@ -1,4 +1,3 @@
-# TODO: Ignore unexpected keywords via custom global __init__
 import datetime
 import enum
 import uuid
@@ -30,7 +29,7 @@ class Account(BaseModel):
     last_modified: datetime.datetime
 
     # guilds scope
-    guild_leader: Optional[List[str]] = None
+    guild_leader: Optional[List[uuid.UUID]] = None
 
     # progression scope
     fractal_level: Optional[int] = None

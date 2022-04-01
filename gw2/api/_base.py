@@ -1,3 +1,4 @@
+import asyncio
 import functools
 import logging
 from typing import (
@@ -65,11 +66,17 @@ class _Base(Generic[EndpointModel]):
     expiry: Optional[int] = 5 * 60
     _types: Dict[str, Any] = {}
 
+    # Optional global default API key
+    _api_key: Optional[str]
+
     def __init__(self) -> None:
         self._session = _create_session()
 
-    async def __aenter__(self):
-        return self
+        self.api_key: Optional[str] = None
+
+        # Set API key from global storage
+        if hasattr(type(self), "_api_key"):
+            self.auth(getattr(type(self), "_api_key"))
 
     async def __aexit__(
         self,
@@ -77,6 +84,10 @@ class _Base(Generic[EndpointModel]):
         exc_value: BaseException = None,
         traceback: Any = None,
     ):
+        """
+        Closes the httpx session properly
+        """
+
         await self._session.aclose()
 
     def __init_subclass__(cls, _type: Optional[Any] = None):
@@ -127,7 +138,7 @@ class _Base(Generic[EndpointModel]):
 
             return cast(EndpointModel, klass(data))
         except (TypeError, ValidationError):
-            LOG.exception("Failed to coerce data into model")
+            LOG.exception("Failed to coerce data into model: %s", data)
             raise NotImplementedError()
 
     # region _get()
@@ -249,11 +260,13 @@ class _Base(Generic[EndpointModel]):
 
     def auth(self, api_key: Optional[str] = None) -> None:
         """
-        Add or remove API key to requests, this will be set globally
+        Add to or remove API key from requests
 
         Args:
             api_key: A (hopefully) valid API key
         """
+
+        self.api_key = api_key
 
         # Set key on session
         if api_key:
@@ -264,6 +277,24 @@ class _Base(Generic[EndpointModel]):
         if "authorization" in self._session.headers:
             del self._session.headers["authorization"]
 
+    def global_auth(self, api_key: Optional[str] = None) -> None:
+        """
+        Add to or remove API key from, this will be set globally and is
+        **not** thread-safe.
+
+        All new instances will use this as the default API key,
+        which may still be overridden via :py:function:`auth()`.
+
+        Args:
+            api_key: A (hopefully) value API key
+        """
+
+        # Register key globally
+        _Base._api_key = api_key
+
+        # Register key on the local instance as well
+        self.auth(api_key)
+
     def __repr__(self) -> str:
         return f"<{self.__module__}.{self.__class__.__name__}: {self.url}>"
 
@@ -271,6 +302,9 @@ class _Base(Generic[EndpointModel]):
 class Base(_Base[EndpointModel]):
     async def get(self) -> EndpointModel:
         return await self._get()
+
+    async def __aenter__(self) -> "Base[EndpointModel]":
+        return self
 
 
 class ListBase(_Base[EndpointModel]):
@@ -299,6 +333,9 @@ class ListBase(_Base[EndpointModel]):
         # wrongly
         _ = cast(List[Dict[str, Any]], await super()._get(_raw=True))
         return [self._cast(_data) for _data in _]
+
+    async def __aenter__(self) -> "ListBase[EndpointModel]":
+        return self
 
 
 class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
@@ -379,4 +416,32 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         # Just throw them into many()
         return self.many(ids=ids)
 
+    async def all_noniter(self) -> List[EndpointModel]:
+        """
+        Returns a list of all objects on this endpoint
+
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        # Grab all IDs
+        ids = await self.ids()
+
+        items = []
+        async for item in self.many(ids=ids):
+            items.append(item)
+
+        return items
+
     # TODO: Maybe add a .count property that pre-caches ids?
+
+    async def __aenter__(self) -> "IdsBase[EndpointModel]":
+        return self

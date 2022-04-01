@@ -25,7 +25,7 @@ class Guild(BaseModel):
     id: uuid.UUID
     name: str
     tag: str
-    emblem: Optional[Emblem]
+    emblem: Optional[Emblem]  # XXX: This should be required but is missing sometimes
 
     # Optional info with leader/member token
     level: Optional[int]
