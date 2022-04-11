@@ -206,6 +206,8 @@ class _Base(Generic[EndpointModel]):
                                  usually
              httpx.HTTPError: The server responded with a 4xx or 5xx and
                               it's not because of an invalid API key
+             httpx.ReadTimeout: The server did not respond in time, subclass of
+                                HTTPError
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
                             server-side caching issues.

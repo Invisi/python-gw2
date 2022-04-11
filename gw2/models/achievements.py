@@ -3,12 +3,7 @@ from typing import List, Literal, Optional
 
 from gw2.models._base import BaseModel
 
-
-class Region(enum.Enum):
-    TYRIA = "Tyria"
-    MAGUUMA = "Maguuma"
-    DESERT = "Desert"
-    TUNDRA = "Tundra"
+Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
 
 
 class Achievement(BaseModel):
@@ -40,6 +35,7 @@ class Achievement(BaseModel):
 
         id: Optional[int]
         count: Optional[int]
+        # XXX: Cantha is currently reported as Unknown
         region: Optional[Region]
 
     class Bit(BaseModel):
