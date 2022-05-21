@@ -24,7 +24,7 @@ class Emblem(BaseModel):
 class Guild(BaseModel):
     id: uuid.UUID
     name: str
-    tag: str
+    tag: Optional[str]  # XXX: Tag can be missing too, lovely
     emblem: Optional[Emblem]  # XXX: This should be required but is missing sometimes
 
     # Optional info with leader/member token
