@@ -1,11 +1,12 @@
 import datetime
 import enum
 import uuid
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
-from pydantic import conlist
+from pydantic import Field
 
 from gw2.models._base import BaseModel
+
 
 # TODO: Replace enums with literals
 class Race(enum.Enum):
@@ -92,17 +93,17 @@ class WvWAbility(BaseModel):
 class BuildTab(BaseModel):
     class Build(BaseModel):
         class Skills(BaseModel):
-            heal: Optional[int]
-            utilities: conlist(item_type=Optional[int], min_items=3, max_items=3)
-            elite: Optional[int]
+            heal: int | None
+            utilities: list[int | None] = Field(min_items=3, max_items=3)
+            elite: int | None
 
         class Specialization(BaseModel):
-            id: Optional[int]
-            traits: conlist(item_type=Optional[int], min_items=3, max_items=3)
+            id: int | None
+            traits: list[int | None] = Field(min_items=3, max_items=3)
 
         name: str
         profession: Profession
-        specializations: conlist(item_type=Specialization, min_items=3, max_items=3)
+        specializations: list[Specialization] = Field(min_items=3, max_items=3)
         skills: Skills
         aquatic_skills: Skills
 
@@ -116,36 +117,36 @@ class BuildTab(BaseModel):
 class Stats(BaseModel):
     id: int
     # That's way too annoying to define in a clear way
-    attributes: Dict[str, int]
+    attributes: dict[str, int]
 
 
 class Equipment(BaseModel):
     id: int
-    slot: Optional[EquipmentSlot] = None
+    slot: EquipmentSlot | None = None
 
-    infusions: Optional[List[int]] = None
-    upgrades: Optional[List[int]] = None
-    skin: Optional[int] = None
-    stats: Optional[Stats] = None
-    binding: Optional[Binding] = None
+    infusions: list[int] | None = None
+    upgrades: list[int] | None = None
+    skin: int | None = None
+    stats: Stats | None = None
+    binding: Binding | None = None
     location: Location
-    tabs: Optional[List[int]] = None
-    charges: Optional[int] = None
-    bound_to: Optional[str] = None
-    dyes: Optional[List[Optional[int]]] = None
+    tabs: list[int] | None = None
+    charges: int | None = None
+    bound_to: str | None = None
+    dyes: list[int | None] | None = None
 
 
 class EquipmentPvP(BaseModel):
-    amulet: Optional[int]
-    rune: Optional[int]
-    sigils: conlist(item_type=Optional[int], min_items=4, max_items=4)
+    amulet: int | None
+    rune: int | None
+    sigils: list[int | None] = Field(min_items=4, max_items=4)
 
 
 class EquipmentTabs(BaseModel):
     tab: int
     name: str
     is_active: bool
-    equipment: List[Equipment]
+    equipment: list[Equipment]
     equipment_pvp: EquipmentPvP
 
 
@@ -158,60 +159,60 @@ class Training(BaseModel):
 class InventorySlot(BaseModel):
     id: int
     count: int
-    charges: Optional[int] = None
-    infusions: Optional[List[int]] = None
-    upgrades: Optional[List[int]] = None
-    skin: Optional[int] = None
-    stats: Optional[Stats] = None
-    binding: Optional[Binding] = None
-    bound_to: Optional[str] = None
+    charges: int | None = None
+    infusions: list[int] | None = None
+    upgrades: list[int] | None = None
+    skin: int | None = None
+    stats: Stats | None = None
+    binding: Binding | None = None
+    bound_to: str | None = None
 
 
 class Bag(BaseModel):
     id: int
     size: int
-    inventory: List[Optional[InventorySlot]]
+    inventory: list[InventorySlot | None]
 
 
 class Character(BaseModel):
     name: str
     race: Race
     gender: Gender
-    flags: List[str]
+    flags: list[str]
     profession: Profession
     level: int
-    guild: Optional[uuid.UUID]
+    guild: uuid.UUID | None
     age: int
 
     deaths: int
-    crafting: List[Crafting]
-    title: Optional[int]
-    backstory: List[str]
+    crafting: list[Crafting]
+    title: int | None
+    backstory: list[str]
 
     last_modified: datetime.datetime
     created: datetime.datetime
 
-    wvw_abilities: List[WvWAbility]
+    wvw_abilities: list[WvWAbility]
     build_tabs_unlocked: int
     active_build_tab: int
-    build_tabs: List[BuildTab]
+    build_tabs: list[BuildTab]
 
     active_equipment_tab: int
-    equipment: List[Equipment]
-    equipment_tabs: List[EquipmentTabs]
+    equipment: list[Equipment]
+    equipment_tabs: list[EquipmentTabs]
     equipment_tabs_unlocked: int
 
-    recipes: List[int]
+    recipes: list[int]
 
-    training: List[Training]
-    bags: List[Optional[Bag]]
+    training: list[Training]
+    bags: list[Bag | None]
 
     # TODO: Simplified access to inventory
 
 
 # -- separate endpoints
 class CharacterBackstory(BaseModel):
-    backstory: List[str]
+    backstory: list[str]
 
 
 class CharacterCore(BaseModel):
@@ -220,21 +221,21 @@ class CharacterCore(BaseModel):
     gender: Gender
     profession: Profession
     level: int
-    guild: Optional[uuid.UUID]
+    guild: uuid.UUID | None
     age: int
     deaths: int
-    title: Optional[int]
+    title: int | None
 
     created: datetime.datetime
     last_modified: datetime.datetime
 
 
 class CharacterCrafting(BaseModel):
-    crafting: List[Crafting]
+    crafting: list[Crafting]
 
 
 class CharacterEquipment(BaseModel):
-    equipment: List[Equipment]
+    equipment: list[Equipment]
 
 
 class CharacterBuildTab(BuildTab):

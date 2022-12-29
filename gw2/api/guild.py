@@ -1,7 +1,8 @@
 import functools
 
-from ._base import Base
 from gw2 import models
+
+from ._base import Base
 
 
 class Guild(Base[models.Guild], _type=models.Guild):

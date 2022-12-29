@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import List, Literal, Optional
+from typing import Literal
 
 from gw2.models._base import BaseModel
 
@@ -8,7 +8,7 @@ from gw2.models._base import BaseModel
 class TokenInfo(BaseModel):
     id: uuid.UUID
     name: str
-    permissions: List[
+    permissions: list[
         Literal[
             "account",
             "builds",
@@ -25,6 +25,6 @@ class TokenInfo(BaseModel):
     type: Literal["APIKey", "Subtoken"]
 
     # Following fields only exist on subtokens
-    expires_at: Optional[datetime.datetime]
-    issued_at: Optional[datetime.datetime]
-    urls: Optional[List[str]]
+    expires_at: datetime.datetime | None
+    issued_at: datetime.datetime | None
+    urls: list[str] | None

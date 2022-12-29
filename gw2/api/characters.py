@@ -1,5 +1,4 @@
 import functools
-from typing import List
 
 from gw2 import models
 from gw2.api._base import Base, IdsBase, ListBase

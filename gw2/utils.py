@@ -1,10 +1,10 @@
-from collections import Iterator
-from typing import List, TypeVar
+from collections.abc import Iterator
+from typing import TypeVar
 
 ChunkVar = TypeVar("ChunkVar")
 
 
-def chunks(lst: List[ChunkVar], n: int) -> Iterator[List[ChunkVar]]:
+def chunks(lst: list[ChunkVar], n: int) -> Iterator[list[ChunkVar]]:
     """
     Yield successive n-sized chunks from lst.
 

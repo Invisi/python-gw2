@@ -21,23 +21,23 @@ class Account(BaseModel):
     name: str
     age: int
     world: int
-    guilds: List[uuid.UUID]
+    guilds: list[uuid.UUID]
     created: datetime.datetime
-    access: List[Access]
+    access: list[Access]
     commander: bool
 
     last_modified: datetime.datetime
 
     # guilds scope
-    guild_leader: Optional[List[uuid.UUID]] = None
+    guild_leader: list[uuid.UUID] | None = None
 
     # progression scope
-    fractal_level: Optional[int] = None
-    daily_ap: Optional[int] = None
-    monthly_ap: Optional[int] = None
-    wvw_rank: Optional[int] = None
+    fractal_level: int | None = None
+    daily_ap: int | None = None
+    monthly_ap: int | None = None
+    wvw_rank: int | None = None
 
-    build_storage_slots: Optional[int] = None
+    build_storage_slots: int | None = None
 
 
 class Achievement(BaseModel):
@@ -45,8 +45,8 @@ class Achievement(BaseModel):
     done: bool
 
     # Optional
-    bits: Optional[List[int]] = None
-    current: Optional[int] = None
-    max: Optional[int] = None
-    repeated: Optional[int] = None
-    unlocked: Optional[bool] = None
+    bits: list[int] | None = None
+    current: int | None = None
+    max: int | None = None
+    repeated: int | None = None
+    unlocked: bool | None = None

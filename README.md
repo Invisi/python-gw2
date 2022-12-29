@@ -7,7 +7,7 @@ A Python wrapper for easy and typed access of Guild Wars 2's API.
 - httpx
 - pydantic
 
-Since this project is currently not released on PyPi, the easiest way of installing it 
+Since this project is currently not released on PyPi, the easiest way of installing it
 is as follows:
 ```bash
 # With poetry
@@ -32,7 +32,7 @@ async with Account() as client:
     # Authenticate for this instance and all following instances
     client.global_auth("ABCDE-...")
     data = await client.get()
-    
+
     print(data.last_modified)  # still a datetime instance
 
 async with Character("Some Character") as client:

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gw2"
-version = "0.0.10"
+version = "0.1.0"
 description = ""
 repository = "https://github.com/invisi/python-gw2"
 authors = ["Yannick Linke <invisi@0x0f.net>"]
@@ -8,13 +8,26 @@ readme = "README.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
-httpx = "^0.22.0"
-pydantic = "^1.9.0"
-python = "^3.8"
+httpx = "^0.23.1"
+pydantic = "^1.10.3"
+python = "^3.10"
+mypy = "^0.991"
 
 [tool.poetry.dev-dependencies]
-respx = "^0.19.2"
+respx = "^0.20.1"
 mypy = "0.*"
+
+[tool.ruff]
+line-length = 88
+fix = true
+ignore-init-module-imports = true
+select = ["E", "F", "I", "UP", "N", "B", "T20", "Q", "PLC", "PLE", "PLR", "PLW"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.black]
+line-length = 88
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

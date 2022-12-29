@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Literal, Optional
+from typing import Literal
 
 from ._base import BaseModel
 
@@ -7,11 +7,11 @@ from ._base import BaseModel
 class Emblem(BaseModel):
     class Picto(BaseModel):
         id: int
-        colors: List[int]
+        colors: list[int]
 
     background: Picto
     foreground: Picto
-    flags: List[
+    flags: list[
         Literal[
             "FlipBackgroundHorizontal",
             "FlipBackgroundVertical",
@@ -24,14 +24,14 @@ class Emblem(BaseModel):
 class Guild(BaseModel):
     id: uuid.UUID
     name: str
-    tag: Optional[str]  # XXX: Tag can be missing too, lovely
-    emblem: Optional[Emblem]  # XXX: This should be required but is missing sometimes
+    tag: str | None  # XXX: Tag can be missing too, lovely
+    emblem: Emblem | None  # XXX: This should be required but is missing sometimes
 
     # Optional info with leader/member token
-    level: Optional[int]
-    motd: Optional[str]
-    influence: Optional[int]
-    aetherium: Optional[str]
-    favor: Optional[int]
-    member_count: Optional[int]
-    member_capacity: Optional[int]
+    level: int | None
+    motd: str | None
+    influence: int | None
+    aetherium: str | None
+    favor: int | None
+    member_count: int | None
+    member_capacity: int | None

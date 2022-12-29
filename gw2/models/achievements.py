@@ -1,5 +1,5 @@
 import enum
-from typing import List, Literal, Optional
+from typing import Literal
 
 from gw2.models._base import BaseModel
 
@@ -33,27 +33,27 @@ class Achievement(BaseModel):
         # TODO: Extended validation based on type?
         type: Literal["Coins", "Item", "Mastery", "Title"]
 
-        id: Optional[int]
-        count: Optional[int]
+        id: int | None
+        count: int | None
         # XXX: Cantha is currently reported as Unknown
-        region: Optional[Region]
+        region: Region | None
 
     class Bit(BaseModel):
-        type: Optional[Literal["Text", "Item", "Minipet", "Skin"]]
-        id: Optional[int]
-        text: Optional[str]
+        type: Literal["Text", "Item", "Minipet", "Skin"] | None
+        id: int | None
+        text: str | None
 
     id: int
-    icon: Optional[str] = None
+    icon: str | None = None
     name: str
     description: str
     requirement: str
     locked_text: str
     type: Literal["Default", "ItemSet"]
 
-    flags: List[Flag] = []
-    tiers: List[Tier] = []
-    rewards: Optional[List[Reward]]
-    bits: Optional[List[Bit]]
+    flags: list[Flag] = []
+    tiers: list[Tier] = []
+    rewards: list[Reward] | None
+    bits: list[Bit] | None
 
-    point_cap: Optional[int]
+    point_cap: int | None

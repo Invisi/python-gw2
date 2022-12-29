@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from ._base import BaseModel
 from .characters import Profession, Race
 
@@ -8,11 +6,11 @@ class BackstoryQuestions(BaseModel):
     id: int
     title: str
     description: str
-    answers: List[str]
+    answers: list[str]
     order: int
 
-    professions: Optional[List[Profession]]
-    races: Optional[List[Race]]
+    professions: list[Profession] | None
+    races: list[Race] | None
 
 
 class BackstoryAnswers(BaseModel):
@@ -22,5 +20,5 @@ class BackstoryAnswers(BaseModel):
     journal: str
     question: int
 
-    professions: Optional[List[Profession]]
-    races: Optional[List[Race]]
+    professions: list[Profession] | None
+    races: list[Race] | None

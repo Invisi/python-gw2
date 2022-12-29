@@ -1,20 +1,6 @@
-import asyncio
 import functools
 import logging
-from typing import (
-    Any,
-    AsyncIterator,
-    Dict,
-    Generic,
-    List,
-    Literal,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-    overload,
-)
+from typing import Any, AsyncIterator, Generic, Literal, TypeVar, cast, overload
 
 import httpx
 import pkg_resources  # type: ignore
@@ -42,7 +28,7 @@ EndpointModel = TypeVar("EndpointModel")
 # IDs on endpoints. May be integer or (e.g.) a character name
 EndpointId = TypeVar("EndpointId", str, int)
 IdsVariant = TypeVar("IdsVariant", str, int)
-IdsParameter = Union[str, int, None]
+IdsParameter = str | int | None
 
 
 def _create_session() -> httpx.AsyncClient:
@@ -63,34 +49,34 @@ def _create_session() -> httpx.AsyncClient:
 
 class _Base(Generic[EndpointModel]):
     # Cache expiry, may be set on the endpoint itself
-    expiry: Optional[int] = 5 * 60
-    _types: Dict[str, Any] = {}
+    expiry: int | None = 5 * 60
+    _types: dict[str, Any] = {}
 
     # Optional global default API key
-    _api_key: Optional[str]
+    _api_key: str | None
 
     def __init__(self) -> None:
         self._session = _create_session()
 
-        self.api_key: Optional[str] = None
+        self.api_key: None | str = None
 
         # Set API key from global storage
         if hasattr(type(self), "_api_key"):
-            self.auth(getattr(type(self), "_api_key"))
+            self.auth(type(self)._api_key)
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException] = None,
-        exc_value: BaseException = None,
+        exc_type: None | type[BaseException] = None,
+        exc_value: None | BaseException = None,
         traceback: Any = None,
-    ):
+    ) -> None:
         """
         Closes the httpx session properly
         """
 
         await self._session.aclose()
 
-    def __init_subclass__(cls, _type: Optional[Any] = None):
+    def __init_subclass__(cls, _type: Any | None = None):
         """
         Registers model class for later use in get()
 
@@ -119,7 +105,7 @@ class _Base(Generic[EndpointModel]):
 
         return f"{BASE_URL}/{self.suffix}"
 
-    def _cast(self, data: Dict[str, Any]) -> EndpointModel:
+    def _cast(self, data: dict[str, Any]) -> EndpointModel:
         """
         Casts data into model
 
@@ -137,9 +123,9 @@ class _Base(Generic[EndpointModel]):
                 return cast(EndpointModel, klass(**data))
 
             return cast(EndpointModel, klass(data))
-        except (TypeError, ValidationError):
+        except (TypeError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
-            raise NotImplementedError()
+            raise NotImplementedError() from e
 
     # region _get()
     @overload
@@ -167,15 +153,15 @@ class _Base(Generic[EndpointModel]):
         self,
         *,
         _id: None = None,
-        ids: List[IdsVariant],
+        ids: list[IdsVariant],
         _raw: Literal[True],
-    ) -> List[Any]:
+    ) -> list[Any]:
         ...
 
     @overload
     async def _get(
-        self, *, _id: None = None, ids: List[IdsVariant], _raw: Literal[False] = False
-    ) -> List[EndpointModel]:
+        self, *, _id: None = None, ids: list[IdsVariant], _raw: Literal[False] = False
+    ) -> list[EndpointModel]:
         ...
 
     @overload
@@ -192,9 +178,9 @@ class _Base(Generic[EndpointModel]):
         self,
         *,
         _id: IdsParameter = None,
-        ids: Optional[List[IdsVariant]] = None,
+        ids: list[IdsVariant] | None = None,
         _raw: bool = False,
-    ) -> Union[Any, EndpointModel, List[Any], List[EndpointModel]]:
+    ) -> Any | EndpointModel | list[Any] | list[EndpointModel]:
         """
         Get model or raw value from endpoint
 
@@ -219,7 +205,7 @@ class _Base(Generic[EndpointModel]):
         # TODO: Caching
         # TODO: https://pypi.org/project/asyncio-throttle/
 
-        params: Dict[str, Union[IdsParameter, List[IdsVariant]]] = {}
+        params: dict[str, IdsParameter | list[IdsVariant]] = {}
 
         if _id is not None:
             params["id"] = _id
@@ -260,7 +246,7 @@ class _Base(Generic[EndpointModel]):
 
     # endregion _get()
 
-    def auth(self, api_key: Optional[str] = None) -> None:
+    def auth(self, api_key: str | None = None) -> None:
         """
         Add to or remove API key from requests
 
@@ -279,7 +265,7 @@ class _Base(Generic[EndpointModel]):
         if "authorization" in self._session.headers:
             del self._session.headers["authorization"]
 
-    def global_auth(self, api_key: Optional[str] = None) -> None:
+    def global_auth(self, api_key: str | None = None) -> None:
         """
         Add to or remove API key from, this will be set globally and is
         **not** thread-safe.
@@ -315,7 +301,7 @@ class ListBase(_Base[EndpointModel]):
     like /account/achievements.
     """
 
-    async def get(self) -> Union[List[EndpointModel]]:
+    async def get(self) -> list[EndpointModel]:
         """
         Returns a list of models
 
@@ -333,7 +319,7 @@ class ListBase(_Base[EndpointModel]):
 
         # Do casting here since _get would otherwise try to do the casting
         # wrongly
-        _ = cast(List[Dict[str, Any]], await super()._get(_raw=True))
+        _ = cast(list[dict[str, Any]], await super()._get(_raw=True))
         return [self._cast(_data) for _data in _]
 
     async def __aenter__(self) -> "ListBase[EndpointModel]":
@@ -346,12 +332,12 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
     character endpoint) if requested without any special parameters.
     """
 
-    async def ids(self) -> List[EndpointId]:
+    async def ids(self) -> list[EndpointId]:
         """
         Returns a list of IDs for this endpoint
         """
 
-        return cast(List[EndpointId], await super()._get(_raw=True))
+        return cast(list[EndpointId], await super()._get(_raw=True))
 
     async def one(self, _id: EndpointId) -> EndpointModel:
         """
@@ -372,7 +358,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         """
         return cast(EndpointModel, await super()._get(_id=_id))
 
-    async def many(self, ids: List[EndpointId]) -> AsyncIterator[EndpointModel]:
+    async def many(self, ids: list[EndpointId]) -> AsyncIterator[EndpointModel]:
         """
         Returns an async generator for the requested objects
 
@@ -418,7 +404,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         # Just throw them into many()
         return self.many(ids=ids)
 
-    async def all_noniter(self) -> List[EndpointModel]:
+    async def all_noniter(self) -> list[EndpointModel]:
         """
         Returns a list of all objects on this endpoint
 
@@ -445,5 +431,5 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
 
     # TODO: Maybe add a .count property that pre-caches ids?
 
-    async def __aenter__(self) -> "IdsBase[EndpointModel]":
+    async def __aenter__(self) -> "IdsBase[EndpointModel, EndpointId]":
         return self
