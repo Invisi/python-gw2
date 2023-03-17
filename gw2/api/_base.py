@@ -1,6 +1,7 @@
 import functools
 import logging
-from typing import Any, AsyncIterator, Generic, Literal, TypeVar, cast, overload
+from collections.abc import AsyncIterator
+from typing import Any, Generic, Literal, TypeVar, cast, overload
 
 import httpx
 import pkg_resources  # type: ignore
@@ -19,6 +20,10 @@ BASE_URL = "https://api.guildwars2.com/v2"
 DEFAULT_TIMEOUT = 10
 SCHEMA = "2021-04-06T21:00:00.000Z"
 
+HTTP_SUCCESS = 200
+HTTP_PARTIAL_SUCCESS = 206
+HTTP_BAD_REQUEST = 400
+HTTP_FORBIDDEN = 403
 
 LOG = logging.getLogger(__name__)
 
@@ -190,13 +195,15 @@ class _Base(Generic[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              httpx.ReadTimeout: The server did not respond in time, subclass of
                                 HTTPError
              InvalidKeyError: The API reported that the currently used API key
-                            is invalid. This may be caused by invalid keys or
-                            server-side caching issues.
+                              is invalid. This may be caused by invalid keys or
+                              server-side caching issues.
+             MissingGameAccessError: The API reports this account as not having
+                                     access to the game.
              NotImplementedError: Should never occur but might if the API
                                   response changes in unexpected ways.
         """
@@ -223,14 +230,23 @@ class _Base(Generic[EndpointModel]):
 
         # Raise error if the key is reported as invalid
         if (
-            400 <= response.status_code <= 403
+            HTTP_BAD_REQUEST <= response.status_code <= HTTP_FORBIDDEN
             and "authorization" in self._session.headers
             and "invalid" in response.text.lower()
         ):
             raise errors.InvalidKeyError
 
+        if (
+            response.status_code == HTTP_BAD_REQUEST
+            and "account does not have game access" in response.text.lower()
+        ):
+            raise errors.MissingGameAccessError
+
         # 206 might be returned if only part of the ids were valid, for example
-        if response.status_code == 200 or response.status_code == 206:
+        if (
+            response.status_code == HTTP_SUCCESS
+            or response.status_code == HTTP_PARTIAL_SUCCESS
+        ):
             if _raw:
                 return response.json()
 

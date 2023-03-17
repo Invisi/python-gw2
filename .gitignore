@@ -11,6 +11,8 @@ build/
 .idea/
 .vscode/
 
+poetry.lock
+
 # Testing
 .tox/
 

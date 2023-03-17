@@ -8,14 +8,13 @@ readme = "README.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
+python = "^3.10"
 httpx = "^0.23.1"
 pydantic = "^1.10.3"
-python = "^3.10"
-mypy = "^0.991"
 
 [tool.poetry.dev-dependencies]
 respx = "^0.20.1"
-mypy = "0.*"
+mypy = "1.1.*"
 
 [tool.ruff]
 line-length = 88
