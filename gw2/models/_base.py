@@ -1,7 +1,6 @@
 from pydantic import BaseModel as PydanticBaseModel
+from pydantic import ConfigDict
 
 
 class BaseModel(PydanticBaseModel):
-    class Config:
-        allow_mutation = False
-        frozen = True
+    model_config = ConfigDict(frozen=True)
