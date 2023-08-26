@@ -36,8 +36,8 @@ IdsVariant = TypeVar("IdsVariant", str, int)
 IdsParameter = str | int | None
 
 
-def _create_session() -> httpx.AsyncClient:
-    session = httpx.AsyncClient()
+def _create_session(timeout: float) -> httpx.AsyncClient:
+    session = httpx.AsyncClient(timeout=timeout)
 
     # Set request headers
     session.headers.update(
@@ -60,8 +60,8 @@ class _Base(Generic[EndpointModel]):
     # Optional global default API key
     _api_key: str | None
 
-    def __init__(self) -> None:
-        self._session = _create_session()
+    def __init__(self, timeout: float = DEFAULT_TIMEOUT) -> None:
+        self._session = _create_session(timeout)
 
         self.api_key: None | str = None
 
@@ -71,8 +71,8 @@ class _Base(Generic[EndpointModel]):
 
     async def __aexit__(
         self,
-        exc_type: None | type[BaseException] = None,
-        exc_value: None | BaseException = None,
+        exc_type: type[BaseException] | None = None,
+        exc_value: BaseException | None = None,
         traceback: Any = None,
     ) -> None:
         """
@@ -221,9 +221,7 @@ class _Base(Generic[EndpointModel]):
             params["ids"] = ",".join(str(_) for _ in ids)
 
         try:
-            response = await self._session.get(
-                self.url, params=params, timeout=DEFAULT_TIMEOUT
-            )
+            response = await self._session.get(self.url, params=params)
         except httpx.NetworkError:
             LOG.exception("Failed to fetch data")
             raise
