@@ -1,9 +1,8 @@
 import datetime
 import enum
 import uuid
-from typing import List, Optional
 
-from gw2.models._base import BaseModel
+from .._base import BaseModel
 
 
 class Access(enum.Enum):

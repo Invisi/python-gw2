@@ -20,7 +20,9 @@ class BuildManifest:
              httpx.HTTPStatusError
              ValueError
         """
+
         async with httpx.AsyncClient() as ac:
+            # noinspection HttpUrlsUsage
             response = await ac.get(
                 "http://assetcdn.101.arenanetworks.com/latest64/101"
             )
@@ -34,5 +36,5 @@ class BuildManifest:
                     manifest_id=data[3],
                     manifest_size=data[4],
                 )
-            except IndexError:
-                raise ValueError
+            except IndexError as e:
+                raise ValueError from e

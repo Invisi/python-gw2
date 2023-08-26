@@ -110,7 +110,7 @@ class _Base(Generic[EndpointModel]):
 
         return f"{BASE_URL}/{self.suffix}"
 
-    def _cast(self, data: dict[str, Any]) -> EndpointModel:
+    def _cast(self, data: dict[str, Any] | list) -> EndpointModel:
         """
         Casts data into model
 
@@ -122,6 +122,7 @@ class _Base(Generic[EndpointModel]):
 
         klass = self._types[type_key]
         try:
+            # todo: log unused values
             if isinstance(data, list):
                 return cast(EndpointModel, klass(*data))
             elif isinstance(data, dict):
@@ -248,11 +249,19 @@ class _Base(Generic[EndpointModel]):
             if _raw:
                 return response.json()
 
+            # todo: replace with sane parsing, we know the kind of our class after all
+            # pydantic.TypeAdapter(list[thing]).validate_json(response.text)
+            # Thing.validate_json(response.text)
             if ids is None:
                 return self._cast(response.json())
             else:
                 return [self._cast(_data) for _data in response.json()]
 
+        LOG.debug(
+            "Unhandled HTTP response: status=%s content=%s",
+            response.status_code,
+            response.text,
+        )
         response.raise_for_status()
 
         # Raise again because mypy complains otherwise
@@ -322,7 +331,7 @@ class ListBase(_Base[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
@@ -362,7 +371,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
@@ -381,7 +390,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
@@ -401,7 +410,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or
@@ -425,7 +434,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
-             httpx.HTTPError: The server responded with a 4xx or 5xx and
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
                               it's not because of an invalid API key
              InvalidKeyError: The API reported that the currently used API key
                             is invalid. This may be caused by invalid keys or

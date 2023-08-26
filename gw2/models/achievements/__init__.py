@@ -1,7 +1,7 @@
 import enum
 from typing import Literal
 
-from gw2.models._base import BaseModel
+from .._base import BaseModel
 
 Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
 

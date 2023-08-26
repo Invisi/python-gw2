@@ -1,7 +1,7 @@
 import uuid
 from typing import Literal
 
-from ._base import BaseModel
+from .._base import BaseModel
 
 
 class Emblem(BaseModel):

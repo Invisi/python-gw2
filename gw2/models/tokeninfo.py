@@ -2,7 +2,7 @@ import datetime
 import uuid
 from typing import Literal
 
-from gw2.models._base import BaseModel
+from ._base import BaseModel
 
 
 class TokenInfo(BaseModel):

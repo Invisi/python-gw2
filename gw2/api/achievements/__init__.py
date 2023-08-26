@@ -1,8 +1,7 @@
 import functools
 
 from gw2 import models
-
-from ._base import Base, IdsBase
+from gw2.api._base import Base, IdsBase
 
 
 class Achievements(IdsBase[models.Achievement, int], _type=models.Achievement):

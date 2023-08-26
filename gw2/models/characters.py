@@ -5,28 +5,8 @@ from typing import Literal
 
 from pydantic import Field
 
-from gw2.models._base import BaseModel
-
-
-# TODO: Replace enums with literals
-class Race(enum.Enum):
-    ASURA = "Asura"
-    CHARR = "Charr"
-    HUMAN = "Human"
-    NORN = "Norn"
-    SYLVARI = "Sylvari"
-
-
-class Profession(enum.Enum):
-    ELEMENTALIST = "Elementalist"
-    ENGINEER = "Engineer"
-    GUARDIAN = "Guardian"
-    MESMER = "Mesmer"
-    NECROMANCER = "Necromancer"
-    RANGER = "Ranger"
-    REVENANT = "Revenant"
-    THIEF = "Thief"
-    WARRIOR = "Warrior"
+from ._base import BaseModel
+from .common import Profession, Race
 
 
 class EquipmentSlot(enum.Enum):
