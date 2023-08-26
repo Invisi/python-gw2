@@ -1,5 +1,7 @@
+import asyncio
 import functools
 import logging
+from asyncio import Future, Task
 from collections.abc import AsyncIterator
 from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Generic, Literal, TypeVar, cast, overload
@@ -378,12 +380,16 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         """
         return cast(EndpointModel, await super()._get(_id=_id))
 
-    async def many(self, ids: list[EndpointId]) -> AsyncIterator[EndpointModel]:
+    async def many(
+        self, ids: list[EndpointId], *, concurrent: bool = False
+    ) -> AsyncIterator[EndpointModel]:
         """
         Returns an async generator for the requested objects
 
         Args:
             ids: A list of IDs. String or integer
+            concurrent: Enable concurrent requests. Will wait for all requests to finish
+                        before the iterator becomes available.
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
@@ -396,14 +402,28 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
                                   response changes in unexpected ways.
         """
 
-        for chunk in chunks(ids, 200):
-            for _model in await self._get(ids=chunk):
-                yield _model
+        if concurrent:
+            tasks: list[Task] = []
+            for chunk in chunks(ids, 200):
+                tasks.append(asyncio.ensure_future(self._get(ids=chunk)))
 
-    async def all(self) -> AsyncIterator[EndpointModel]:
+            for results in await cast(
+                Future[list[list[EndpointModel]]], asyncio.gather(*tasks)
+            ):
+                for _model in cast(list[EndpointModel], results):
+                    yield _model
+        else:
+            for chunk in chunks(ids, 200):
+                for _model in await self._get(ids=chunk):
+                    yield _model
+
+    async def all(self, *, concurrent: bool = False) -> AsyncIterator[EndpointModel]:
         """
         Returns an async iterator for all objects on this endpoint
 
+        Args:
+            concurrent: Enable concurrent requests. Will wait for all requests to finish
+                        before the iterator becomes available.
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
@@ -422,7 +442,8 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         ids = await self.ids()
 
         # Just throw them into many()
-        return self.many(ids=ids)
+        async for _ in self.many(ids=ids, concurrent=concurrent):
+            yield _
 
     async def all_noniter(self) -> list[EndpointModel]:
         """

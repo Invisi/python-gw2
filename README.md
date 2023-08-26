@@ -18,7 +18,7 @@ $ pip install git+https://github.com/Invisi/python-gw2.git#egg=gw2
 
 ## Basic usage
 ```python
-from gw2.api import Account, Character
+from gw2.api import Account, Character, Recipes
 
 async with Account() as client:
     # Authenticates *this instance* for this endpoint
@@ -40,6 +40,10 @@ async with Character("Some Character") as client:
     data = await client.get()
 
     print(data.profession)  # Profession.ELEMENTALIST
+
+async for recipe in Recipes().many(ids=[1,2,3,4]):
+    # Retrieve recipes as async iterator
+    print(recipe)
 
 # ...
 ```
