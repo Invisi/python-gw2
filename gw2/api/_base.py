@@ -242,10 +242,7 @@ class _Base(Generic[EndpointModel]):
             raise errors.MissingGameAccessError
 
         # 206 might be returned if only part of the ids were valid, for example
-        if (
-            response.status_code == HTTP_SUCCESS
-            or response.status_code == HTTP_PARTIAL_SUCCESS
-        ):
+        if response.status_code in {HTTP_SUCCESS, HTTP_PARTIAL_SUCCESS}:
             if _raw:
                 return response.json()
 

@@ -16,14 +16,13 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-toml
-      - id: check-xml
       - id: detect-private-key
       - id: mixed-line-ending
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.256"
-    hooks:
-      - id: ruff
   - repo: https://github.com/psf/black
-    rev: "23.1.0"
+    rev: "23.7.0"
     hooks:
       - id: black
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.0.286"
+    hooks:
+      - id: ruff
