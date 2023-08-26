@@ -1,18 +1,18 @@
 import functools
 import logging
 from collections.abc import AsyncIterator
+from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Generic, Literal, TypeVar, cast, overload
 
 import httpx
-import pkg_resources  # type: ignore
 from pydantic import ValidationError
 
 from gw2 import errors
 from gw2.utils import chunks
 
 try:
-    __version__ = pkg_resources.get_distribution("gw2").version
-except pkg_resources.DistributionNotFound:
+    __version__ = version("gw2")
+except PackageNotFoundError:
     __version__ = "unknown"
 
 # Global config
