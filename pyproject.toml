@@ -9,12 +9,12 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-httpx = "^0.23.1"
-pydantic = "^1.10.3"
+httpx = "^0.24.1"
+pydantic = "^1.10.12"
 
 [tool.poetry.dev-dependencies]
 respx = "^0.20.1"
-mypy = "1.1.*"
+mypy = "1.5.1"
 
 [tool.ruff]
 line-length = 88
