@@ -1,7 +1,7 @@
 import enum
 from typing import Literal
 
-from pydantic import AnyHttpUrl, validator
+from pydantic import AnyHttpUrl, field_validator
 
 from ._base import BaseModel
 from .common import SkillSlot, Weapon
@@ -62,7 +62,7 @@ class Profession(BaseModel):
     flags: list[Flag]
     skills_by_palette: list[tuple[int, int]]  # [(skill palette id, skill id)]
 
-    @validator("weapons", pre=True)
+    @field_validator("weapons", mode="before")
     def normalize_weapon_type(
         cls, val: dict[str, dict]  # noqa: N805
     ) -> dict[str, dict]:

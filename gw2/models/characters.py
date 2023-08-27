@@ -63,16 +63,16 @@ class BuildTab(BaseModel):
     class Build(BaseModel):
         class Skills(BaseModel):
             heal: int | None
-            utilities: list[int | None] = Field(min_items=3, max_items=3)
+            utilities: list[int | None] = Field(min_length=3, max_length=3)
             elite: int | None
 
         class Specialization(BaseModel):
             id: int | None
-            traits: list[int | None] = Field(min_items=3, max_items=3)
+            traits: list[int | None] = Field(min_length=3, max_length=3)
 
         name: str
         profession: Profession
-        specializations: list[Specialization] = Field(min_items=3, max_items=3)
+        specializations: list[Specialization] = Field(min_length=3, max_length=3)
         skills: Skills
         aquatic_skills: Skills
 
@@ -108,7 +108,7 @@ class EquipmentDetails(BaseModel):
 class EquipmentPvP(BaseModel):
     amulet: int | None
     rune: int | None
-    sigils: list[int | None] = Field(min_items=4, max_items=4)
+    sigils: list[int | None] = Field(min_length=4, max_length=4)
 
 
 class EquipmentTabs(BaseModel):

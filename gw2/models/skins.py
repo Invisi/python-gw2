@@ -1,6 +1,6 @@
 import enum
 
-from pydantic import AnyHttpUrl, validator
+from pydantic import AnyHttpUrl, field_validator
 
 from ._base import BaseModel
 from .common import ArmorType, ArmorWeight, Weapon, coerce_weapon
@@ -72,7 +72,7 @@ class Details(BaseModel):
     weight_class: ArmorWeight | None = None
     dye_slots: DyeSlots | None = None
 
-    _normalize_type = validator("type", pre=True, allow_reuse=True)(coerce_weapon)
+    _normalize_type = field_validator("type", mode="before")(coerce_weapon)
 
 
 class Skin(BaseModel):

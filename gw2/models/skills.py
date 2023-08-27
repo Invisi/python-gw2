@@ -1,6 +1,6 @@
 import enum
 
-from pydantic import AnyHttpUrl, validator
+from pydantic import AnyHttpUrl, field_validator
 
 from ._base import BaseModel
 from .common import Fact, Profession, SkillSlot, TraitedFact, Weapon, coerce_weapon
@@ -55,6 +55,4 @@ class Skill(BaseModel):
     toolbelt_skill: int | None = None
     flags: list[str] | None = None  # todo: types
 
-    _normalize_type = validator("weapon_type", pre=True, allow_reuse=True)(
-        coerce_weapon
-    )
+    _normalize_type = field_validator("weapon_type", mode="before")(coerce_weapon)
