@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import Field
 
 from ._base import BaseModel
-from .common import Profession, Race
+from .common import Discipline, Profession, Race
 
 
 class EquipmentSlot(enum.Enum):
@@ -48,18 +48,7 @@ class Location(enum.Enum):
 # --- Enums above, scary things below
 
 
-class Crafting(BaseModel):
-    class Discipline(enum.Enum):
-        ARMORSMITH = "Armorsmith"
-        ARTIFICIER = "Artificer"
-        CHEF = "Chef"
-        HUNTSMAN = "Huntsman"
-        JEWELER = "Jeweler"
-        LEATHERWORKER = "Leatherworker"
-        SCRIBE = "Scribe"
-        TAILOR = "Tailor"
-        WEAPONSMITH = "Weaponsmith"
-
+class CraftingDetails(BaseModel):
     discipline: Discipline
     rating: int
     active: bool
@@ -100,7 +89,7 @@ class Stats(BaseModel):
     attributes: dict[str, int]
 
 
-class Equipment(BaseModel):
+class EquipmentDetails(BaseModel):
     id: int
     slot: EquipmentSlot | None = None
 
@@ -126,7 +115,7 @@ class EquipmentTabs(BaseModel):
     tab: int
     name: str
     is_active: bool
-    equipment: list[Equipment]
+    equipment: list[EquipmentDetails]
     equipment_pvp: EquipmentPvP
 
 
@@ -155,18 +144,22 @@ class Bag(BaseModel):
 
 
 class Character(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/characters
+    """
+
     name: str
     race: Race
     gender: Gender
     flags: list[str]
     profession: Profession
     level: int
-    guild: uuid.UUID | None
+    guild: uuid.UUID | None = None
     age: int
 
     deaths: int
-    crafting: list[Crafting]
-    title: int | None
+    crafting: list[CraftingDetails]
+    title: int | None = None
     backstory: list[str]
 
     last_modified: datetime.datetime
@@ -178,7 +171,7 @@ class Character(BaseModel):
     build_tabs: list[BuildTab]
 
     active_equipment_tab: int
-    equipment: list[Equipment]
+    equipment: list[EquipmentDetails]
     equipment_tabs: list[EquipmentTabs]
     equipment_tabs_unlocked: int
 
@@ -191,32 +184,28 @@ class Character(BaseModel):
 
 
 # -- separate endpoints
-class CharacterBackstory(BaseModel):
+class Backstory(BaseModel):
     backstory: list[str]
 
 
-class CharacterCore(BaseModel):
+class Core(BaseModel):
     name: str
     race: Race
     gender: Gender
     profession: Profession
     level: int
-    guild: uuid.UUID | None
+    guild: uuid.UUID | None = None
     age: int
     deaths: int
-    title: int | None
+    title: int | None = None
 
     created: datetime.datetime
     last_modified: datetime.datetime
 
 
-class CharacterCrafting(BaseModel):
-    crafting: list[Crafting]
+class Crafting(BaseModel):
+    crafting: list[CraftingDetails]
 
 
-class CharacterEquipment(BaseModel):
-    equipment: list[Equipment]
-
-
-class CharacterBuildTab(BuildTab):
-    pass
+class Equipment(BaseModel):
+    equipment: list[EquipmentDetails]

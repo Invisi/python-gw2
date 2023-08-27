@@ -58,6 +58,7 @@ class _Base(Generic[EndpointModel]):
     # Cache expiry, may be set on the endpoint itself
     expiry: int | None = 5 * 60
     _types: dict[str, Any] = {}
+    _ids_params: dict[str, str] = {}
 
     # Optional global default API key
     _api_key: str | None
@@ -221,7 +222,10 @@ class _Base(Generic[EndpointModel]):
             params["id"] = _id
 
         if ids is not None:
-            params["ids"] = ",".join(str(_) for _ in ids)
+            ids_name = self._ids_params.get(
+                f"{self.__module__}.{self.__class__.__name__}", "ids"
+            )
+            params[ids_name] = ",".join(str(_) for _ in ids)
 
         try:
             response = await self._session.get(self.url, params=params)
@@ -474,3 +478,18 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
 
     async def __aenter__(self) -> "IdsBase[EndpointModel, EndpointId]":
         return self
+
+    def __init_subclass__(cls, _ids_param: str | None = None, _type: Any | None = None):
+        """
+        - Registers ids parameter for later use, defaults to "ids"
+        - Registers model class for later use in get()
+
+        Args:
+            _ids_param: The query parameter for `ids`
+            _type: The model (data)class
+        """
+
+        super().__init_subclass__(_type=_type)
+
+        if _ids_param is not None:
+            cls._ids_params[f"{cls.__module__}.{cls.__name__}"] = _ids_param

@@ -40,12 +40,12 @@ class Character(_Character, Base[models.Character], _type=models.Character):
         client.auth(self.api_key)
         return client
 
-    def heropoints(self) -> "HeroPoints":
+    def hero_points(self) -> "HeroPoints":
         client = HeroPoints(self.character_name)
         client.auth(self.api_key)
         return client
 
-    def buildtabs(self) -> "BuildTabs":
+    def build_tabs(self) -> "BuildTabs":
         client = BuildTabs(self.character_name)
         client.auth(self.api_key)
         return client
@@ -54,31 +54,25 @@ class Character(_Character, Base[models.Character], _type=models.Character):
         return self
 
 
-class Backstory(
-    _Character, Base[characters.CharacterBackstory], _type=characters.CharacterBackstory
-):
+class Backstory(_Character, Base[characters.Backstory], _type=characters.Backstory):
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/backstory"
 
 
-class Core(_Character, Base[characters.CharacterCore], _type=characters.CharacterCore):
+class Core(_Character, Base[characters.Core], _type=characters.Core):
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/core"
 
 
-class Crafting(
-    _Character, Base[characters.CharacterCrafting], _type=characters.CharacterCrafting
-):
+class Crafting(_Character, Base[characters.Crafting], _type=characters.Crafting):
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/crafting"
 
 
-class Equipment(
-    _Character, Base[characters.CharacterEquipment], _type=characters.CharacterEquipment
-):
+class Equipment(_Character, Base[characters.Equipment], _type=characters.Equipment):
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/equipment"
@@ -90,7 +84,12 @@ class HeroPoints(_Character, ListBase[str], _type=str):
         return f"characters/{self.character_name}/heropoints"
 
 
-class BuildTabs(_Character, Base[characters.BuildTab], _type=characters.BuildTab):
+class BuildTabs(
+    _Character,
+    IdsBase[characters.BuildTab, int],
+    _type=characters.BuildTab,
+    _ids_param="tabs",
+):
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/buildtabs"
