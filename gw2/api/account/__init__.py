@@ -1,9 +1,13 @@
 from gw2 import models
-from gw2.api._base import Base, ListBase
+
+from .._base import Base, ListBase
 
 
 class Account(Base[models.Account], _type=models.Account):
-    pass
+    def achievements(self) -> "Achievements":
+        client = Achievements()
+        client.auth(self.api_key)
+        return client
 
 
 class Achievements(
