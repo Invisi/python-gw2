@@ -48,7 +48,7 @@ def _create_session(timeout: float) -> httpx.AsyncClient:
             "Accept": "application/json",
             "Accept-Language": "en",  # TODO: configurable
             "X-Schema-Version": SCHEMA,
-        }
+        },
     )
 
     return session
@@ -162,20 +162,28 @@ class _Base(Generic[EndpointModel]):
         self,
         *,
         _id: None = None,
-        ids: list[IdsVariant],
+        ids: list[IdsVariant] | Literal["all"],
         _raw: Literal[True],
     ) -> list[Any]:
         ...
 
     @overload
     async def _get(
-        self, *, _id: None = None, ids: list[IdsVariant], _raw: Literal[False] = False
+        self,
+        *,
+        _id: None = None,
+        ids: list[IdsVariant] | Literal["all"],
+        _raw: Literal[False] = False,
     ) -> list[EndpointModel]:
         ...
 
     @overload
     async def _get(
-        self, *, _id: None = None, ids: None = None, _raw: Literal[True]
+        self,
+        *,
+        _id: None = None,
+        ids: None = None,
+        _raw: Literal[True],
     ) -> Any:
         ...
 
@@ -187,7 +195,7 @@ class _Base(Generic[EndpointModel]):
         self,
         *,
         _id: IdsParameter = None,
-        ids: list[IdsVariant] | None = None,
+        ids: list[IdsVariant] | Literal["all"] | None = None,
         _raw: bool = False,
     ) -> Any | EndpointModel | list[Any] | list[EndpointModel]:
         """
@@ -223,10 +231,16 @@ class _Base(Generic[EndpointModel]):
 
         if ids is not None:
             ids_name = self._ids_params.get(
-                f"{self.__module__}.{self.__class__.__name__}", "ids"
+                f"{self.__module__}.{self.__class__.__name__}",
+                "ids",
             )
-            params[ids_name] = ",".join(str(_) for _ in ids)
 
+            if isinstance(ids, list):
+                params[ids_name] = ",".join(str(_) for _ in ids)
+            elif ids == "all":
+                params[ids_name] = "all"
+
+        LOG.debug("Sending request to %s with params %s", self.url, params)
         try:
             response = await self._session.get(self.url, params=params)
         except httpx.NetworkError:
@@ -352,6 +366,34 @@ class ListBase(_Base[EndpointModel]):
         return self
 
 
+class StringsBase(_Base[EndpointModel]):
+    """
+    Base class for endpoints that return a list of strings by default,
+    like /dailycrafting or /dungeons.
+    """
+
+    async def get(self) -> list[str]:
+        """
+        Returns a list of strings
+
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        return cast(list[str], await super()._get(_raw=True))
+
+    async def __aenter__(self) -> "StringsBase[EndpointModel]":
+        return self
+
+
 class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
     """
     Base class for endpoints that return IDs (or names in case of the
@@ -385,13 +427,16 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         return cast(EndpointModel, await super()._get(_id=_id))
 
     async def many(
-        self, ids: list[EndpointId], *, concurrent: bool = False
+        self,
+        ids: list[EndpointId] | Literal["all"],
+        *,
+        concurrent: bool = False,
     ) -> AsyncIterator[EndpointModel]:
         """
         Returns an async generator for the requested objects
 
         Args:
-            ids: A list of IDs. String or integer
+            ids: A list of IDs or "all"
             concurrent: Enable concurrent requests. Will wait for all requests to finish
                         before the iterator becomes available.
         Raises:
@@ -406,13 +451,20 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
                                   response changes in unexpected ways.
         """
 
+        if ids == "all":
+            for _model in await self._get(ids="all"):
+                yield _model
+
+            return
+
         if concurrent:
             tasks: list[Task] = []
             for chunk in chunks(ids, 200):
                 tasks.append(asyncio.ensure_future(self._get(ids=chunk)))
 
             for results in await cast(
-                Future[list[list[EndpointModel]]], asyncio.gather(*tasks)
+                Future[list[list[EndpointModel]]],
+                asyncio.gather(*tasks),
             ):
                 for _model in cast(list[EndpointModel], results):
                     yield _model
@@ -439,8 +491,6 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
              NotImplementedError: Should never occur but might if the API
                                   response changes in unexpected ways.
         """
-
-        # TODO: Use ?ids=all on endpoints where that is supported
 
         # Grab all IDs
         ids = await self.ids()
@@ -496,3 +546,59 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
 
         if _ids_param is not None:
             cls._ids_params[f"{cls.__module__}.{cls.__name__}"] = _ids_param
+
+
+class AllIdsBase(
+    Generic[EndpointModel, EndpointId], IdsBase[EndpointModel, EndpointId]
+):
+    """
+    Base class for endpoints that return IDs (or names in case of the
+    character endpoint) if requested without any special parameters and ?ids=all.
+    """
+
+    # TODO: Use ?ids=all on endpoints where that is supported
+
+    async def all(self, *, concurrent: bool = False) -> AsyncIterator[EndpointModel]:
+        """
+        Returns an async iterator for all objects on this endpoint
+
+        Args:
+            concurrent: Doesn't do anything. See Liskov Substitution Principle.
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        async for _ in self.many(ids="all"):
+            yield _
+
+    async def all_noniter(self, *, concurrent: bool = False) -> list[EndpointModel]:
+        """
+        Returns a list of all objects on this endpoint
+
+        Args:
+            concurrent: Doesn't do anything. See Liskov Substitution Principle.
+        Raises:
+             httpx.NetworkError: Network-related issues, should not be hit
+                                 usually
+             httpx.HTTPError: The server responded with a 4xx or 5xx, and
+                              it's not because of an invalid API key
+             InvalidKeyError: The API reported that the currently used API key
+                            is invalid. This may be caused by invalid keys or
+                            server-side caching issues.
+             NotImplementedError: Should never occur but might if the API
+                                  response changes in unexpected ways.
+        """
+
+        items = []
+        async for item in self.many(ids="all"):
+            items.append(item)
+
+        return items

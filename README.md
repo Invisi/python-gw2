@@ -59,10 +59,15 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/achievements
 - /v2/achievements/categories
 - /v2/achievements/groups
+- /v2/backstory/*
 - /v2/build
 - /v2/characters (without detail endpoints)
 - /v2/colors
 - /v2/currencies
+- /v2/dailycrafting
+- /v2/dungeons
+- /v2/emblem/(backgrounds, foregrounds)
+- /v2/files
 - /v2/finishers
 - /v2/gliders
 - /v2/guild/:id/ (without detail endpoints)
@@ -97,15 +102,10 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 - /v2/account/*
 - /v2/achievements/(daily, tomorrow)
-- /v2/backstory/*
 - /v2/characters/*
 - /v2/continents
 - /v2/createsubtoken
-- /v2/dailycrafting
-- /v2/dungeons
-- /v2/emblem/(backgrounds, foregrounds)
 - /v2/emotes
-- /v2/files
 - /v2/guild/:id/*
 - /v2/guild/(permissions, search)
 - /v2/home/(cats, nodes)

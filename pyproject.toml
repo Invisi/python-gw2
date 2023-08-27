@@ -19,7 +19,6 @@ mypy = "1.5.1"
 pytest-asyncio = "^0.21.1"
 
 [tool.ruff]
-line-length = 88
 fix = true
 ignore-init-module-imports = true
 select = ["E", "F", "I", "UP", "N", "B", "T20", "Q", "PLC", "PLE", "PLR", "PLW"]

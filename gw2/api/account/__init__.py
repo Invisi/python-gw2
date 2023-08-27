@@ -11,6 +11,7 @@ class Account(Base[models.Account], _type=models.Account):
 
 
 class Achievements(
-    ListBase[models.account.Achievement], _type=models.account.Achievement
+    ListBase[models.account.Achievement],
+    _type=models.account.Achievement,
 ):
     suffix = "account/achievements"

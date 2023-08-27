@@ -1,7 +1,8 @@
 import functools
 
 from gw2 import models
-from gw2.api._base import Base, IdsBase
+
+from .._base import Base, IdsBase
 
 
 class GuildUpgrades(IdsBase[models.GuildUpgrade, int], _type=models.GuildUpgrade):

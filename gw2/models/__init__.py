@@ -2,11 +2,16 @@ from .account import Account
 from .achievements import Achievement
 from .achievements.categories import AchievementCategory
 from .achievements.groups import AchievementGroup
+from .backstory import BackstoryAnswer, BackstoryQuestion
 from .build import Build, BuildManifest
 from .characters import Character
 from .colors import Color
 from .currencies import Currency
+from .daily_crafting import DailyCrafting
 from .details import V2
+from .dungeons import Dungeon
+from .emblems import Emblem
+from .files import File
 from .finishers import Finisher
 from .gliders import Glider
 from .guild import Guild

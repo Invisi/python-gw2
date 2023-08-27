@@ -52,6 +52,22 @@ async def test_achievement_groups() -> None:
 
 
 @pytest.mark.asyncio
+async def test_backstory_questions() -> None:
+    many = await gw2.BackstoryQuestions().all_noniter(concurrent=True)
+    one = await gw2.BackstoryQuestion(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_backstory_answers() -> None:
+    many = await gw2.BackstoryAnswers().all_noniter(concurrent=True)
+    one = await gw2.BackstoryAnswer(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_build() -> None:
     build = await gw2.Build().get()
     build_manifest = await gw2.BuildManifest().get()
@@ -104,8 +120,46 @@ async def test_currencies() -> None:
 
 
 @pytest.mark.asyncio
+async def test_daily_crafting() -> None:
+    many = await gw2.DailyCrafting().get()
+    assert many is not None
+
+
+@pytest.mark.asyncio
+async def test_dungeons() -> None:
+    many = await gw2.Dungeons().get()
+    one = await gw2.Dungeon(many[0]).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_emblem_backgrounds() -> None:
+    many = await gw2.EmblemBackgrounds().all_noniter(concurrent=True)
+    one = await gw2.EmblemBackground(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_emblem_foregrounds() -> None:
+    many = await gw2.EmblemForegrounds().all_noniter(concurrent=True)
+    one = await gw2.EmblemForeground(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_api_details() -> None:
     one = await gw2.V2().get()
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_files() -> None:
+    many = await gw2.Files().all_noniter()
+    one = await gw2.File(many[0].id).get()
+
     assert one is not None
 
 

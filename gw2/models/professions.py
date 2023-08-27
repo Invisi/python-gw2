@@ -64,7 +64,8 @@ class Profession(BaseModel):
 
     @field_validator("weapons", mode="before")
     def normalize_weapon_type(
-        cls, val: dict[str, dict]  # noqa: N805
+        cls,  # noqa: N805
+        val: dict[str, dict],
     ) -> dict[str, dict]:
         if "Shortbow" in val:
             val["ShortBow"] = val["Shortbow"]

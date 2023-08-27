@@ -1,7 +1,8 @@
 import httpx
 
 from gw2 import models
-from gw2.api._base import Base
+
+from ._base import Base
 
 
 class Build(Base[models.Build], _type=models.Build):
@@ -24,7 +25,7 @@ class BuildManifest:
         async with httpx.AsyncClient() as ac:
             # noinspection HttpUrlsUsage
             response = await ac.get(
-                "http://assetcdn.101.arenanetworks.com/latest64/101"
+                "http://assetcdn.101.arenanetworks.com/latest64/101",
             )
 
             try:

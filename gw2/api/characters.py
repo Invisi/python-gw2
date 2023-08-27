@@ -1,8 +1,9 @@
 import functools
 
 from gw2 import models
-from gw2.api._base import Base, IdsBase, ListBase
 from gw2.models import characters
+
+from ._base import Base, IdsBase, ListBase
 
 
 class Characters(IdsBase[models.Character, str], _type=models.Character):
