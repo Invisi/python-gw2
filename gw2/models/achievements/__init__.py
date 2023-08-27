@@ -33,15 +33,15 @@ class Achievement(BaseModel):
         # TODO: Extended validation based on type?
         type: Literal["Coins", "Item", "Mastery", "Title"]
 
-        id: int | None
-        count: int | None
+        id: int | None = None
+        count: int | None = None
         # XXX: Cantha is currently reported as Unknown
-        region: Region | None
+        region: Region | None = None
 
     class Bit(BaseModel):
-        type: Literal["Text", "Item", "Minipet", "Skin"] | None
-        id: int | None
-        text: str | None
+        type: Literal["Text", "Item", "Minipet", "Skin"] | None = None
+        id: int | None = None
+        text: str | None = None
 
     id: int
     icon: str | None = None
@@ -53,7 +53,7 @@ class Achievement(BaseModel):
 
     flags: list[Flag] = []
     tiers: list[Tier] = []
-    rewards: list[Reward] | None
-    bits: list[Bit] | None
+    rewards: list[Reward] | None = None
+    bits: list[Bit] | None = None
 
-    point_cap: int | None
+    point_cap: int | None = None

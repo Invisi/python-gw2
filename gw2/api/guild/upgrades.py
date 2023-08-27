@@ -8,11 +8,11 @@ class GuildUpgrades(IdsBase[models.GuildUpgrade, int], _type=models.GuildUpgrade
     suffix = "guild/upgrades"
 
 
-class GuildUpgrade(Base[models.Guild], _type=models.Guild):
-    def __init__(self, guild_id: str):
-        self.guild_id = guild_id
+class GuildUpgrade(Base[models.GuildUpgrade], _type=models.GuildUpgrade):
+    def __init__(self, upgrade_id: int):
+        self.upgrade_id = upgrade_id
         super().__init__()
 
     @functools.cached_property
     def suffix(self) -> str:
-        return f"guild/upgrades/{self.guild_id}"
+        return f"guild/upgrades/{self.upgrade_id}"

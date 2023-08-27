@@ -11,8 +11,8 @@ class Skill(BaseModel):
     name: str
     description: str
     icon: AnyHttpUrl | None = None
-    facts: list[Fact] | None
-    traited_facts: list[TraitedFact] | None
+    facts: list[Fact] | None = None
+    traited_facts: list[TraitedFact] | None = None
 
 
 class Trait(BaseModel):

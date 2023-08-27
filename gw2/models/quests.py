@@ -14,5 +14,5 @@ class Quest(BaseModel):
     id: int
     name: str
     level: int
-    story: str
+    story: int
     goals: list[Goal]

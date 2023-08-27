@@ -53,7 +53,7 @@ class Profession(BaseModel):
 
     id: str
     name: str
-    code: str  # profession code for build template links
+    code: int  # profession code for build template links
     icon: AnyHttpUrl
     icon_big: AnyHttpUrl
     specializations: list[int]

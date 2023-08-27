@@ -10,7 +10,7 @@ class Mini(BaseModel):
 
     id: int
     name: str
-    unlock: str
+    unlock: str | None = None
     icon: AnyHttpUrl
     order: int
     item_id: int

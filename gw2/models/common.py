@@ -155,7 +155,7 @@ class Fact(BaseModel):
     icon: AnyHttpUrl | None = None
     type: FactType | None = None
     # AttributeAdjust/Number/Range/Recharge/Unblockable
-    value: int | None = None
+    value: int | float | None = None
     # AttributeAdjust/BuffConversion
     target: str | None = None
     # Buff/PrefixedBuff
@@ -165,7 +165,7 @@ class Fact(BaseModel):
     # Buff/PrefixedBuff/Time
     duration: int | None = None
     # BuffConversion/Percent
-    percent: int | None = None
+    percent: int | float | None = None
     # BuffConversion
     source: str | None = None
     # ComboField

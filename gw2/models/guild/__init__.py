@@ -24,14 +24,16 @@ class Emblem(BaseModel):
 class Guild(BaseModel):
     id: uuid.UUID
     name: str
-    tag: str | None  # XXX: Tag can be missing too, lovely
-    emblem: Emblem | None  # XXX: This should be required but is missing sometimes
+    tag: str | None = None  # XXX: Tag can be missing too, lovely
+    emblem: Emblem | None = (
+        None  # XXX: This should be required but is missing sometimes
+    )
 
     # Optional info with leader/member token
-    level: int | None
-    motd: str | None
-    influence: int | None
-    aetherium: str | None
-    favor: int | None
-    member_count: int | None
-    member_capacity: int | None
+    level: int | None = None
+    motd: str | None = None
+    influence: int | None = None
+    aetherium: str | None = None
+    favor: int | None = None
+    member_count: int | None = None
+    member_capacity: int | None = None

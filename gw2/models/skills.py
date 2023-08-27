@@ -45,7 +45,7 @@ class Skill(BaseModel):
     categories: list[str] | None = None  # todo: types
     attunement: Attunement | None = None
     cost: int | None = None
-    dual_wield: str | None
+    dual_wield: str | None = None
     flip_skill: int | None = None
     initiative: int | None = None
     next_chain: int | None = None
