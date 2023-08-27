@@ -449,10 +449,13 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         async for _ in self.many(ids=ids, concurrent=concurrent):
             yield _
 
-    async def all_noniter(self) -> list[EndpointModel]:
+    async def all_noniter(self, *, concurrent: bool = False) -> list[EndpointModel]:
         """
         Returns a list of all objects on this endpoint
 
+        Args:
+            concurrent: Enable concurrent requests. Will wait for all requests to finish
+                        before the iterator becomes available.
         Raises:
              httpx.NetworkError: Network-related issues, should not be hit
                                  usually
@@ -469,7 +472,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         ids = await self.ids()
 
         items = []
-        async for item in self.many(ids=ids):
+        async for item in self.many(ids=ids, concurrent=concurrent):
             items.append(item)
 
         return items
