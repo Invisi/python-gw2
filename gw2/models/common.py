@@ -118,6 +118,8 @@ ArmorType = Literal[
 
 DyeMaterial = Literal["cloth", "leather", "metal", "fur"]
 
+Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
+
 
 class DyeSlot(BaseModel):
     color_id: int

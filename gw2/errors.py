@@ -17,3 +17,9 @@ class MissingGameAccessError(ApiError):
 
     This *may* indicate a temporary or permanent account suspension.
     """
+
+
+class GuildNotFoundError(ApiError):
+    """
+    Raised if a guild was not found
+    """

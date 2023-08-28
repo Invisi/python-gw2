@@ -1,9 +1,7 @@
-import enum
 from typing import Literal
 
 from .._base import BaseModel
-
-Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
+from ..common import Region
 
 
 class Tier(BaseModel):

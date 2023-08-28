@@ -1,4 +1,5 @@
 import functools
+import uuid
 
 from gw2 import models
 
@@ -13,7 +14,7 @@ class AchievementGroups(
 
 
 class AchievementGroup(Base[models.AchievementGroup], _type=models.AchievementGroup):
-    def __init__(self, group_id: str):
+    def __init__(self, group_id: uuid.UUID | str):
         self.group_id = group_id
         super().__init__()
 

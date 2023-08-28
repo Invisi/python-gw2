@@ -52,6 +52,10 @@ Other = Literal[
     "UpgradeComponent",
 ]
 
+RecipeType = (
+    Weapon | ArmorType | Trinket | Food | CraftingComponent | Refinement | Guild | Other
+)
+
 
 class Ingredient(BaseModel):
     item_id: int
@@ -72,16 +76,7 @@ class Recipe(BaseModel):
     # todo: upgrade for currency input, schema 2022-03-09
 
     id: int
-    type: (
-        Weapon
-        | ArmorType
-        | Trinket
-        | Food
-        | CraftingComponent
-        | Refinement
-        | Guild
-        | Other
-    )
+    type: RecipeType
     output_item_id: int
     output_item_count: int
     time_to_craft_ms: int

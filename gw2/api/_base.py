@@ -223,7 +223,7 @@ class _Base(Generic[EndpointModel]):
         # TODO: Caching
         # TODO: https://pypi.org/project/asyncio-throttle/
 
-        params: dict[str, IdsParameter | list[IdsVariant]] = {}
+        params: dict[str, IdsParameter | list[IdsVariant]] = self._params
 
         if _id is not None:
             params["id"] = _id
@@ -321,6 +321,15 @@ class _Base(Generic[EndpointModel]):
 
         # Register key on the local instance as well
         self.auth(api_key)
+
+    @functools.cached_property
+    def _params(self) -> dict:
+        """
+        Allows injecting custom parameters into requests, e.g. for recipe or
+        guild search
+        """
+
+        return {}
 
     def __repr__(self) -> str:
         return f"<{self.__module__}.{self.__class__.__name__}: {self.url}>"

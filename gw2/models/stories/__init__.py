@@ -1,4 +1,4 @@
-import enum
+import uuid
 from typing import Literal
 
 from .._base import BaseModel
@@ -15,7 +15,7 @@ class Story(BaseModel):
     """
 
     id: int
-    season: str  # uuid
+    season: uuid.UUID
     name: str
     description: str
     timeline: str

@@ -2,10 +2,12 @@
 Some very very very basic tests to ensure our types still align.
 """
 import os
+import uuid
 
 import pytest
 
 import gw2
+from gw2 import errors
 
 EFFICIENCY_API_KEY = (
     "564F181A-F0FC-114A-A55D-3C1DCD45F3767AF3848F-AB29-4EBF-9594-F91E6A75E015"
@@ -112,6 +114,96 @@ async def test_colors() -> None:
 
 
 @pytest.mark.asyncio
+async def test_continents() -> None:
+    many = await gw2.Continents().all_noniter(concurrent=True)
+    one = await gw2.Continent(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floors() -> None:
+    continent_id = 1
+
+    many = await gw2.Floors(continent_id).all_noniter(concurrent=True)
+    one = await gw2.Floor(continent_id, many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floor_regions() -> None:
+    continent_id = 1
+    floor_id = 1
+
+    many = await gw2.Regions(continent_id, floor_id).all_noniter(concurrent=True)
+    one = await gw2.Region(continent_id, floor_id, many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floor_region_maps() -> None:
+    continent_id = 1
+    floor_id = 1
+    region_id = 1
+
+    many = await gw2.ContinentMaps(continent_id, floor_id, region_id).all_noniter(
+        concurrent=True
+    )
+    one = await gw2.ContinentMap(continent_id, floor_id, region_id, many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floor_region_map_sectors() -> None:
+    continent_id = 1
+    floor_id = 1
+    region_id = 1
+    map_id = 26
+
+    many = await gw2.Sectors(continent_id, floor_id, region_id, map_id).all_noniter(
+        concurrent=True
+    )
+    one = await gw2.Sector(continent_id, floor_id, region_id, map_id, many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floor_region_map_pois() -> None:
+    continent_id = 1
+    floor_id = 1
+    region_id = 1
+    map_id = 26
+
+    many = await gw2.PointsOfInterest(
+        continent_id, floor_id, region_id, map_id
+    ).all_noniter(concurrent=True)
+    one = await gw2.PointOfInterest(
+        continent_id, floor_id, region_id, map_id, many[0].id
+    ).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_continent_floor_region_tasks() -> None:
+    continent_id = 1
+    floor_id = 1
+    region_id = 1
+    map_id = 26
+
+    many = await gw2.Tasks(continent_id, floor_id, region_id, map_id).all_noniter(
+        concurrent=True
+    )
+    one = await gw2.Task(continent_id, floor_id, region_id, map_id, many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_currencies() -> None:
     many = await gw2.Currencies().all_noniter(concurrent=True)
     one = await gw2.Currency(many[0].id).get()
@@ -145,6 +237,14 @@ async def test_emblem_backgrounds() -> None:
 async def test_emblem_foregrounds() -> None:
     many = await gw2.EmblemForegrounds().all_noniter(concurrent=True)
     one = await gw2.EmblemForeground(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_emotes() -> None:
+    many = await gw2.Emotes().all_noniter(concurrent=True)
+    one = await gw2.Emote(many[0].id).get()
 
     assert one is not None
 
@@ -185,6 +285,18 @@ async def test_guild() -> None:
     one = await gw2.Guild(guild_id).get()
 
     assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_guild_search() -> None:
+    ids_list = await gw2.GuildSearch("ArenaNet").ids()
+    guild = await gw2.GuildSearch("ArenaNet").get()
+
+    assert len(ids_list) > 0 and ids_list[0] == "4BBB52AA-D768-4FC6-8EDE-C299F2822F0F"
+    assert guild.id == uuid.UUID("4BBB52AA-D768-4FC6-8EDE-C299F2822F0F")
+
+    with pytest.raises(errors.GuildNotFoundError):
+        await gw2.GuildSearch("_______").get()
 
 
 @pytest.mark.asyncio
@@ -236,9 +348,41 @@ async def test_item_stats() -> None:
 
 
 @pytest.mark.asyncio
+async def test_legendary_armory() -> None:
+    many = await gw2.LegendaryArmory().all_noniter(concurrent=True)
+    one = await gw2.LegendaryArmoryItem(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_legends() -> None:
+    many = await gw2.Legends().all_noniter(concurrent=True)
+    one = await gw2.Legend(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_mail_carriers() -> None:
     many = await gw2.MailCarriers().all_noniter(concurrent=True)
     one = await gw2.MailCarrier(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_map_chests() -> None:
+    many = await gw2.MapChests().all_noniter(concurrent=True)
+    one = await gw2.MapChest(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_maps() -> None:
+    many = await gw2.Maps().all_noniter(concurrent=True)
+    one = await gw2.Map(many[0].id).get()
 
     assert one is not None
 
@@ -340,11 +484,30 @@ async def test_races() -> None:
 
 
 @pytest.mark.asyncio
+async def test_raids() -> None:
+    many = await gw2.Raids().all_noniter(concurrent=True)
+    one = await gw2.Raid(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_recipes() -> None:
     many = await gw2.Recipes().all_noniter(concurrent=True)
     one = await gw2.Recipe(many[0].id).get()
 
     assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_recipe_search() -> None:
+    many = await gw2.RecipeSearch(input_id=48805).all_noniter(concurrent=True)
+    more = await gw2.RecipeSearch(output_id=95400).all_noniter(concurrent=True)
+    lots = await gw2.Recipes.search(output_id=95400).all_noniter(concurrent=True)
+
+    assert len(many) > 0
+    assert len(more) > 0
+    assert len(lots) > 0
 
 
 @pytest.mark.asyncio
