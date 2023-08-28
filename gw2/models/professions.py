@@ -1,49 +1,60 @@
-import enum
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, Field, field_validator
 
 from ._base import BaseModel
-from .common import SkillSlot, Weapon
+from .common import Attunement, SkillSlot, Weapon
+from .common import Profession as GameProfession
 
 
-class TrainingCategory(enum.Enum):
-    SKILLS = "Skills"
-    SPECIALIZATIONS = "Specializations"
-    ELITE_SPECIALIZATIONS = "EliteSpecializations"
-
-
-class TrainingTrack(BaseModel):
+class SkillTrack(BaseModel):
     cost: int
-    type: Literal["Trait", "Skill"]
-    skill_id: int | None = None
-    trait_id: int | None = None
+    type: Literal["Skill"]
+    skill_id: int
+
+
+class TraitTrack(BaseModel):
+    cost: int
+    type: Literal["Trait"]
+    trait_id: int
 
 
 class Training(BaseModel):
     id: int
-    category: TrainingCategory
+    category: Literal[
+        "Skills",
+        "Specializations",
+        "EliteSpecializations",
+    ]
     name: str
-    track: list[TrainingTrack]
+    track: list[Annotated[SkillTrack | TraitTrack, Field(discriminator="type")]]
 
 
-class Skill(BaseModel):
+class WeaponSkill(BaseModel):
     id: int
     slot: SkillSlot
-    offhand: str | None = None
-    attunement: str | None = None
-    source: str | None = None
+    offhand: Weapon | Literal["Nothing"] | None = None
+    attunement: Attunement | None = None
+    source: GameProfession | None = None
 
 
 class WeaponDetails(BaseModel):
     flags: list[Literal["Mainhand", "Offhand", "TwoHand", "Aquatic"]]
     specialization: int | None = None
-    skills: list[Skill]
+    skills: list[WeaponSkill]
 
 
-class Flag(enum.Enum):
-    NO_RACIAL_SKILLS = "NoRacialSkills"
-    NO_WEAPON_SWAP = "NoWeaponSwap"
+class Skill(BaseModel):
+    id: int
+    slot: SkillSlot
+    type: Literal[
+        "Elite",
+        "Heal",
+        "Profession",
+        "Utility",
+    ]
+    source: GameProfession | None = None
+    attunement: Attunement | None = None
 
 
 class Profession(BaseModel):
@@ -57,9 +68,10 @@ class Profession(BaseModel):
     icon: AnyHttpUrl
     icon_big: AnyHttpUrl
     specializations: list[int]
+    skills: list[Skill]
     training: list[Training]
     weapons: dict[Weapon, WeaponDetails]
-    flags: list[Flag]
+    flags: list[Literal["NoRacialSkills", "NoWeaponSwap"]]
     skills_by_palette: list[tuple[int, int]]  # [(skill palette id, skill id)]
 
     @field_validator("weapons", mode="before")

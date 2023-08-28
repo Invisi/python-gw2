@@ -5,7 +5,7 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Traits(IdsBase[models.Recipe, int], _type=models.Trait):
+class Traits(IdsBase[models.Trait, int], _type=models.Trait):
     pass
 
 

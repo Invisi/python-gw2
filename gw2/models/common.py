@@ -1,146 +1,127 @@
-import enum
+from typing import Literal
 
 from pydantic import AnyHttpUrl
 
 from ._base import BaseModel
 
+Rarity = Literal[
+    "Junk",
+    "Basic",
+    "Fine",
+    "Masterwork",
+    "Rare",
+    "Exotic",
+    "Ascended",
+    "Legendary",
+]
 
-class Race(enum.Enum):
-    ASURA = "Asura"
-    CHARR = "Charr"
-    HUMAN = "Human"
-    NORN = "Norn"
-    SYLVARI = "Sylvari"
+Attunement = Literal[
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+]
 
+Race = Literal[
+    "Asura",
+    "Charr",
+    "Human",
+    "Norn",
+    "Sylvari",
+]
+Gender = Literal["Female", "Male"]
+Profession = Literal[
+    "Elementalist",
+    "Engineer",
+    "Guardian",
+    "Mesmer",
+    "Necromancer",
+    "Ranger",
+    "Revenant",
+    "Thief",
+    "Warrior",
+]
+Discipline = Literal[
+    "Armorsmith",
+    "Artificer",
+    "Chef",
+    "Huntsman",
+    "Jeweler",
+    "Leatherworker",
+    "Scribe",
+    "Tailor",
+    "Weaponsmith",
+]
 
-class Profession(enum.Enum):
-    ELEMENTALIST = "Elementalist"
-    ENGINEER = "Engineer"
-    GUARDIAN = "Guardian"
-    MESMER = "Mesmer"
-    NECROMANCER = "Necromancer"
-    RANGER = "Ranger"
-    REVENANT = "Revenant"
-    THIEF = "Thief"
-    WARRIOR = "Warrior"
-
-
-class Discipline(enum.Enum):
-    ARMORSMITH = "Armorsmith"
-    ARTIFICIER = "Artificer"
-    CHEF = "Chef"
-    HUNTSMAN = "Huntsman"
-    JEWELER = "Jeweler"
-    LEATHERWORKER = "Leatherworker"
-    SCRIBE = "Scribe"
-    TAILOR = "Tailor"
-    WEAPONSMITH = "Weaponsmith"
-
-
-class Weapon(enum.Enum):
-    AXE = "Axe"
-    DAGGER = "Dagger"
-    FOCUS = "Focus"
-    GREATSWORD = "Greatsword"
-    HAMMER = "Hammer"
-    HARPOON = "Harpoon"
-    LONGBOW = "LongBow"
-    MACE = "Mace"
-    PISTOL = "Pistol"
-    RIFLE = "Rifle"
-    SCEPTER = "Scepter"
-    SHIELD = "Shield"
-    SHORTBOW = "ShortBow"
-    SPEARGUN = "Speargun"
-    STAFF = "Staff"
-    SWORD = "Sword"
-    TORCH = "Torch"
-    TRIDENT = "Trident"
-    WARHORN = "Warhorn"
+Weapon = Literal[
+    "Axe",
+    "Dagger",
+    "Focus",
+    "Greatsword",
+    "Hammer",
+    "Harpoon",
+    "LongBow",
+    "Mace",
+    "Pistol",
+    "Rifle",
+    "Scepter",
+    "Shield",
+    "ShortBow",
+    "Speargun",
+    "Staff",
+    "Sword",
+    "Torch",
+    "Trident",
+    "Warhorn",
     #
-    LARGE_BUNDLE = "LargeBundle"
-    SMALL_BUNDLE = "SmallBundle"
-    TOY = "Toy"
-    TOY_TWO_HANDED = "ToyTwoHanded"
+    "LargeBundle",
+    "SmallBundle",
+    "Toy",
+    "ToyTwoHanded",
+]
+WeaponDamage = Literal[
+    "Physical",
+    "Fire",
+    "Lightning",
+    "Ice",
+    "Choking",
+]
 
 
-class SkillSlot(enum.Enum):
-    DOWNED_1 = "Downed_1"
-    DOWNED_2 = "Downed_2"
-    DOWNED_3 = "Downed_3"
-    DOWNED_4 = "Downed_4"
-    PET = "Pet"
-    TOOLBELT = "Toolbelt"
-    PROFESSION_1 = "Profession_1"
-    PROFESSION_2 = "Profession_2"
-    PROFESSION_3 = "Profession_3"
-    PROFESSION_4 = "Profession_4"
-    PROFESSION_5 = "Profession_5"
-    WEAPON_1 = "Weapon_1"
-    WEAPON_2 = "Weapon_2"
-    WEAPON_3 = "Weapon_3"
-    WEAPON_4 = "Weapon_4"
-    WEAPON_5 = "Weapon_5"
-    HEAL = "Heal"
-    UTILITY = "Utility"
-    ELITE = "Elite"
+SkillSlot = Literal[
+    "Downed_1",
+    "Downed_2",
+    "Downed_3",
+    "Downed_4",
+    "Pet",
+    "Toolbelt",
+    "Profession_1",
+    "Profession_2",
+    "Profession_3",
+    "Profession_4",
+    "Profession_5",
+    "Weapon_1",
+    "Weapon_2",
+    "Weapon_3",
+    "Weapon_4",
+    "Weapon_5",
+    "Heal",
+    "Utility",
+    "Elite",
+]
 
 
-class ArmorWeight(enum.Enum):
-    CLOTHING = "Clothing"
-    LIGHT = "Light"
-    MEDIUM = "Medium"
-    HEAVY = "Heavy"
+ArmorWeight = Literal["Clothing", "Light", "Medium", "Heavy"]
+ArmorType = Literal[
+    "Boots", "Coat", "Gloves", "Helm", "HelmAquatic", "Leggings", "Shoulders"
+]
+
+DyeMaterial = Literal["cloth", "leather", "metal", "fur"]
 
 
-class ArmorType(enum.Enum):
-    BOOTS = "Boots"
-    COAT = "Coat"
-    GLOVES = "Gloves"
-    HELM = "Helm"
-    HELM_AQUATIC = "HelmAquatic"
-    LEGGINGS = "Leggings"
-    SHOULDERS = "Shoulders"
-
-
-class FactType(enum.Enum):
-    ATTRIBUTE_ADJUST = "AttributeAdjust"
-    BUFF = "Buff"
-    BUFF_CONVERSION = "BuffConversion"
-    COMBO_FIELD = "ComboField"
-    COMBO_FINISHER = "ComboFinisher"
-    DAMAGE = "Damage"
-    DISTANCE = "Distance"
-    NODATA = "NoData"
-    NUMBER = "Number"
-    PERCENT = "Percent"
-    PREFIXED_BUFF = "PrefixedBuff"
-    RADIUS = "Radius"
-    RANGE = "Range"
-    RECHARGE = "Recharge"
-    STUN_BREAK = "StunBreak"
-    TIME = "Time"
-    UNBLOCKABLE = "Unblockable"
-
-
-class ComboFieldType(enum.Enum):
-    AIR = "Air"
-    DARK = "Dark"
-    FIRE = "Fire"
-    ICE = "Ice"
-    LIGHT = "Light"
-    LIGHTNING = "Lightning"
-    POISON = "Poison"
-    SMOKE = "Smoke"
-    ETHEREAL = "Ethereal"
-    WATER = "Water"
-
-
-class ComboFinisherType(enum.Enum):
-    BLAST = "Blast"
-    LEAP = "Leap"
-    PROJECTILE = "Projectile"
-    WHIRL = "Whirl"
+class DyeSlot(BaseModel):
+    color_id: int
+    material: DyeMaterial
 
 
 class PrefixedBuff(BaseModel):
@@ -151,9 +132,30 @@ class PrefixedBuff(BaseModel):
 
 
 class Fact(BaseModel):
+    # todo: tagged union, somehow...
     text: str | None = None
     icon: AnyHttpUrl | None = None
-    type: FactType | None = None
+    type: Literal[
+        "AttributeAdjust",
+        "Buff",
+        "BuffConversion",
+        "ComboField",
+        "ComboFinisher",
+        "Damage",
+        "Distance",
+        "NoData",
+        "Number",
+        "Percent",
+        "PrefixedBuff",
+        "Radius",
+        "Range",
+        "Recharge",
+        "StunBreak",
+        "Time",
+        "Unblockable",
+        "Duration",
+        "HealingAdjust",
+    ] | None = None
     # AttributeAdjust/Number/Range/Recharge/Unblockable
     value: int | float | None = None
     # AttributeAdjust/BuffConversion
@@ -169,18 +171,37 @@ class Fact(BaseModel):
     # BuffConversion
     source: str | None = None
     # ComboField
-    field_type: ComboFieldType | None = None
+    field_type: Literal[
+        "Air",
+        "Dark",
+        "Fire",
+        "Ice",
+        "Light",
+        "Lightning",
+        "Poison",
+        "Smoke",
+        "Ethereal",
+        "Water",
+    ] | None = None
     # ComboFinisher
-    finisher_type: ComboFinisherType | None = None
+    finisher_type: Literal[
+        "Blast",
+        "Leap",
+        "Projectile",
+        "Whirl",
+    ] | None = None
     # Damage
     hit_count: int | None = None
     # Distance/Radius
     distance: int | None = None
     # PrefixedBuff
     prefix: PrefixedBuff | None = None
+    # ???
+    dmg_multiplier: float | None = None
+    chance: int | None = None
 
 
-class TraitedFact(BaseModel):
+class TraitedFact(Fact):
     requires_trait: int
     overrides: int | None = None
 

@@ -1,14 +1,6 @@
-import enum
+from typing import Literal
 
 from ._base import BaseModel
-
-
-class Population(enum.Enum):
-    LOW = "Low"
-    MEDIUM = "Medium"
-    HIGH = "High"
-    VERY_HIGH = "VeryHigh"
-    FULL = "Full"
 
 
 class World(BaseModel):
@@ -18,4 +10,10 @@ class World(BaseModel):
 
     id: int
     name: str
-    population: Population
+    population: Literal[
+        "Low",
+        "Medium",
+        "High",
+        "VeryHigh",
+        "Full",
+    ]

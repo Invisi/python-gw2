@@ -9,5 +9,6 @@ class Outfit(BaseModel):
     """
 
     id: int
+    name: str
     icon: AnyHttpUrl
     unlock_items: list[int]

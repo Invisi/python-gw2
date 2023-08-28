@@ -13,6 +13,36 @@ class Skill(BaseModel):
     icon: AnyHttpUrl | None = None
     facts: list[Fact] | None = None
     traited_facts: list[TraitedFact] | None = None
+    flags: list[int]
+    chat_link: str
+    categories: list[
+        Literal[
+            "Arcane",
+            "Burst",
+            "Cantrip",
+            "Clone",
+            "Corruption",
+            "Elixir",
+            "Gadget",
+            "Glamour",
+            "LegendaryDwarf",
+            "Mark",
+            "Meditation",
+            "Overload",
+            "Phantasm",
+            "Physical",
+            "PrimalBurst",
+            "Rage",
+            "Shout",
+            "Signet",
+            "Stance",
+            "Survival",
+            "Symbol",
+            "Trick",
+            "Venom",
+            "Virtue",
+        ]
+    ] | None = None
 
 
 class Trait(BaseModel):
@@ -30,3 +60,4 @@ class Trait(BaseModel):
     facts: list[Fact] | None = None
     traited_facts: list[TraitedFact] | None = None
     skills: list[Skill] | None = None
+    order: int

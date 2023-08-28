@@ -1,15 +1,7 @@
 import datetime
-import enum
+from typing import Literal
 
 from ._base import BaseModel
-
-
-class Language(enum.Enum):
-    ENGLISH = "en"
-    SPANISH = "es"
-    GERMAN = "de"
-    FRENCH = "fr"
-    CHINESE = "zh"
 
 
 class Route(BaseModel):
@@ -29,6 +21,14 @@ class V2(BaseModel):
     https://wiki.guildwars2.com/wiki/API:2
     """
 
-    langs: list[Language]
+    langs: list[
+        Literal[
+            "en",
+            "es",
+            "de",
+            "fr",
+            "zh",
+        ]
+    ]
     routes: list[Route]
     schema_versions: list[SchemaVersion]

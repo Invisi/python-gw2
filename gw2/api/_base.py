@@ -125,7 +125,6 @@ class _Base(Generic[EndpointModel]):
 
         klass = self._types[type_key]
         try:
-            # todo: log unused values
             if isinstance(data, list):
                 return cast(EndpointModel, klass(*data))
             elif isinstance(data, dict):

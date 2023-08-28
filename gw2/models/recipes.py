@@ -1,59 +1,56 @@
-import enum
+from typing import Literal
 
 from ._base import BaseModel
 from .common import ArmorType, Discipline, Weapon
 
+Trinket = Literal[
+    "Amulet",
+    "Earring",
+    "Ring",
+]
 
-class TypeTrinket(enum.Enum):
-    AMULET = "Amulet"
-    EARRING = "Earring"
-    RING = "Ring"
+Food = Literal[
+    "Dessert",
+    "Feast",
+    "IngredientCooking",
+    "Meal",
+    "Seasoning",
+    "Snack",
+    "Soup",
+    "Food",
+]
 
-
-class TypeFood(enum.Enum):
-    DESSERT = "Dessert"
-    FEAST = "Feast"
-    INGREDIENT_COOKING = "IngredientCooking"
-    MEAL = "Meal"
-    SEASONING = "Seasoning"
-    SNACK = "Snack"
-    SOUP = "Soup"
-    FOOD = "Food"
-
-
-class TypeCraftingComponent(enum.Enum):
-    COMPONENT = "Component"
-    INSCRIPTION = "Inscription"
-    INSIGNIA = "Insignia"
-    LEGENDARY_COMPONENT = "LegendaryComponent"
-
-
-class TypeRefinement(enum.Enum):
-    REFINEMENT = "Refinement"
-    REFINEMENT_ECTOPLASM = "RefinementEctoplasm"
-    REFINEMENT_OBSIDIAN = "RefinementObsidian"
+CraftingComponent = Literal[
+    "Component",
+    "Inscription",
+    "Insignia",
+    "LegendaryComponent",
+]
 
 
-class TypeGuild(enum.Enum):
-    GUILD_CONSUMABLE = "GuildConsumable"
-    GUILD_DECORATION = "GuildDecoration"
-    GUILD_CONSUMABLE_WVW = "GuildConsumableWvw"
+Refinement = Literal[
+    "Refinement",
+    "RefinementEctoplasm",
+    "RefinementObsidian",
+]
 
 
-class TypeOther(enum.Enum):
-    BACKPACK = "Backpack"
-    BAG = "Bag"
-    BULK = "Bulk"
-    CONSUMABLE = "Consumable"
-    DYE = "Dye"
-    FOOD = "Food"
-    POTION = "Potion"
-    UPGRADE_COMPONENT = "UpgradeComponent"
+Guild = Literal[
+    "GuildConsumable",
+    "GuildDecoration",
+    "GuildConsumableWvw",
+]
 
-
-class Flag(enum.Enum):
-    AUTO_LEARNED = "AutoLearned"
-    LEARNED_FROM_ITEM = "LearnedFromItem"
+Other = Literal[
+    "Backpack",
+    "Bag",
+    "Bulk",
+    "Consumable",
+    "Dye",
+    "Food",
+    "Potion",
+    "UpgradeComponent",
+]
 
 
 class Ingredient(BaseModel):
@@ -78,19 +75,19 @@ class Recipe(BaseModel):
     type: (
         Weapon
         | ArmorType
-        | TypeTrinket
-        | TypeFood
-        | TypeCraftingComponent
-        | TypeRefinement
-        | TypeGuild
-        | TypeOther
+        | Trinket
+        | Food
+        | CraftingComponent
+        | Refinement
+        | Guild
+        | Other
     )
     output_item_id: int
     output_item_count: int
     time_to_craft_ms: int
     disciplines: list[Discipline]
     min_rating: int
-    flags: list[Flag]
+    flags: list[Literal["AutoLearned", "LearnedFromItem"]]
     ingredients: list[Ingredient]
     guild_ingredients: list[GuildIngredient] | None = None
     output_upgrade_id: int | None = None

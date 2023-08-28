@@ -10,10 +10,13 @@ class Specialization(BaseModel):
     """
 
     id: int
-    name: str
-    profession: Profession
+    background: AnyHttpUrl
     elite: bool
     icon: AnyHttpUrl
-    background: AnyHttpUrl
-    minor_traits: list[int]
     major_traits: list[int]
+    minor_traits: list[int]
+    name: str
+    profession: Profession
+    profession_icon: AnyHttpUrl | None = None
+    profession_icon_big: AnyHttpUrl | None = None
+    weapon_trait: int | None = None

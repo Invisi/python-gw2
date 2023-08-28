@@ -1,6 +1,29 @@
-import enum
+from typing import Literal
 
 from ._base import BaseModel
+
+HueCategory = Literal[
+    "Gray",
+    "Brown",
+    "Red",
+    "Orange",
+    "Yellow",
+    "Green",
+    "Blue",
+    "Purple",
+]
+MaterialCategory = Literal[
+    "Vibrant",
+    "Leather",
+    "Metal",
+]
+RarityCategory = Literal[
+    "Starter",
+    "Common",
+    "Uncommon",
+    "Rare",
+    "Exclusive",
+]
 
 
 class ColorDetail(BaseModel):
@@ -10,31 +33,6 @@ class ColorDetail(BaseModel):
     saturation: float
     lightness: float
     rgb: tuple[int, int, int]
-
-
-class HueCategory(enum.Enum):
-    GRAY = "Gray"
-    BROWN = "Brown"
-    RED = "Red"
-    ORANGE = "Orange"
-    YELLOW = "Yellow"
-    GREEN = "Green"
-    BLUE = "Blue"
-    PURPLE = "Purple"
-
-
-class MaterialCategory(enum.Enum):
-    VIBRANT = "Vibrant"
-    LEATHER = "Leather"
-    METAL = "Metal"
-
-
-class RarityCategory(enum.Enum):
-    STARTER = "Starter"
-    COMMON = "Common"
-    UNCOMMON = "Uncommon"
-    RARE = "Rare"
-    EXCLUSIVE = "Exclusive"
 
 
 class Color(BaseModel):

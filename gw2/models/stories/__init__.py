@@ -1,4 +1,5 @@
 import enum
+from typing import Literal
 
 from .._base import BaseModel
 from ..common import Race
@@ -6,10 +7,6 @@ from ..common import Race
 
 class Chapter(BaseModel):
     name: str
-
-
-class Flag(enum.Enum):
-    REQUIRES_UNLOCK = "RequiresUnlock"
 
 
 class Story(BaseModel):
@@ -26,4 +23,4 @@ class Story(BaseModel):
     order: int
     chapters: list[Chapter]
     races: list[Race] | None = None
-    flags: list[Flag] | None = None
+    flags: list[Literal["RequiresUnlock"]] | None = None

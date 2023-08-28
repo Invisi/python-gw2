@@ -6,42 +6,30 @@ from .._base import BaseModel
 Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
 
 
+class Tier(BaseModel):
+    count: int
+    points: int
+
+
+class Reward(BaseModel):
+    type: Literal["Coins", "Item", "Mastery", "Title"]  # todo: tagged union
+
+    id: int | None = None
+    count: int | None = None
+    # XXX: Cantha is currently reported as Unknown
+    region: Region | None = None
+
+
+class Bit(BaseModel):
+    type: Literal["Text", "Item", "Minipet", "Skin"] | None = None  # todo: tagged union
+    id: int | None = None
+    text: str | None = None
+
+
 class Achievement(BaseModel):
     """
     https://wiki.guildwars2.com/wiki/API:2/achievements
     """
-
-    class Flag(enum.Enum):
-        PVP = "Pvp"
-        CATEGORY_DISPLAY = "CategoryDisplay"
-        MOVE_TO_TOP = "MoveToTop"
-        IGNORE_NEARLY_COMPLETE = "IgnoreNearlyComplete"
-        REPEATABLE = "Repeatable"
-        HIDDEN = "Hidden"
-        REQUIRES_UNLOCK = "RequiresUnlock"
-        REPAIR_ON_LOGIN = "RepairOnLogin"
-        DAILY = "Daily"
-        WEEKLY = "Weekly"
-        MONTHLY = "Monthly"
-        PERMANENT = "Permanent"
-
-    class Tier(BaseModel):
-        count: int
-        points: int
-
-    class Reward(BaseModel):
-        # TODO: Extended validation based on type?
-        type: Literal["Coins", "Item", "Mastery", "Title"]
-
-        id: int | None = None
-        count: int | None = None
-        # XXX: Cantha is currently reported as Unknown
-        region: Region | None = None
-
-    class Bit(BaseModel):
-        type: Literal["Text", "Item", "Minipet", "Skin"] | None = None
-        id: int | None = None
-        text: str | None = None
 
     id: int
     icon: str | None = None
@@ -51,9 +39,25 @@ class Achievement(BaseModel):
     locked_text: str
     type: Literal["Default", "ItemSet"]
 
-    flags: list[Flag] = []
-    tiers: list[Tier] = []
+    flags: list[
+        Literal[
+            "Pvp",
+            "CategoryDisplay",
+            "MoveToTop",
+            "IgnoreNearlyComplete",
+            "Repeatable",
+            "Hidden",
+            "RequiresUnlock",
+            "RepairOnLogin",
+            "Daily",
+            "Weekly",
+            "Monthly",
+            "Permanent",
+        ]
+    ] | None = None
+    tiers: list[Tier] | None = None
     rewards: list[Reward] | None = None
     bits: list[Bit] | None = None
 
     point_cap: int | None = None
+    prerequisites: list[int] | None = None

@@ -188,6 +188,14 @@ async def test_guild() -> None:
 
 
 @pytest.mark.asyncio
+async def test_guild_permissions() -> None:
+    many = await gw2.GuildPermissions().get()
+    one = await gw2.GuildPermission(many[0]).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_guild_upgrades() -> None:
     many = await gw2.GuildUpgrades().all_noniter(concurrent=True)
     one = await gw2.GuildUpgrade(many[0].id).get()
@@ -196,9 +204,81 @@ async def test_guild_upgrades() -> None:
 
 
 @pytest.mark.asyncio
+async def test_home_cats() -> None:
+    many = await gw2.HomeCats().all_noniter(concurrent=True)
+    one = await gw2.HomeCat(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_home_nodes() -> None:
+    many = await gw2.HomeNodes().get()
+    one = await gw2.HomeNode(many[0]).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_items() -> None:
+    many = await gw2.Items().all_noniter(concurrent=True)
+    one = await gw2.Item(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_item_stats() -> None:
+    many = await gw2.ItemStats().all_noniter(concurrent=True)
+    one = await gw2.ItemStat(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_mail_carriers() -> None:
+    many = await gw2.MailCarriers().all_noniter(concurrent=True)
+    one = await gw2.MailCarrier(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_masteries() -> None:
+    many = await gw2.Masteries().all_noniter(concurrent=True)
+    one = await gw2.Mastery(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_materials() -> None:
+    many = await gw2.Materials().all_noniter(concurrent=True)
+    one = await gw2.Material(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_minis() -> None:
     many = await gw2.Minis().all_noniter(concurrent=True)
     one = await gw2.Mini(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_mount_skins() -> None:
+    many = await gw2.MountSkins().all_noniter(concurrent=True)
+    one = await gw2.MountSkin(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_mount_types() -> None:
+    many = await gw2.MountTypes().get()
+    one = await gw2.MountType(many[0]).get()
 
     assert one is not None
 
@@ -236,9 +316,25 @@ async def test_professions() -> None:
 
 
 @pytest.mark.asyncio
+async def test_quaggans() -> None:
+    many = await gw2.Quaggans().get()
+    one = await gw2.Quaggan(many[0]).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_quests() -> None:
     many = await gw2.Quests().all_noniter(concurrent=True)
     one = await gw2.Quest(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_races() -> None:
+    many = await gw2.Races().get()
+    one = await gw2.Race(many[0]).get()
 
     assert one is not None
 
@@ -320,6 +416,14 @@ async def test_traits() -> None:
 async def test_worlds() -> None:
     many = await gw2.Worlds().all_noniter(concurrent=True)
     one = await gw2.World(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_worldbosses() -> None:
+    many = await gw2.WorldBosses().get()
+    one = await gw2.WorldBoss(many[0]).get()
 
     assert one is not None
 

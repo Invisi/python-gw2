@@ -1,18 +1,19 @@
 import datetime
 import enum
 import uuid
+from typing import Literal
 
 from .._base import BaseModel
 
-
-class Access(enum.Enum):
-    PLAY_FOR_FREE = "PlayForFree"
+Access = Literal[
+    "PlayForFree",
     # Core game
-    GUILD_WARS2 = "GuildWars2"
+    "GuildWars2",
     # Expansions
-    HEART_OF_THORNS = "HeartOfThorns"
-    PATH_OF_FIRE = "PathOfFire"
-    END_OF_DRAGONS = "EndOfDragons"
+    "HeartOfThorns",
+    "PathOfFire",
+    "EndOfDragons",
+]
 
 
 class Account(BaseModel):

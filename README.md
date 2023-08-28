@@ -71,13 +71,22 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/finishers
 - /v2/gliders
 - /v2/guild/:id/ (without detail endpoints)
-- /v2/guild/upgrades
+- /v2/guild/(permissions, upgrades)
+- /v2/home/(cats, nodes)
+- /v2/items
+- /v2/itemstats
+- /v2/mailcarriers
+- /v2/masteries
+- /v2/materials
 - /v2/minis
+- /v2/mounts/(skins, types)
 - /v2/novelties
 - /v2/outfits
 - /v2/pets
 - /v2/professions
+- /v2/quaggans
 - /v2/quests
+- /v2/races
 - /v2/recipes
 - /v2/skills
 - /v2/skins
@@ -86,6 +95,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/stories/seasons
 - /v2/titles
 - /v2/tokeninfo
+- /v2/worldbosses
 - /v2/worlds
 - /v2/wvw/matches
 - /v2/wvw/matches/overview
@@ -106,26 +116,16 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/continents
 - /v2/createsubtoken
 - /v2/emotes
+- /v2/guild/search
 - /v2/guild/:id/*
-- /v2/guild/(permissions, search)
-- /v2/home/(cats, nodes)
-- /v2/items
-- /v2/itemstats
 - /v2/legendaryarmory
 - /v2/legends
-- /v2/mailcarriers
 - /v2/mapchests
 - /v2/maps
-- /v2/maps
-- /v2/masteries
-- /v2/materials
 - /v2/mounts/(skins, types)
 - /v2/pvp/*
-- /v2/quaggans
-- /v2/races
 - /v2/raids
 - /v2/recipes/search
-- /v2/worldbosses
 - /v2/wvw/(abilities,objectives,ranks,upgrades)
 </details>
 

@@ -1,10 +1,24 @@
 import datetime
-import enum
 from typing import Literal
 
 from .._base import BaseModel
 
 Colors = Literal["red", "green", "blue"]
+MapType = Literal[
+    "RedHome",
+    "GreenHome",
+    "BlueHome",
+    "Center",
+]
+ObjectiveType = Literal[
+    "Camp",
+    "Keep",
+    "Mercenary",
+    "Ruins",
+    "Spawn",
+    "Tower",
+    "Castle",
+]
 
 
 class Bonus(BaseModel):
@@ -13,17 +27,8 @@ class Bonus(BaseModel):
 
 
 class Objective(BaseModel):
-    class Type(enum.Enum):
-        CAMP = "Camp"
-        KEEP = "Keep"
-        MERCENARY = "Mercenary"
-        RUINS = "Ruins"
-        SPAWN = "Spawn"
-        TOWER = "Tower"
-        CASTLE = "Castle"
-
     id: str
-    type: Type
+    type: ObjectiveType
     owner: Literal["Red", "Green", "Blue", "Neutral"]
     last_flipped: datetime.datetime
     claimed_by: str | None = None
@@ -35,14 +40,8 @@ class Objective(BaseModel):
 
 
 class Map(BaseModel):
-    class Type(enum.Enum):
-        RED = "RedHome"
-        GREEN = "GreenHome"
-        BLUE = "BlueHome"
-        EBG = "Center"
-
     id: int
-    type: Type
+    type: MapType
     scores: dict[Colors, int]
     bonuses: list[Bonus]
     deaths: dict[Colors, int]
@@ -51,7 +50,7 @@ class Map(BaseModel):
 
 
 class MapScore(BaseModel):
-    type: Map.Type
+    type: MapType
     scores: dict[Colors, int]
 
 
@@ -76,6 +75,7 @@ class Match(BaseModel):
     kills: dict[Colors, int]
     maps: list[Map]
     skirmishes: list[Skirmish]
+    victory_points: dict[Colors, int]
 
 
 class MatchOverview(BaseModel):

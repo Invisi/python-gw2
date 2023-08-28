@@ -1,34 +1,17 @@
-import enum
+from typing import Literal
 
 from pydantic import AnyHttpUrl, field_validator
 
 from ._base import BaseModel
-from .common import ArmorType, ArmorWeight, Weapon, coerce_weapon
-
-
-class Type(enum.Enum):
-    ARMOR = "Armor"
-    WEAPON = "Weapon"
-    BACK = "Back"
-    GATHERING = "Gathering"
-
-
-class Flag(enum.Enum):
-    SHOW_IN_WARDROBE = "ShowInWardrobe"
-    NO_COST = "NoCost"
-    HIDE_IF_LOCKED = "HideIfLocked"
-    OVERRIDE_RARITY = "OverrideRarity"
-
-
-class DyeMaterial(enum.Enum):
-    CLOTH = "cloth"
-    LEATHER = "leather"
-    METAL = "metal"
-
-
-class DyeSlot(BaseModel):
-    color_id: int
-    material: DyeMaterial
+from .common import (
+    ArmorType,
+    ArmorWeight,
+    DyeSlot,
+    Rarity,
+    Weapon,
+    WeaponDamage,
+    coerce_weapon,
+)
 
 
 class DyeSlotOverrides(BaseModel):
@@ -49,25 +32,12 @@ class DyeSlots(BaseModel):
     overrides: DyeSlotOverrides
 
 
-class WeaponDamage(enum.Enum):
-    PHYSICAL = "Physical"
-    FIRE = "Fire"
-    LIGHTNING = "Lightning"
-    ICE = "Ice"
-    CHOKING = "Choking"
-
-
-class GatheringType(enum.Enum):
-    FORAGING = "Foraging"
-    LOGGING = "Logging"
-    MINING = "Mining"
-    LURE = "Lure"  # todo: add to wiki
-    BAIT = "Bait"  # todo: add to wiki
-    FISHING = "Fishing"  # todo: add to wiki
+# todo: last three are missing on wiki
+GatheringType = Literal["Foraging", "Logging", "Mining", "Lure", "Bait", "Fishing"]
 
 
 class Details(BaseModel):
-    type: Weapon | ArmorType | GatheringType
+    type: Weapon | ArmorType | GatheringType  # todo: tagged union
     damage_type: WeaponDamage | None = None
     weight_class: ArmorWeight | None = None
     dye_slots: DyeSlots | None = None
@@ -82,10 +52,22 @@ class Skin(BaseModel):
 
     id: int
     name: str
-    type: Type
-    flags: list[Flag]
+    type: Literal[
+        "Armor",
+        "Weapon",
+        "Back",
+        "Gathering",
+    ]  # todo: tagged union
+    flags: list[
+        Literal[
+            "ShowInWardrobe",
+            "NoCost",
+            "HideIfLocked",
+            "OverrideRarity",
+        ]
+    ]
     restrictions: list[str]  # todo: types
     icon: AnyHttpUrl | None = None
-    rarity: str  # todo: types
+    rarity: Rarity
     description: str | None = None
     details: Details | None = None

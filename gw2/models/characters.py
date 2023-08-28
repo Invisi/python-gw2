@@ -1,49 +1,45 @@
 import datetime
-import enum
 import uuid
 from typing import Literal
 
 from pydantic import Field
 
 from ._base import BaseModel
-from .common import Discipline, Profession, Race
+from .common import Discipline, Gender, Profession, Race
 
-
-class EquipmentSlot(enum.Enum):
-    ACCESSORY1 = "Accessory1"
-    ACCESSORY2 = "Accessory2"
-    AMULET = "Amulet"
-    AXE = "Axe"
-    BACKPACK = "Backpack"
-    BOOTS = "Boots"
-    COAT = "Coat"
-    GLOVES = "Gloves"
-    HELM = "Helm"
-    HELMAQUATIC = "HelmAquatic"
-    LEGGINGS = "Leggings"
-    PICK = "Pick"
-    RING1 = "Ring1"
-    RING2 = "Ring2"
-    SHOULDERS = "Shoulders"
-    SICKLE = "Sickle"
-    WEAPONA1 = "WeaponA1"
-    WEAPONA2 = "WeaponA2"
-    WEAPONAQUATICA = "WeaponAquaticA"
-    WEAPONAQUATICB = "WeaponAquaticB"
-    WEAPONB1 = "WeaponB1"
-    WEAPONB2 = "WeaponB2"
-
-
-Gender = Literal["Female", "Male"]
+EquipmentSlot = Literal[
+    "Accessory1",
+    "Accessory2",
+    "Amulet",
+    "Axe",
+    "Backpack",
+    "Boots",
+    "Coat",
+    "Gloves",
+    "Helm",
+    "HelmAquatic",
+    "Leggings",
+    "Pick",
+    "Ring1",
+    "Ring2",
+    "Shoulders",
+    "Sickle",
+    "WeaponA1",
+    "WeaponA2",
+    "WeaponAquaticA",
+    "WeaponAquaticB",
+    "WeaponB1",
+    "WeaponB2",
+]
 Binding = Literal["Account", "Character"]
 
 
-class Location(enum.Enum):
-    EQUIPPED = "Equipped"
-    ARMORY = "Armory"
-    EQUIPPED_FROM_LEGENDARY_ARMORY = "EquippedFromLegendaryArmory"
-    LEGENDARY_ARMORY = "LegendaryArmory"
-
+Location = Literal[
+    "Equipped",
+    "Armory",
+    "EquippedFromLegendaryArmory",
+    "LegendaryArmory",
+]
 
 # --- Enums above, scary things below
 
@@ -135,6 +131,8 @@ class InventorySlot(BaseModel):
     stats: Stats | None = None
     binding: Binding | None = None
     bound_to: str | None = None
+    upgrade_slot_indices: list[int] | None = None
+    dyes: list[int] | None = None
 
 
 class Bag(BaseModel):

@@ -1,16 +1,8 @@
-import enum
+from typing import Literal
 
 from pydantic import AnyHttpUrl
 
 from ._base import BaseModel
-
-
-class Slot(enum.Enum):
-    CHAIR = "Chair"
-    MUSIC = "Music"
-    HELD_ITEM = "HeldItem"
-    MISCELLANEOUS = "Miscellaneous"
-    TONIC = "Tonic"
 
 
 class Novelty(BaseModel):
@@ -22,5 +14,11 @@ class Novelty(BaseModel):
     name: str
     description: str
     icon: AnyHttpUrl
-    slot: Slot
+    slot: Literal[
+        "Chair",
+        "Music",
+        "HeldItem",
+        "Miscellaneous",
+        "Tonic",
+    ]
     unlock_item: list[int] | None = None
