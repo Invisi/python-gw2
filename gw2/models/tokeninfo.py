@@ -1,12 +1,11 @@
 import datetime
-import uuid
 from typing import Literal
 
 from ._base import BaseModel
 
 
 class TokenInfo(BaseModel):
-    id: uuid.UUID
+    id: str
     name: str
     permissions: list[
         Literal[

@@ -1,4 +1,3 @@
-import uuid
 from typing import Literal
 
 from .._base import BaseModel
@@ -15,7 +14,7 @@ class Story(BaseModel):
     """
 
     id: int
-    season: uuid.UUID
+    season: str
     name: str
     description: str
     timeline: str

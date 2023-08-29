@@ -1,5 +1,4 @@
 import datetime
-import uuid
 from typing import Literal
 
 from .._base import BaseModel
@@ -16,11 +15,11 @@ Access = Literal[
 
 
 class Account(BaseModel):
-    id: uuid.UUID
+    id: str
     name: str
     age: int
     world: int
-    guilds: list[uuid.UUID]
+    guilds: list[str]
     created: datetime.datetime
     access: list[Access]
     commander: bool
@@ -28,7 +27,7 @@ class Account(BaseModel):
     last_modified: datetime.datetime
 
     # guilds scope
-    guild_leader: list[uuid.UUID] | None = None
+    guild_leader: list[str] | None = None
 
     # progression scope
     fractal_level: int | None = None

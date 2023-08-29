@@ -1,5 +1,4 @@
 import datetime
-import uuid
 from typing import Literal
 
 from pydantic import Field
@@ -152,7 +151,7 @@ class Character(BaseModel):
     flags: list[str]
     profession: Profession
     level: int
-    guild: uuid.UUID | None = None
+    guild: str | None = None
     age: int
 
     deaths: int
@@ -192,7 +191,7 @@ class Core(BaseModel):
     gender: Gender
     profession: Profession
     level: int
-    guild: uuid.UUID | None = None
+    guild: str | None = None
     age: int
     deaths: int
     title: int | None = None

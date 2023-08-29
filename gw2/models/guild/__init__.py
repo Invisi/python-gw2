@@ -1,4 +1,3 @@
-import uuid
 from typing import Literal
 
 from .._base import BaseModel
@@ -22,7 +21,7 @@ class Emblem(BaseModel):
 
 
 class Guild(BaseModel):
-    id: uuid.UUID
+    id: str
     name: str
     tag: str | None = None  # XXX: Tag can be missing too, lovely
     emblem: Emblem | None = (

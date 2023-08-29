@@ -1,4 +1,3 @@
-import uuid
 from typing import Literal
 
 from pydantic import AnyHttpUrl
@@ -103,7 +102,7 @@ class Sector(BaseModel):
 
 
 class Adventure(BaseModel):
-    id: uuid.UUID
+    id: str
     name: str
     description: str
     coord: Coordinates

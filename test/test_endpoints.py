@@ -2,7 +2,6 @@
 Some very very very basic tests to ensure our types still align.
 """
 import os
-import uuid
 
 import pytest
 
@@ -293,7 +292,7 @@ async def test_guild_search() -> None:
     guild = await gw2.GuildSearch("ArenaNet").get()
 
     assert len(ids_list) > 0 and ids_list[0] == "4BBB52AA-D768-4FC6-8EDE-C299F2822F0F"
-    assert guild.id == uuid.UUID("4BBB52AA-D768-4FC6-8EDE-C299F2822F0F")
+    assert guild.id == "4BBB52AA-D768-4FC6-8EDE-C299F2822F0F"
 
     with pytest.raises(errors.GuildNotFoundError):
         await gw2.GuildSearch("_______").get()
