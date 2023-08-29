@@ -7,6 +7,7 @@ from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Generic, Literal, TypeVar, cast, overload
 
 import httpx
+from asyncio_throttle import Throttler
 from pydantic import ValidationError
 
 from gw2 import errors
@@ -26,6 +27,8 @@ HTTP_SUCCESS = 200
 HTTP_PARTIAL_SUCCESS = 206
 HTTP_BAD_REQUEST = 400
 HTTP_FORBIDDEN = 403
+
+GLOBAL_THROTTLE = Throttler(rate_limit=300, period=60)
 
 LOG = logging.getLogger(__name__)
 
@@ -240,11 +243,12 @@ class _Base(Generic[EndpointModel]):
                 params[ids_name] = "all"
 
         LOG.debug("Sending request to %s with params %s", self.url, params)
-        try:
-            response = await self._session.get(self.url, params=params)
-        except httpx.NetworkError:
-            LOG.exception("Failed to fetch data")
-            raise
+        async with GLOBAL_THROTTLE:
+            try:
+                response = await self._session.get(self.url, params=params)
+            except httpx.NetworkError:
+                LOG.exception("Failed to fetch data")
+                raise
 
         # Raise error if the key is reported as invalid
         if (

@@ -112,7 +112,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 ## Planned features
 - ID-based caching
-- Rate limiting
+- Rate limiting with burst and automatic handling for 429
 - The other endpoints I potentially forgot about
 
 <details>
