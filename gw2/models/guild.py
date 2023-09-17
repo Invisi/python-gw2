@@ -1,8 +1,45 @@
+import datetime
 from typing import Literal
 
 from pydantic import AnyHttpUrl
 
+from . import pvp
 from ._base import BaseModel
+
+GuildPermissionId = Literal[
+    "ClaimableEditOptions",
+    "EditBGM",
+    "ActivatePlaceables",
+    "DepositItemsTrove",
+    "WithdrawItemsStash",
+    "WithdrawItemsTrove",
+    "EditAssemblyQueue",
+    "WithdrawCoinsStash",
+    "ActivateWorldEvent",
+    "PlaceArenaDecoration",
+    "DepositItemsStash",
+    "EditMonument",
+    "StartingRole",
+    "SpendFuel",
+    "TeamAdmin",
+    "EditRoles",
+    "Admin",
+    "WithdrawCoinsTrove",
+    "DepositCoinsTrove",
+    "PurchaseUpgrades",
+    "EditEmblem",
+    "ClaimableActivate",
+    "MissionControl",
+    "OpenPortal",
+    "SetGuildHall",
+    "DepositCoinsStash",
+    "PlaceDecoration",
+    "ClaimableSpend",
+    "EditMOTD",
+    "EditAnthem",
+    "DecorationAdmin",
+    "ClaimableClaim",
+]
 
 
 class Emblem(BaseModel):
@@ -48,7 +85,7 @@ class GuildPermission(BaseModel):
     https://wiki.guildwars2.com/wiki/API:2/guild/permissions
     """
 
-    id: str
+    id: GuildPermissionId
     name: str
     description: str
 
@@ -94,3 +131,135 @@ class GuildUpgrade(BaseModel):
     costs: list[Cost] = []
     bag_max_items: int | None = None
     bag_max_coins: int | None = None
+
+
+class Log:
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/log
+    """
+
+    class _Base(BaseModel):
+        id: int
+        time: datetime.datetime
+        user: str | None = None
+        type: Literal[
+            "joined",
+            "invited",
+            "kick",
+            "rank_change",
+            "treasury",
+            "stash",
+            "motd",
+            "upgrade",
+        ]
+
+    class Invite(_Base):
+        invited_by: str
+
+    class Kick(_Base):
+        kicked_by: str
+
+    class Motd(_Base):
+        motd: str
+
+    class RankChange(_Base):
+        changed_by: str
+        old_rank: str
+        new_rank: str
+
+    class Stash(_Base):
+        operation: Literal["deposit", "withdraw", "move"]
+        item_id: int
+        count: int
+        coins: int
+
+    class Treasury(_Base):
+        item_id: int
+        count: int
+
+    class Upgrade(_Base):
+        action: Literal["queued", "cancelled", "completed", "sped_up"]
+        upgrade_id: int
+        recipe_id: int | None = None  # always optional
+
+
+class Member(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/members
+    """
+
+    name: str
+    rank: str
+    joined: datetime.datetime
+
+
+class Rank(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/ranks
+    """
+
+    id: str
+    order: int
+    permissions: list[GuildPermissionId]
+    icon: AnyHttpUrl
+
+
+class InventorySlot(BaseModel):
+    id: int
+    count: int
+
+
+class Stash(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/stash
+    """
+
+    upgrade_id: int
+    size: int
+    coins: int
+    note: str | None = None
+    inventory: list[InventorySlot | None]
+
+
+class Storage(InventorySlot):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/storage
+    """
+
+
+class Team(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/teams
+    """
+
+    class Member(BaseModel):
+        name: str
+        role: Literal["Captain", "Member"]
+
+    class Season(BaseModel):
+        id: str
+        wins: int
+        losses: int
+        rating: int
+
+    id: int
+    members: list[Member]
+    name: str
+    aggregate: pvp.WinLoss
+    ladders: pvp.Ladders
+    games: list[pvp.Game]
+    seasons: list[Season]
+
+
+class Treasury(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/guild/:id/treasury
+    """
+
+    class Upgrade(BaseModel):
+        upgrade_id: int
+        count: int
+
+    item_id: int
+    count: int
+    needed_by: list[Upgrade]

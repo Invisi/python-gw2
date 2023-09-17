@@ -71,7 +71,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/files
 - /v2/finishers
 - /v2/gliders
-- /v2/guild/:id/ (without detail endpoints)
+- /v2/guild/:id/*
 - /v2/guild/(permissions, search, upgrades)
 - /v2/home/(cats, nodes)
 - /v2/items
@@ -119,7 +119,6 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 - /v2/achievements/(daily, tomorrow)
 - /v2/createsubtoken
-- /v2/guild/:id/*
 - /v2/pvp/*
 - /v2/wvw/(abilities,objectives,ranks,upgrades)
 </details>

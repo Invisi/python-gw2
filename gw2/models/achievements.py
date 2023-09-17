@@ -32,7 +32,7 @@ class Achievement(BaseModel):
     """
 
     id: int
-    icon: str | None = None
+    icon: AnyHttpUrl | None = None
     name: str
     description: str
     requirement: str

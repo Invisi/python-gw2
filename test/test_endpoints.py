@@ -363,6 +363,28 @@ async def test_guild_search() -> None:
 
 
 @pytest.mark.asyncio
+async def test_guild_log(guild: gw2.Guild) -> None:
+    one = await guild.log().get()
+
+    assert one is not None
+
+
+@pytest.mark.parametrize(
+    "fn",
+    ["log", "members", "ranks", "stash", "storage", "teams", "treasury", "upgrades"],
+)
+@pytest.mark.asyncio
+async def test_guild_endpoint(guild: gw2.Guild, fn: str) -> None:
+    async with getattr(guild, fn)() as sub_client:
+        if hasattr(sub_client, "all_noniter"):
+            assert await sub_client.all_noniter(concurrent=True) is not None
+        if hasattr(sub_client, "get"):
+            assert await sub_client.get() is not None
+        if hasattr(sub_client, "ids"):
+            assert await sub_client.ids() is not None
+
+
+@pytest.mark.asyncio
 async def test_guild_permissions() -> None:
     many = await gw2.GuildPermissions().get()
     one = await gw2.GuildPermission(many[0]).get()

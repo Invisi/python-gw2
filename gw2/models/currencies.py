@@ -1,3 +1,5 @@
+from pydantic import AnyHttpUrl
+
 from ._base import BaseModel
 
 
@@ -9,5 +11,5 @@ class Currency(BaseModel):
     id: int
     name: str
     description: str
-    icon: str
+    icon: AnyHttpUrl
     order: int
