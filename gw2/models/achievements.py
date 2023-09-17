@@ -1,7 +1,9 @@
 from typing import Literal
 
-from .._base import BaseModel
-from ..common import Region
+from pydantic import AnyHttpUrl
+
+from ._base import BaseModel
+from .common import Region
 
 
 class Tier(BaseModel):
@@ -59,3 +61,30 @@ class Achievement(BaseModel):
 
     point_cap: int | None = None
     prerequisites: list[int] | None = None
+
+
+class AchievementCategory(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/achievements/categories
+    """
+
+    # todo: upgrade schema to 2022-03-23 for extended data
+
+    id: int
+    name: str
+    description: str
+    order: int
+    icon: AnyHttpUrl
+    achievements: list[int]
+
+
+class AchievementGroup(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/achievements/groups
+    """
+
+    id: str
+    name: str
+    description: str
+    order: int
+    categories: list[int]

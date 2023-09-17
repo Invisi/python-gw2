@@ -2,7 +2,7 @@ import functools
 
 from gw2 import models
 
-from .._base import Base, IdsBase
+from ._base import Base, IdsBase
 
 
 class Matches(IdsBase[models.Match, str], _type=models.Match):

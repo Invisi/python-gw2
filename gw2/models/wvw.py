@@ -1,7 +1,7 @@
 import datetime
 from typing import Literal
 
-from .._base import BaseModel
+from ._base import BaseModel
 
 Colors = Literal["red", "green", "blue"]
 MapType = Literal[

@@ -1,8 +1,8 @@
 import datetime
 from typing import Literal
 
-from .._base import BaseModel
-from ..common import Region, Stats
+from ._base import BaseModel
+from .common import Stats
 
 Access = Literal[
     "PlayForFree",
