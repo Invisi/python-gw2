@@ -70,6 +70,20 @@ from .api.novelties import Novelties, Novelty
 from .api.outfits import Outfit, Outfits
 from .api.pets import Pet, Pets
 from .api.professions import Profession, Professions
+from .api.pvp import (
+    Amulet,
+    Amulets,
+    Game,
+    Games,
+    Hero,
+    Heroes,
+    PvPRank,
+    PvPRanks,
+    Season,
+    Seasons,
+    Standings,
+    Stats,
+)
 from .api.quaggans import Quaggan, Quaggans
 from .api.quests import Quest, Quests
 from .api.races import Race, Races
@@ -84,4 +98,19 @@ from .api.tokeninfo import TokenInfo
 from .api.traits import Trait, Traits
 from .api.world_bosses import WorldBoss, WorldBosses
 from .api.worlds import World, Worlds
-from .api.wvw import Match, Matches, MatchOverview, MatchOverviews
+from .api.wvw import (
+    Match,
+    Matches,
+    MatchOverview,
+    MatchOverviews,
+    MatchScore,
+    MatchScores,
+    MatchStat,
+    MatchStats,
+    Objective,
+    Objectives,
+    WvWRank,
+    WvWRanks,
+    WvWUpgrade,
+    WvWUpgrades,
+)

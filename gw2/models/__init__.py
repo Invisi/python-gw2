@@ -43,6 +43,16 @@ from .novelties import Novelty
 from .outfits import Outfit
 from .pets import Pet
 from .professions import Profession
+from .pvp import (
+    Amulet,
+    Game,
+    Hero,
+    LeaderboardLadder,
+    PvPRank,
+    Season,
+    Standings,
+    Stats,
+)
 from .quaggans import Quaggan
 from .quests import Quest
 from .races import Race
@@ -57,4 +67,12 @@ from .tokeninfo import SubTokenInfo, TokenInfo
 from .traits import Trait
 from .world_bosses import WorldBoss
 from .worlds import World
-from .wvw import Match, MatchOverview
+from .wvw import (
+    Match,
+    MatchOverview,
+    MatchScore,
+    MatchStat,
+    Objective,
+    WvWRank,
+    WvWUpgrade,
+)

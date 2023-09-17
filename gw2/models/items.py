@@ -4,6 +4,7 @@ from pydantic import AnyHttpUrl
 
 from ._base import BaseModel
 from .common import (
+    Attribute,
     Gender,
     Profession,
     Race,
@@ -70,20 +71,6 @@ GameType = Literal[
 class Upgrade(BaseModel):
     upgrade: Literal["Attunement", "Infusion"]
     item_id: int
-
-
-Attribute = Literal[
-    "AgonyResistance",
-    "BoonDuration",
-    "ConditionDamage",
-    "ConditionDuration",
-    "CritDamage",
-    "Healing",
-    "Power",
-    "Precision",
-    "Toughness",
-    "Vitality",
-]
 
 
 class AttributeDetails(BaseModel):

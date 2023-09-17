@@ -89,6 +89,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/outfits
 - /v2/pets
 - /v2/professions
+- /v2/pvp/*
 - /v2/quaggans
 - /v2/quests
 - /v2/races
@@ -104,8 +105,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/tokeninfo
 - /v2/worldbosses
 - /v2/worlds
-- /v2/wvw/matches
-- /v2/wvw/matches/overview
+- /v2/wvw/*
 </details>
 
 
@@ -119,15 +119,15 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 - /v2/achievements/(daily, tomorrow)
 - /v2/createsubtoken
-- /v2/pvp/*
-- /v2/wvw/(abilities,objectives,ranks,upgrades)
 </details>
 
-## Missing features
+## Missing features/endpoints
 - /v2/characters/:id/(heropoints, training)
   - Returns nonsense or simply nothing
 - /v2/characters/:id/(skills, specializations)
   - Deprecated, use `buildtabs` instead
+- /v2/matches/stats/:id/teams
+  - Dead on arrival, never seen actual data here
 
 ## License
 [MIT](LICENSE)

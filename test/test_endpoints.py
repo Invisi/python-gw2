@@ -545,6 +545,80 @@ async def test_professions() -> None:
 
 
 @pytest.mark.asyncio
+async def test_pvp_amulets() -> None:
+    many = await gw2.Amulets().all_noniter(concurrent=True)
+    one = await gw2.Amulet(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_games() -> None:
+    async with gw2.Games() as client:
+        client.auth(API_KEY)
+        many = await client.all_noniter(concurrent=True)
+
+    async with gw2.Game(many[0].id) as client:
+        client.auth(API_KEY)
+        one = await client.get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_heroes() -> None:
+    many = await gw2.Heroes().all_noniter(concurrent=True)
+    one = await gw2.Hero(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_ranks() -> None:
+    many = await gw2.PvPRanks().all_noniter(concurrent=True)
+    one = await gw2.PvPRank(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_seasons() -> None:
+    many = await gw2.Seasons().all_noniter(concurrent=True)
+    one = await gw2.Season(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_leaderboards() -> None:
+    one = (
+        await gw2.Season("2F306FFD-500A-45E3-9118-1F0831F1B89F")
+        .leaderboards("na")
+        .get()
+    )
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_standings() -> None:
+    async with gw2.Standings() as client:
+        client.auth(API_KEY)
+        one = await client.get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_pvp_stats() -> None:
+    async with gw2.Stats() as client:
+        client.auth(API_KEY)
+        one = await client.get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
 async def test_quaggans() -> None:
     many = await gw2.Quaggans().get()
     one = await gw2.Quaggan(many[0]).get()
@@ -688,5 +762,45 @@ async def test_wvw_matches() -> None:
 async def test_wvw_match_overviews() -> None:
     many = await gw2.MatchOverviews().all_noniter(concurrent=True)
     one = await gw2.MatchOverview(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wvw_match_scores() -> None:
+    many = await gw2.MatchScores().all_noniter(concurrent=True)
+    one = await gw2.MatchScore(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wvw_match_stats() -> None:
+    many = await gw2.MatchStats().all_noniter(concurrent=True)
+    one = await gw2.MatchStat(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wvw_objectives() -> None:
+    many = await gw2.Objectives().all_noniter(concurrent=True)
+    one = await gw2.Objective(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wvw_ranks() -> None:
+    many = await gw2.WvWRanks().all_noniter(concurrent=True)
+    one = await gw2.WvWRank(many[0].id).get()
+
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wvw_upgrades() -> None:
+    many = await gw2.WvWUpgrades().all_noniter(concurrent=True)
+    one = await gw2.WvWUpgrade(many[0].id).get()
 
     assert one is not None

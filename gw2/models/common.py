@@ -121,6 +121,19 @@ DyeMaterial = Literal["cloth", "leather", "metal", "fur"]
 
 Region = Literal["Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha"]
 
+Attribute = Literal[
+    "AgonyResistance",
+    "BoonDuration",
+    "ConditionDamage",
+    "ConditionDuration",
+    "CritDamage",
+    "Healing",
+    "Power",
+    "Precision",
+    "Toughness",
+    "Vitality",
+]
+
 
 class DyeSlot(BaseModel):
     color_id: int

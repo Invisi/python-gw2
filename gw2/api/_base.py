@@ -4,14 +4,12 @@ import logging
 from asyncio import Future, Task
 from collections.abc import AsyncIterator
 from importlib.metadata import PackageNotFoundError, version
-from types import GenericAlias
 from typing import (
     Any,
     Generic,
     Literal,
     Self,
     TypeVar,
-    _GenericAlias,
     cast,
     overload,
 )
@@ -129,15 +127,12 @@ class _Base(Generic[EndpointModel]):
         """
         try:
             generic_alias = next(
-                filter(
-                    lambda x: isinstance(x, _GenericAlias | GenericAlias),
-                    self.__orig_bases__,
-                )
+                filter(lambda x: hasattr(x, "__args__"), self.__orig_bases__)
             )
         except StopIteration as e:
             raise NotImplementedError from e
 
-        if issubclass(self.__class__, IdsBase | ListBase | StringsBase):
+        if issubclass(self.__class__, IdsBase | AllIdsBase | ListBase | StringsBase):
             return cast(EndpointModel, list[generic_alias.__args__[0]])
         elif issubclass(self.__class__, Base):
             return cast(EndpointModel, generic_alias.__args__[0])
@@ -158,7 +153,7 @@ class _Base(Generic[EndpointModel]):
             return pydantic.TypeAdapter(self._klass).validate_python(data)
         except (TypeError, ValueError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
-            raise NotImplementedError() from e
+            raise e
 
     # region _get()
     @overload
