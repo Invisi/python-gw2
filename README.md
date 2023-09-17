@@ -61,7 +61,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 - /v2/achievements/groups
 - /v2/backstory/*
 - /v2/build
-- /v2/characters (without detail endpoints)
+- /v2/characters/* (with some exceptions)
 - /v2/colors
 - /v2/continents/*
 - /v2/currencies
@@ -120,13 +120,17 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 - /v2/account/*
 - /v2/achievements/(daily, tomorrow)
-- /v2/characters/*
 - /v2/createsubtoken
 - /v2/guild/:id/*
 - /v2/pvp/*
 - /v2/wvw/(abilities,objectives,ranks,upgrades)
 </details>
 
+## Missing features
+- /v2/characters/:id/(heropoints, training)
+  - Returns nonsense or simply nothing
+- /v2/characters/:id/(skills, specializations)
+  - Deprecated, use `buildtabs` instead
 
 ## License
 [MIT](LICENSE)

@@ -30,6 +30,11 @@ HTTP_FORBIDDEN = 403
 
 GLOBAL_THROTTLE = Throttler(rate_limit=300, period=60)
 
+
+# TODO: better rate limiting
+#  https://github.com/greaka/gw2api/blob/ab5a08cec3004b3cea8a62b51b3831a097adb989/http/src/rate_limit.rs#L44-L66
+
+
 LOG = logging.getLogger(__name__)
 
 # The model for the endpoint
@@ -133,8 +138,10 @@ class _Base(Generic[EndpointModel]):
             elif isinstance(data, dict):
                 return cast(EndpointModel, klass(**data))
 
+            # todo: include in refactor with TypeAdapter
+            # used for simple types like str or int
             return cast(EndpointModel, klass(data))
-        except (TypeError, ValidationError) as e:
+        except (TypeError, ValueError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
             raise NotImplementedError() from e
 

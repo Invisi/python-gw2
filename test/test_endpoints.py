@@ -90,18 +90,26 @@ async def test_characters() -> None:
     assert character is not None
 
     backstory = await char_client.backstory().get()
+    build_tabs = await char_client.build_tabs().all_noniter(concurrent=True)
     core = await char_client.core().get()
     crafting = await char_client.crafting().get()
     equipment = await char_client.equipment().get()
-    hero_points = await char_client.hero_points().get()
-    build_tabs = await char_client.build_tabs().all_noniter(concurrent=True)
+    equipment_tabs = await char_client.equipment_tabs().all_noniter(concurrent=True)
+    inventory = await char_client.inventory().get()
+    quests = await char_client.quests().get()
+    recipes = await char_client.recipes().get()
+    sab = await char_client.sab().get()
 
     assert backstory is not None
+    assert build_tabs is not None
     assert core is not None
     assert crafting is not None
     assert equipment is not None
-    assert hero_points is not None
-    assert build_tabs is not None
+    assert equipment_tabs is not None
+    assert inventory is not None
+    assert quests is not None
+    assert recipes is not None
+    assert sab is not None
 
 
 @pytest.mark.asyncio

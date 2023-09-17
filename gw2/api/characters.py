@@ -26,6 +26,11 @@ class Character(_Character, Base[models.Character], _type=models.Character):
         client.auth(self.api_key)
         return client
 
+    def build_tabs(self) -> "BuildTabs":
+        client = BuildTabs(self.character_name)
+        client.auth(self.api_key)
+        return client
+
     def core(self) -> "Core":
         client = Core(self.character_name)
         client.auth(self.api_key)
@@ -41,13 +46,28 @@ class Character(_Character, Base[models.Character], _type=models.Character):
         client.auth(self.api_key)
         return client
 
-    def hero_points(self) -> "HeroPoints":
-        client = HeroPoints(self.character_name)
+    def equipment_tabs(self) -> "EquipmentTabs":
+        client = EquipmentTabs(self.character_name)
         client.auth(self.api_key)
         return client
 
-    def build_tabs(self) -> "BuildTabs":
-        client = BuildTabs(self.character_name)
+    def inventory(self) -> "Inventory":
+        client = Inventory(self.character_name)
+        client.auth(self.api_key)
+        return client
+
+    def quests(self) -> "Quests":
+        client = Quests(self.character_name)
+        client.auth(self.api_key)
+        return client
+
+    def recipes(self) -> "Recipes":
+        client = Recipes(self.character_name)
+        client.auth(self.api_key)
+        return client
+
+    def sab(self) -> "SuperAdventureBox":
+        client = SuperAdventureBox(self.character_name)
         client.auth(self.api_key)
         return client
 
@@ -59,6 +79,17 @@ class Backstory(_Character, Base[characters.Backstory], _type=characters.Backsto
     @functools.cached_property
     def suffix(self) -> str:
         return f"characters/{self.character_name}/backstory"
+
+
+class BuildTabs(
+    _Character,
+    IdsBase[characters.BuildTab, int],
+    _type=characters.BuildTab,
+    _ids_param="tabs",
+):
+    @functools.cached_property
+    def suffix(self) -> str:
+        return f"characters/{self.character_name}/buildtabs"
 
 
 class Core(_Character, Base[characters.Core], _type=characters.Core):
@@ -79,18 +110,38 @@ class Equipment(_Character, Base[characters.Equipment], _type=characters.Equipme
         return f"characters/{self.character_name}/equipment"
 
 
-class HeroPoints(_Character, ListBase[str], _type=str):
-    @functools.cached_property
-    def suffix(self) -> str:
-        return f"characters/{self.character_name}/heropoints"
-
-
-class BuildTabs(
+class EquipmentTabs(
     _Character,
-    IdsBase[characters.BuildTab, int],
-    _type=characters.BuildTab,
+    IdsBase[characters.EquipmentTabs, int],
+    _type=characters.EquipmentTabs,
     _ids_param="tabs",
 ):
     @functools.cached_property
     def suffix(self) -> str:
-        return f"characters/{self.character_name}/buildtabs"
+        return f"characters/{self.character_name}/equipmenttabs"
+
+
+class Inventory(_Character, Base[characters.Inventory], _type=characters.Inventory):
+    @functools.cached_property
+    def suffix(self) -> str:
+        return f"characters/{self.character_name}/inventory"
+
+
+class Quests(_Character, ListBase[int], _type=int):
+    @functools.cached_property
+    def suffix(self) -> str:
+        return f"characters/{self.character_name}/quests"
+
+
+class Recipes(_Character, Base[characters.Recipes], _type=characters.Recipes):
+    @functools.cached_property
+    def suffix(self) -> str:
+        return f"characters/{self.character_name}/recipes"
+
+
+class SuperAdventureBox(
+    _Character, Base[characters.SuperAdventureBox], _type=characters.SuperAdventureBox
+):
+    @functools.cached_property
+    def suffix(self) -> str:
+        return f"characters/{self.character_name}/sab"

@@ -32,7 +32,7 @@ Type = Literal[
     "Trophy",
     "UpgradeComponent",
     "Weapon",
-    "Mwcc",  # todo: change name once updated
+    "Mwcc",  # todo: should read Relic
 ]
 
 

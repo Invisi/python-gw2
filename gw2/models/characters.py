@@ -57,19 +57,27 @@ class WvWAbility(BaseModel):
 class BuildTab(BaseModel):
     class Build(BaseModel):
         class Skills(BaseModel):
-            heal: int | None
-            utilities: list[int | None] = Field(min_length=3, max_length=3)
-            elite: int | None
+            heal: int | None = None
+            utilities: list[int | None] = []
+            elite: int | None = None
 
         class Specialization(BaseModel):
             id: int | None
-            traits: list[int | None] = Field(min_length=3, max_length=3)
+            traits: list[int | None] = []
+
+        class Pets(BaseModel):
+            terrestrial: list[int | None] = []
+            aquatic: list[int | None] = []
 
         name: str
         profession: Profession
         specializations: list[Specialization] = Field(min_length=3, max_length=3)
         skills: Skills
         aquatic_skills: Skills
+        pets: Pets | None = None
+        # XXX: this is currently bugged and should be a revenant legend instead
+        legends: list[str | None] | None = None
+        aquatic_legends: list[str | None] | None = None
 
         # TODO: Actual specialization since that's not in profession (spec ids)
 
@@ -87,6 +95,8 @@ class Stats(BaseModel):
 class EquipmentDetails(BaseModel):
     id: int
     slot: EquipmentSlot | None = None
+
+    count: int | None = None
 
     infusions: list[int] | None = None
     upgrades: list[int] | None = None
@@ -206,3 +216,31 @@ class Crafting(BaseModel):
 
 class Equipment(BaseModel):
     equipment: list[EquipmentDetails]
+
+
+class Inventory(BaseModel):
+    bags: list[Bag]
+
+
+class Recipes(BaseModel):
+    recipes: list[int]
+
+
+class SuperAdventureBox(BaseModel):
+    class Zone(BaseModel):
+        id: int
+        mode: Literal["normal", "infantile", "tribulation"]
+        world: int
+        zone: int
+
+    class Unlock(BaseModel):
+        id: int
+        name: str | None = None
+
+    class Song(BaseModel):
+        id: int
+        name: str
+
+    zones: list[Zone]
+    unlocks: list[Unlock]
+    songs: list[Song]
