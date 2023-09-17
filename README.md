@@ -54,8 +54,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 <summary>Big list of endpoints</summary>
 
 - /v2.json
-- /v2/account (without detail endpoints)
-- /v2/account/achievements
+- /v2/account/*
 - /v2/achievements
 - /v2/achievements/categories
 - /v2/achievements/groups
@@ -118,7 +117,6 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 <details>
 <summary>Another big list of endpoints</summary>
 
-- /v2/account/*
 - /v2/achievements/(daily, tomorrow)
 - /v2/createsubtoken
 - /v2/guild/:id/*

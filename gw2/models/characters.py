@@ -4,7 +4,16 @@ from typing import Literal
 from pydantic import Field
 
 from ._base import BaseModel
-from .common import Discipline, Gender, Profession, Race
+from .common import (
+    Binding,
+    BuildTab,
+    Discipline,
+    Gender,
+    InventorySlot,
+    Profession,
+    Race,
+    Stats,
+)
 
 EquipmentSlot = Literal[
     "Accessory1",
@@ -30,7 +39,6 @@ EquipmentSlot = Literal[
     "WeaponB1",
     "WeaponB2",
 ]
-Binding = Literal["Account", "Character"]
 
 
 Location = Literal[
@@ -52,44 +60,6 @@ class CraftingDetails(BaseModel):
 class WvWAbility(BaseModel):
     id: int
     rank: int
-
-
-class BuildTab(BaseModel):
-    class Build(BaseModel):
-        class Skills(BaseModel):
-            heal: int | None = None
-            utilities: list[int | None] = []
-            elite: int | None = None
-
-        class Specialization(BaseModel):
-            id: int | None
-            traits: list[int | None] = []
-
-        class Pets(BaseModel):
-            terrestrial: list[int | None] = []
-            aquatic: list[int | None] = []
-
-        name: str
-        profession: Profession
-        specializations: list[Specialization] = Field(min_length=3, max_length=3)
-        skills: Skills
-        aquatic_skills: Skills
-        pets: Pets | None = None
-        # XXX: this is currently bugged and should be a revenant legend instead
-        legends: list[str | None] | None = None
-        aquatic_legends: list[str | None] | None = None
-
-        # TODO: Actual specialization since that's not in profession (spec ids)
-
-    tab: int  # Tab number
-    is_active: bool
-    build: Build
-
-
-class Stats(BaseModel):
-    id: int
-    # That's way too annoying to define in a clear way
-    attributes: dict[str, int]
 
 
 class EquipmentDetails(BaseModel):
@@ -128,20 +98,6 @@ class Training(BaseModel):
     id: int
     spent: int
     done: bool
-
-
-class InventorySlot(BaseModel):
-    id: int
-    count: int
-    charges: int | None = None
-    infusions: list[int] | None = None
-    upgrades: list[int] | None = None
-    skin: int | None = None
-    stats: Stats | None = None
-    binding: Binding | None = None
-    bound_to: str | None = None
-    upgrade_slot_indices: list[int] | None = None
-    dyes: list[int] | None = None
 
 
 class Bag(BaseModel):

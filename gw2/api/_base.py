@@ -22,6 +22,8 @@ except PackageNotFoundError:
 BASE_URL = "https://api.guildwars2.com/v2"
 DEFAULT_TIMEOUT = 10
 SCHEMA = "2021-04-06T21:00:00.000Z"
+# todo: schema per endpoint, assume the above as default.
+#       could be implemented as another property
 
 HTTP_SUCCESS = 200
 HTTP_PARTIAL_SUCCESS = 206
@@ -139,7 +141,8 @@ class _Base(Generic[EndpointModel]):
                 return cast(EndpointModel, klass(**data))
 
             # todo: include in refactor with TypeAdapter
-            # used for simple types like str or int
+            # used for simple types like str, int, endpoints with an object result,
+            # or the loop inside ListBase.get()
             return cast(EndpointModel, klass(data))
         except (TypeError, ValueError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
@@ -376,10 +379,15 @@ class ListBase(_Base[EndpointModel]):
                                   response changes in unexpected ways.
         """
 
-        # Do casting here since _get would otherwise try to do the casting
-        # wrongly
-        _ = cast(list[dict[str, Any]], await super()._get(_raw=True))
-        return [self._cast(_data) for _data in _]
+        result = []
+        raw_data = cast(list[dict[str, Any]], await super()._get(_raw=True))
+        for entry in raw_data:
+            if entry is not None:
+                result.append(self._cast(entry))
+            else:
+                result.append(None)
+
+        return result
 
     async def __aenter__(self) -> "ListBase[EndpointModel]":
         return self

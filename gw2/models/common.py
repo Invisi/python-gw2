@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import AnyHttpUrl
+from pydantic import AnyHttpUrl, Field
 
 from ._base import BaseModel
 
@@ -108,6 +108,7 @@ SkillSlot = Literal[
     "Heal",
     "Utility",
     "Elite",
+    "Transform_1",
 ]
 
 
@@ -206,6 +207,72 @@ class Fact(BaseModel):
 class TraitedFact(Fact):
     requires_trait: int
     overrides: int | None = None
+
+
+Binding = Literal["Account", "Character"]
+
+
+class Stats(BaseModel):
+    id: int
+    # That's way too annoying to define in a clear way
+    attributes: dict[str, int]
+
+
+class InventorySlot(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/account/bank
+    https://wiki.guildwars2.com/wiki/API:2/characters/inventory
+    """
+
+    id: int
+    count: int
+
+    binding: Binding | None = None
+    bound_to: str | None = None
+    charges: int | None = None
+    dyes: list[int] | None = None
+    infusions: list[int] | None = None
+    skin: int | None = None
+    stats: Stats | None = None
+    upgrade_slot_indices: list[int] | None = None
+    upgrades: list[int] | None = None
+
+
+class BuildTab(BaseModel):
+    class Build(BaseModel):
+        """
+        https://wiki.guildwars2.com/wiki/API:2/account/buildstorage
+        https://wiki.guildwars2.com/wiki/API:2/characters/buildtabs
+        """
+
+        class Skills(BaseModel):
+            heal: int | None = None
+            utilities: list[int | None] = []
+            elite: int | None = None
+
+        class Specialization(BaseModel):
+            id: int | None
+            traits: list[int | None] = []
+
+        class Pets(BaseModel):
+            terrestrial: list[int | None] = []
+            aquatic: list[int | None] = []
+
+        name: str
+        profession: Profession
+        specializations: list[Specialization] = Field(min_length=3, max_length=3)
+        skills: Skills
+        aquatic_skills: Skills
+        pets: Pets | None = None
+        # XXX: this is currently bugged and should be a revenant legend instead
+        legends: list[str | None] | None = None
+        aquatic_legends: list[str | None] | None = None
+
+        # TODO: Actual specialization since that's not in profession (spec ids)
+
+    tab: int  # Tab number
+    is_active: bool
+    build: Build
 
 
 def coerce_weapon(val: str) -> str | None:

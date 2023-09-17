@@ -13,19 +13,65 @@ EFFICIENCY_API_KEY = (
 )
 
 
+@pytest.fixture(scope="function")
+def account() -> gw2.Account:
+    client = gw2.Account()
+    client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
+    return client
+
+
 @pytest.mark.asyncio
-async def test_account() -> None:
-    async with gw2.Account() as client:
-        client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
-        account = await client.get()
+async def test_account(account: gw2.Account) -> None:
+    data = await account.get()
 
-    assert account is not None
+    assert data is not None
 
-    async with gw2.Account().achievements() as client:
-        client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
-        account_achievements = await client.get()
 
-    assert account_achievements is not None
+@pytest.mark.parametrize(
+    "fn",
+    [
+        "achievements",
+        "bank",
+        "build_storage",
+        "daily_crafting",
+        "dungeons",
+        "dyes",
+        "finishers",
+        "gliders",
+        "home_cats",
+        "home_nodes",
+        "legendary_armory",
+        "luck",
+        "mail_carriers",
+        "map_chests",
+        "masteries",
+        "mastery_points",
+        "materials",
+        "minis",
+        "mount_skins",
+        "mount_types",
+        "novelties",
+        "outfits",
+        "progression",
+        "pvp_heroes",
+        "raids",
+        "recipes",
+        "shared_inventory",
+        "skins",
+        "titles",
+        "wallet",
+        "world_bosses",
+    ],
+)
+@pytest.mark.asyncio
+async def test_account_endpoint(account: gw2.Account, fn: str) -> None:
+    async with getattr(account, fn)() as sub_client:
+        if hasattr(sub_client, "all_noniter"):
+            assert await sub_client.all_noniter(concurrent=True) is not None
+        if hasattr(sub_client, "get"):
+            assert await sub_client.get() is not None
+        if hasattr(sub_client, "ids"):
+            assert await sub_client.ids() is not None
 
 
 @pytest.mark.asyncio
