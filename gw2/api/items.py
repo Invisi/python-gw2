@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Items(IdsBase[models.Item, int], _type=models.Item):
+class Items(IdsBase[models.Item, int]):
     pass
 
 
-class Item(Base[models.Item], _type=models.Item):
+class Item(Base[models.Item]):
     def __init__(self, item_id: int):
         self.item_id = item_id
         super().__init__()

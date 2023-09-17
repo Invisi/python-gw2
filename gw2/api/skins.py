@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Skins(IdsBase[models.Skin, int], _type=models.Skin):
+class Skins(IdsBase[models.Skin, int]):
     pass
 
 
-class Skin(Base[models.Skin], _type=models.Skin):
+class Skin(Base[models.Skin]):
     def __init__(self, skin_id: int):
         self.skin_id = skin_id
         super().__init__()

@@ -6,7 +6,7 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Recipes(IdsBase[models.Recipe, int], _type=models.Recipe):
+class Recipes(IdsBase[models.Recipe, int]):
     @staticmethod
     @overload
     def search(*, input_id: int) -> "RecipeSearch":
@@ -27,7 +27,7 @@ class Recipes(IdsBase[models.Recipe, int], _type=models.Recipe):
             return RecipeSearch(output_id=cast(int, output_id))
 
 
-class Recipe(Base[models.Recipe], _type=models.Recipe):
+class Recipe(Base[models.Recipe]):
     def __init__(self, recipe_id: int):
         self.recipe_id = recipe_id
         super().__init__()
@@ -37,7 +37,7 @@ class Recipe(Base[models.Recipe], _type=models.Recipe):
         return f"recipes/{self.recipe_id}"
 
 
-class RecipeSearch(IdsBase[models.Recipe, int], _type=models.Recipe):
+class RecipeSearch(IdsBase[models.Recipe, int]):
     suffix = "recipes/search"
 
     @overload

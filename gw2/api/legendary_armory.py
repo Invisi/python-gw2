@@ -6,12 +6,12 @@ from ._base import Base, IdsBase
 
 
 class LegendaryArmory(
-    IdsBase[models.LegendaryArmory, int], _type=models.LegendaryArmory
+    IdsBase[models.LegendaryArmory, int],
 ):
     pass
 
 
-class LegendaryArmoryItem(Base[models.LegendaryArmory], _type=models.LegendaryArmory):
+class LegendaryArmoryItem(Base[models.LegendaryArmory]):
     def __init__(self, item_id: int):
         self.item_id = item_id
         super().__init__()

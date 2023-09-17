@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, StringsBase
 
 
-class WorldBosses(StringsBase[models.WorldBoss], _type=models.WorldBoss):
+class WorldBosses(StringsBase[models.WorldBoss]):
     pass
 
 
-class WorldBoss(Base[models.WorldBoss], _type=models.WorldBoss):
+class WorldBoss(Base[models.WorldBoss]):
     def __init__(self, boss_id: str):
         self.boss_id = boss_id
         super().__init__()

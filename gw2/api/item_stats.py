@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class ItemStats(IdsBase[models.ItemStat, str], _type=models.ItemStat):
+class ItemStats(IdsBase[models.ItemStat, str]):
     pass
 
 
-class ItemStat(Base[models.ItemStat], _type=models.ItemStat):
+class ItemStat(Base[models.ItemStat]):
     def __init__(self, stat_id: int):
         self.stat_id = stat_id
         super().__init__()

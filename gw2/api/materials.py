@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Materials(IdsBase[models.Material, int], _type=models.Material):
+class Materials(IdsBase[models.Material, int]):
     pass
 
 
-class Material(Base[models.Material], _type=models.Material):
+class Material(Base[models.Material]):
     def __init__(self, material_id: int):
         self.material_id = material_id
         super().__init__()

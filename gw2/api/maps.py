@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Maps(IdsBase[models.Map, int], _type=models.Map):
+class Maps(IdsBase[models.Map, int]):
     pass
 
 
-class Map(Base[models.Map], _type=models.Map):
+class Map(Base[models.Map]):
     def __init__(self, map_id: int):
         self.map_id = map_id
         super().__init__()

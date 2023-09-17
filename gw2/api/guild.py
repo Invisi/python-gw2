@@ -1,22 +1,29 @@
 import functools
-from typing import cast
 
-from gw2 import errors, models
+import pydantic
 
+from gw2 import errors
+
+from ..models import guild
 from ._base import Base, IdsBase, StringsBase
 
 
-class Guild(Base[models.Guild], _type=models.Guild):
+class _Guild:
     def __init__(self, guild_id: str):
         self.guild_id = guild_id
         super().__init__()
 
+
+class Guild(
+    _Guild,
+    Base[guild.Guild | guild.AuthenticatedGuild],
+):
     @functools.cached_property
     def suffix(self) -> str:
         return f"guild/{self.guild_id}"
 
 
-class GuildSearch(Base[models.Guild], _type=models.Guild):
+class GuildSearch(Base[guild.Guild]):
     suffix = "guild/search"
 
     def __init__(self, name: str):
@@ -28,9 +35,10 @@ class GuildSearch(Base[models.Guild], _type=models.Guild):
         return {"name": self.name}
 
     async def ids(self) -> list[str]:
-        return cast(list[str], await super()._get(_raw=True))
+        raw_data = await super()._get(_raw=True)
+        return pydantic.TypeAdapter(list[str]).validate_json(raw_data)
 
-    async def get(self) -> models.Guild:
+    async def get(self) -> guild.Guild:
         guids = await self.ids()
         if len(guids) == 0:
             raise errors.GuildNotFoundError()
@@ -38,13 +46,11 @@ class GuildSearch(Base[models.Guild], _type=models.Guild):
         return await Guild(guids[0]).get()
 
 
-class GuildPermissions(
-    StringsBase[models.GuildPermission], _type=models.GuildPermission
-):
+class GuildPermissions(StringsBase[guild.GuildPermission]):
     suffix = "guild/permissions"
 
 
-class GuildPermission(Base[models.GuildPermission], _type=models.GuildPermission):
+class GuildPermission(Base[guild.GuildPermission]):
     def __init__(self, permission_id: str):
         self.permission_id = permission_id
         super().__init__()
@@ -54,11 +60,11 @@ class GuildPermission(Base[models.GuildPermission], _type=models.GuildPermission
         return f"guild/permissions/{self.permission_id}"
 
 
-class GuildUpgrades(IdsBase[models.GuildUpgrade, int], _type=models.GuildUpgrade):
+class GuildUpgrades(IdsBase[guild.GuildUpgrade, int]):
     suffix = "guild/upgrades"
 
 
-class GuildUpgrade(Base[models.GuildUpgrade], _type=models.GuildUpgrade):
+class GuildUpgrade(Base[guild.GuildUpgrade]):
     def __init__(self, upgrade_id: int):
         self.upgrade_id = upgrade_id
         super().__init__()

@@ -30,14 +30,17 @@ class Guild(BaseModel):
         None  # XXX: This should be required but is missing sometimes
     )
 
+
+class AuthenticatedGuild(Guild):
     # Optional info with leader/member token
-    level: int | None = None
-    motd: str | None = None
-    influence: int | None = None
-    aetherium: str | None = None
-    favor: int | None = None
-    member_count: int | None = None
-    member_capacity: int | None = None
+    level: int
+    motd: str
+    influence: int
+    aetherium: int
+    resonance: int
+    favor: int
+    member_count: int
+    member_capacity: int
 
 
 class GuildPermission(BaseModel):

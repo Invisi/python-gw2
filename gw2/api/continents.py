@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Continents(IdsBase[models.Continent, int], _type=models.Continent):
+class Continents(IdsBase[models.Continent, int]):
     pass
 
 
-class Continent(Base[models.Continent], _type=models.Continent):
+class Continent(Base[models.Continent]):
     def __init__(self, continent_id: int):
         self.continent_id = continent_id
         super().__init__()
@@ -25,7 +25,7 @@ class Continent(Base[models.Continent], _type=models.Continent):
         return Floor(self.continent_id, floor_id)
 
 
-class Floors(IdsBase[models.Floor, int], _type=models.Floor):
+class Floors(IdsBase[models.Floor, int]):
     def __init__(self, continent_id: int):
         self.continent_id = continent_id
         super().__init__()
@@ -35,7 +35,7 @@ class Floors(IdsBase[models.Floor, int], _type=models.Floor):
         return f"continents/{self.continent_id}/floors"
 
 
-class Floor(Base[models.Floor], _type=models.Floor):
+class Floor(Base[models.Floor]):
     def __init__(self, continent_id: int, floor_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -52,7 +52,7 @@ class Floor(Base[models.Floor], _type=models.Floor):
         return Region(self.continent_id, self.floor_id, region_id)
 
 
-class Regions(IdsBase[models.Region, int], _type=models.Region):
+class Regions(IdsBase[models.Region, int]):
     def __init__(self, continent_id: int, floor_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -63,7 +63,7 @@ class Regions(IdsBase[models.Region, int], _type=models.Region):
         return f"continents/{self.continent_id}/floors/{self.floor_id}/regions"
 
 
-class Region(Base[models.Region], _type=models.Region):
+class Region(Base[models.Region]):
     def __init__(self, continent_id: int, floor_id: int, region_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -84,7 +84,7 @@ class Region(Base[models.Region], _type=models.Region):
         return ContinentMap(self.continent_id, self.floor_id, self.region_id, map_id)
 
 
-class ContinentMaps(IdsBase[models.ContinentMap, int], _type=models.ContinentMap):
+class ContinentMaps(IdsBase[models.ContinentMap, int]):
     def __init__(self, continent_id: int, floor_id: int, region_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -99,7 +99,7 @@ class ContinentMaps(IdsBase[models.ContinentMap, int], _type=models.ContinentMap
         )
 
 
-class ContinentMap(Base[models.ContinentMap], _type=models.ContinentMap):
+class ContinentMap(Base[models.ContinentMap]):
     def __init__(self, continent_id: int, floor_id: int, region_id: int, map_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -141,7 +141,7 @@ class ContinentMap(Base[models.ContinentMap], _type=models.ContinentMap):
         )
 
 
-class Sectors(IdsBase[models.Sector, int], _type=models.Sector):
+class Sectors(IdsBase[models.Sector, int]):
     def __init__(self, continent_id: int, floor_id: int, region_id: int, map_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -157,7 +157,7 @@ class Sectors(IdsBase[models.Sector, int], _type=models.Sector):
         )
 
 
-class Sector(Base[models.Sector], _type=models.Sector):
+class Sector(Base[models.Sector]):
     def __init__(  # noqa: PLR0913
         self,
         continent_id: int,
@@ -182,7 +182,7 @@ class Sector(Base[models.Sector], _type=models.Sector):
 
 
 class PointsOfInterest(
-    IdsBase[models.PointOfInterest, int], _type=models.PointOfInterest
+    IdsBase[models.PointOfInterest, int],
 ):
     def __init__(self, continent_id: int, floor_id: int, region_id: int, map_id: int):
         self.continent_id = continent_id
@@ -199,7 +199,7 @@ class PointsOfInterest(
         )
 
 
-class PointOfInterest(Base[models.PointOfInterest], _type=models.PointOfInterest):
+class PointOfInterest(Base[models.PointOfInterest]):
     def __init__(  # noqa: PLR0913
         self, continent_id: int, floor_id: int, region_id: int, map_id: int, poi_id: int
     ):
@@ -218,7 +218,7 @@ class PointOfInterest(Base[models.PointOfInterest], _type=models.PointOfInterest
         )
 
 
-class Tasks(IdsBase[models.Task, int], _type=models.Task):
+class Tasks(IdsBase[models.Task, int]):
     def __init__(self, continent_id: int, floor_id: int, region_id: int, map_id: int):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -234,7 +234,7 @@ class Tasks(IdsBase[models.Task, int], _type=models.Task):
         )
 
 
-class Task(Base[models.Task], _type=models.Task):
+class Task(Base[models.Task]):
     def __init__(  # noqa: PLR0913
         self,
         continent_id: int,

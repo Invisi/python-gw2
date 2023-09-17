@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Worlds(IdsBase[models.World, int], _type=models.World):
+class Worlds(IdsBase[models.World, int]):
     pass
 
 
-class World(Base[models.World], _type=models.World):
+class World(Base[models.World]):
     def __init__(self, world_id: int):
         self.world_id = world_id
         super().__init__()

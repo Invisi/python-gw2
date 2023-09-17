@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Quests(IdsBase[models.Quest, int], _type=models.Quest):
+class Quests(IdsBase[models.Quest, int]):
     pass
 
 
-class Quest(Base[models.Quest], _type=models.Quest):
+class Quest(Base[models.Quest]):
     def __init__(self, quest_id: int):
         self.quest_id = quest_id
         super().__init__()

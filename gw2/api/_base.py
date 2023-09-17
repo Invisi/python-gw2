@@ -4,9 +4,20 @@ import logging
 from asyncio import Future, Task
 from collections.abc import AsyncIterator
 from importlib.metadata import PackageNotFoundError, version
-from typing import Any, Generic, Literal, TypeVar, cast, overload
+from types import GenericAlias
+from typing import (
+    Any,
+    Generic,
+    Literal,
+    Self,
+    TypeVar,
+    _GenericAlias,
+    cast,
+    overload,
+)
 
 import httpx
+import pydantic
 from asyncio_throttle import Throttler
 from pydantic import ValidationError
 
@@ -67,7 +78,6 @@ def _create_session(timeout: float) -> httpx.AsyncClient:
 class _Base(Generic[EndpointModel]):
     # Cache expiry, may be set on the endpoint itself
     expiry: int | None = 5 * 60
-    _types: dict[str, Any] = {}
     _ids_params: dict[str, str] = {}
 
     # Optional global default API key
@@ -82,6 +92,9 @@ class _Base(Generic[EndpointModel]):
         if hasattr(type(self), "_api_key"):
             self.auth(type(self)._api_key)
 
+    async def __aenter__(self) -> Self:
+        return self
+
     async def __aexit__(
         self,
         exc_type: type[BaseException] | None = None,
@@ -94,19 +107,6 @@ class _Base(Generic[EndpointModel]):
 
         await self._session.aclose()
 
-    def __init_subclass__(cls, _type: Any | None = None):
-        """
-        Registers model class for later use in get()
-
-        Args:
-            _type: The model (data)class
-        """
-
-        super().__init_subclass__()
-
-        if _type is not None:
-            cls._types[f"{cls.__module__}.{cls.__name__}"] = _type
-
     @functools.cached_property
     def suffix(self) -> str:
         """
@@ -117,33 +117,45 @@ class _Base(Generic[EndpointModel]):
 
     @functools.cached_property
     def url(self) -> str:
-        """
-        Generates endpoint URL
-        """
+        """Generates endpoint URL"""
 
         return f"{BASE_URL}/{self.suffix}"
 
-    def _cast(self, data: dict[str, Any] | list) -> EndpointModel:
+    @functools.cached_property
+    def _klass(self) -> EndpointModel:
+        """
+        Returns the actual endpoint model instance for later use, can be a
+        `str`, `int`, list[BaseModel], or anything similar
+        """
+        try:
+            generic_alias = next(
+                filter(
+                    lambda x: isinstance(x, _GenericAlias | GenericAlias),
+                    self.__orig_bases__,
+                )
+            )
+        except StopIteration as e:
+            raise NotImplementedError from e
+
+        if issubclass(self.__class__, IdsBase | ListBase | StringsBase):
+            return cast(EndpointModel, list[generic_alias.__args__[0]])
+        elif issubclass(self.__class__, Base):
+            return cast(EndpointModel, generic_alias.__args__[0])
+        else:
+            raise NotImplementedError
+
+    def _cast(self, data: dict[str, Any] | list | str) -> EndpointModel:
         """
         Casts data into model
 
         *May be overridden inside the model itself*
         """
 
-        type_key = f"{self.__module__}.{self.__class__.__name__}"
-        assert type_key in self._types, "Endpoint is missing type definition."
-
-        klass = self._types[type_key]
         try:
-            if isinstance(data, list):
-                return cast(EndpointModel, klass(*data))
-            elif isinstance(data, dict):
-                return cast(EndpointModel, klass(**data))
+            if isinstance(data, str):
+                return pydantic.TypeAdapter(self._klass).validate_json(data)
 
-            # todo: include in refactor with TypeAdapter
-            # used for simple types like str, int, endpoints with an object result,
-            # or the loop inside ListBase.get()
-            return cast(EndpointModel, klass(data))
+            return pydantic.TypeAdapter(self._klass).validate_python(data)
         except (TypeError, ValueError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
             raise NotImplementedError() from e
@@ -156,7 +168,7 @@ class _Base(Generic[EndpointModel]):
         _id: IdsParameter,
         ids: None = None,
         _raw: Literal[True],
-    ) -> Any:
+    ) -> str:
         ...
 
     @overload
@@ -176,7 +188,7 @@ class _Base(Generic[EndpointModel]):
         _id: None = None,
         ids: list[IdsVariant] | Literal["all"],
         _raw: Literal[True],
-    ) -> list[Any]:
+    ) -> str:
         ...
 
     @overload
@@ -196,7 +208,7 @@ class _Base(Generic[EndpointModel]):
         _id: None = None,
         ids: None = None,
         _raw: Literal[True],
-    ) -> Any:
+    ) -> str:
         ...
 
     @overload
@@ -209,7 +221,7 @@ class _Base(Generic[EndpointModel]):
         _id: IdsParameter = None,
         ids: list[IdsVariant] | Literal["all"] | None = None,
         _raw: bool = False,
-    ) -> Any | EndpointModel | list[Any] | list[EndpointModel]:
+    ) -> str | EndpointModel | list[EndpointModel]:
         """
         Get model or raw value from endpoint
 
@@ -234,9 +246,8 @@ class _Base(Generic[EndpointModel]):
 
         # TODO: Check if authentication is required
         # TODO: Caching
-        # TODO: https://pypi.org/project/asyncio-throttle/
 
-        params: dict[str, IdsParameter | list[IdsVariant]] = self._params
+        params: dict[str, IdsParameter | list[IdsVariant]] = self._params.copy()
 
         if _id is not None:
             params["id"] = _id
@@ -277,15 +288,9 @@ class _Base(Generic[EndpointModel]):
         # 206 might be returned if only part of the ids were valid, for example
         if response.status_code in {HTTP_SUCCESS, HTTP_PARTIAL_SUCCESS}:
             if _raw:
-                return response.json()
+                return response.text
 
-            # todo: replace with sane parsing, we know the kind of our class after all
-            # pydantic.TypeAdapter(list[thing]).validate_json(response.text)
-            # Thing.validate_json(response.text)
-            if ids is None:
-                return self._cast(response.json())
-            else:
-                return [self._cast(_data) for _data in response.json()]
+            return self._cast(response.text)
 
         LOG.debug(
             "Unhandled HTTP response: status=%s content=%s",
@@ -353,9 +358,6 @@ class Base(_Base[EndpointModel]):
     async def get(self) -> EndpointModel:
         return await self._get()
 
-    async def __aenter__(self) -> "Base[EndpointModel]":
-        return self
-
 
 class ListBase(_Base[EndpointModel]):
     """
@@ -379,18 +381,8 @@ class ListBase(_Base[EndpointModel]):
                                   response changes in unexpected ways.
         """
 
-        result = []
-        raw_data = cast(list[dict[str, Any]], await super()._get(_raw=True))
-        for entry in raw_data:
-            if entry is not None:
-                result.append(self._cast(entry))
-            else:
-                result.append(None)
-
-        return result
-
-    async def __aenter__(self) -> "ListBase[EndpointModel]":
-        return self
+        raw_data = await super()._get(_raw=True)
+        return pydantic.TypeAdapter(list[EndpointModel]).validate_json(raw_data)
 
 
 class StringsBase(_Base[EndpointModel]):
@@ -415,10 +407,8 @@ class StringsBase(_Base[EndpointModel]):
                                   response changes in unexpected ways.
         """
 
-        return cast(list[str], await super()._get(_raw=True))
-
-    async def __aenter__(self) -> "StringsBase[EndpointModel]":
-        return self
+        raw_data = await super()._get(_raw=True)
+        return pydantic.TypeAdapter(list[str]).validate_json(raw_data)
 
 
 class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
@@ -432,7 +422,8 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
         Returns a list of IDs for this endpoint
         """
 
-        return cast(list[EndpointId], await super()._get(_raw=True))
+        data = await super()._get(_raw=True)
+        return pydantic.TypeAdapter(list[EndpointId]).validate_json(data)
 
     async def one(self, _id: EndpointId) -> EndpointModel:
         """
@@ -556,20 +547,16 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
 
     # TODO: Maybe add a .count property that pre-caches ids?
 
-    async def __aenter__(self) -> "IdsBase[EndpointModel, EndpointId]":
-        return self
-
-    def __init_subclass__(cls, _ids_param: str | None = None, _type: Any | None = None):
+    def __init_subclass__(cls, _ids_param: str | None = None):
         """
         - Registers ids parameter for later use, defaults to "ids"
         - Registers model class for later use in get()
 
         Args:
             _ids_param: The query parameter for `ids`
-            _type: The model (data)class
         """
 
-        super().__init_subclass__(_type=_type)
+        super().__init_subclass__()
 
         if _ids_param is not None:
             cls._ids_params[f"{cls.__module__}.{cls.__name__}"] = _ids_param

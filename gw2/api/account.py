@@ -1,15 +1,10 @@
-from typing import TYPE_CHECKING
-
 from gw2 import models
 from gw2.models import account, common
 
 from ._base import Base, IdsBase, ListBase
 
-if TYPE_CHECKING:
-    from gw2.api import home
 
-
-class Account(Base[models.Account], _type=models.Account):
+class Account(Base[models.Account]):
     def achievements(self) -> "Achievements":
         client = Achievements()
         client.auth(self.api_key)
@@ -50,16 +45,12 @@ class Account(Base[models.Account], _type=models.Account):
         client.auth(self.api_key)
         return client
 
-    def home_cats(self) -> "home.HomeCats":
-        from gw2.api.home import HomeCats
-
+    def home_cats(self) -> "HomeCats":
         client = HomeCats()
         client.auth(self.api_key)
         return client
 
-    def home_nodes(self) -> "home.HomeNodes":
-        from gw2.api.home import HomeNodes
-
+    def home_nodes(self) -> "HomeNodes":
         client = HomeNodes()
         client.auth(self.api_key)
         return client
@@ -170,122 +161,127 @@ class Account(Base[models.Account], _type=models.Account):
         return client
 
 
-class Achievements(
-    ListBase[account.Achievement],
-    _type=account.Achievement,
-):
+class Achievements(ListBase[account.Achievement]):
     suffix = "account/achievements"
 
 
-class Bank(ListBase[common.InventorySlot | None], _type=common.InventorySlot):
+class Bank(ListBase[common.InventorySlot | None]):
     suffix = "account/bank"
 
 
-class BuildStorage(IdsBase[common.BuildTab.Build, int], _type=common.BuildTab.Build):
+class BuildStorage(IdsBase[common.BuildTab.Build, int]):
     suffix = "account/buildstorage"
 
 
-class DailyCrafting(ListBase[str], _type=str):
+class DailyCrafting(ListBase[str]):
     suffix = "account/dailycrafting"
 
 
-class Dungeons(ListBase[str], _type=str):
+class Dungeons(ListBase[str]):
     suffix = "account/dungeons"
 
 
-class Dyes(ListBase[int], _type=int):
+class Dyes(ListBase[int]):
     suffix = "account/dyes"
 
 
-class Finishers(ListBase[account.Finisher], _type=account.Finisher):
+class Finishers(ListBase[account.Finisher]):
     suffix = "account/finishers"
 
 
-class Gliders(ListBase[int], _type=int):
+class Gliders(ListBase[int]):
     suffix = "account/gliders"
 
 
-class LegendaryArmory(ListBase[account.LegendaryArmory], _type=account.LegendaryArmory):
+class HomeCats(ListBase[int]):
+    suffix = "account/home/cats"
+
+
+class HomeNodes(ListBase[str]):
+    suffix = "account/home/nodes"
+
+
+class LegendaryArmory(ListBase[account.LegendaryArmory]):
     suffix = "account/legendaryarmory"
 
 
-class Luck(ListBase[account.Luck], _type=account.Luck):
+class Luck(ListBase[account.Luck]):
     suffix = "account/luck"
 
 
-class MailCarriers(ListBase[int], _type=int):
+class MailCarriers(ListBase[int]):
     suffix = "account/mailcarriers"
 
 
-class MapChests(ListBase[str], _type=str):
+class MapChests(ListBase[str]):
     suffix = "account/mapchests"
 
 
-class Masteries(ListBase[account.Mastery], _type=account.Mastery):
+class Masteries(ListBase[account.Mastery]):
     suffix = "account/masteries"
 
 
-class MasteryPoints(Base[account.MasteryPoints], _type=account.MasteryPoints):
+class MasteryPoints(Base[account.MasteryPoints]):
     suffix = "account/mastery/points"
 
 
-class Materials(ListBase[account.Material], _type=account.Material):
+class Materials(ListBase[account.Material]):
     suffix = "account/materials"
 
 
-class Minis(ListBase[int], _type=int):
+class Minis(ListBase[int]):
     suffix = "account/minis"
 
 
-class MountTypes(ListBase[str], _type=str):
+class MountTypes(ListBase[str]):
     suffix = "account/mounts/types"
 
 
-class MountSkins(ListBase[int], _type=int):
+class MountSkins(ListBase[int]):
     suffix = "account/mounts/skins"
 
 
-class Novelties(ListBase[int], _type=int):
+class Novelties(ListBase[int]):
     suffix = "account/novelties"
 
 
-class Outfits(ListBase[int], _type=int):
+class Outfits(ListBase[int]):
     suffix = "account/outfits"
 
 
-class Progression(ListBase[account.Progression], _type=account.Progression):
+class Progression(ListBase[account.Progression]):
     suffix = "account/progression"
 
 
-class PvPHeroes(ListBase[int], _type=int):
+class PvPHeroes(ListBase[int]):
     suffix = "account/pvp/heroes"
 
 
-class Raids(ListBase[str], _type=str):
+class Raids(ListBase[str]):
     suffix = "account/raids"
 
 
-class Recipes(ListBase[int], _type=int):
+class Recipes(ListBase[int]):
     suffix = "account/recipes"
 
 
 class SharedInventory(
-    ListBase[account.SharedInventorySlot], _type=account.SharedInventorySlot
+    ListBase[account.SharedInventorySlot],
 ):
     suffix = "account/inventory"
 
 
-class Skins(ListBase[int], _type=int):
+class Skins(ListBase[int]):
     suffix = "account/skins"
 
 
-class Titles(ListBase[int], _type=int):
+class Titles(ListBase[int]):
     suffix = "account/titles"
 
 
-class Wallet(ListBase[account.WalletEntry], _type=account.WalletEntry):
+class Wallet(ListBase[account.WalletEntry]):
     suffix = "account/wallet"
 
 
-class WorldBosses(ListBase[str], _type=str):
+class WorldBosses(ListBase[str]):
     suffix = "account/worldbosses"

@@ -23,6 +23,8 @@ class TokenInfo(BaseModel):
     ]
     type: Literal["APIKey", "Subtoken"]
 
+
+class SubTokenInfo(BaseModel):
     # Following fields only exist on subtokens
     expires_at: datetime.datetime | None
     issued_at: datetime.datetime | None

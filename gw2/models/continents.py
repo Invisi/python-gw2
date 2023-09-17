@@ -23,51 +23,6 @@ class Continent(BaseModel):
     floors: list[int]
 
 
-class Floor(BaseModel):
-    """
-    https://wiki.guildwars2.com/wiki/API:2/continents
-    """
-
-    id: int
-    texture_dims: tuple[int, int]
-    clamped_view: list[tuple[int, int]] | None = None
-    regions: dict[int, "Region"]
-
-
-class Region(BaseModel):
-    """
-    https://wiki.guildwars2.com/wiki/API:2/continents
-    """
-
-    id: int
-    name: str
-    label_coord: Coordinates
-    continent_rect: Rectangle
-    maps: dict[int, "ContinentMap"]
-
-
-class ContinentMap(BaseModel):
-    """
-    https://wiki.guildwars2.com/wiki/API:2/continents
-    """
-
-    id: int
-    name: str
-    min_level: int
-    max_level: int
-    default_floor: int
-    label_coord: Coordinates | None = None
-    map_rect: Rectangle
-    continent_rect: Rectangle
-    points_of_interest: dict[int, "PointOfInterest"]
-    tasks: dict[int, "Task"]
-    skill_challenges: list["SkillChallenge"]
-    sectors: dict[int, "Sector"]
-    adventures: list["Adventure"]
-    mastery_points: list["MasteryPoint"]
-    god_shrines: list["GodShrine"] | None = None
-
-
 class PointOfInterest(BaseModel):
     id: int
     name: str | None = None  # missing on e.g. vistas
@@ -122,3 +77,48 @@ class GodShrine(BaseModel):
     poi_id: int
     icon: AnyHttpUrl
     icon_contested: AnyHttpUrl
+
+
+class ContinentMap(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/continents
+    """
+
+    id: int
+    name: str
+    min_level: int
+    max_level: int
+    default_floor: int
+    label_coord: Coordinates | None = None
+    map_rect: Rectangle
+    continent_rect: Rectangle
+    points_of_interest: dict[int, PointOfInterest]
+    tasks: dict[int, Task]
+    skill_challenges: list[SkillChallenge]
+    sectors: dict[int, Sector]
+    adventures: list[Adventure]
+    mastery_points: list[MasteryPoint]
+    god_shrines: list[GodShrine] | None = None
+
+
+class Region(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/continents
+    """
+
+    id: int
+    name: str
+    label_coord: Coordinates
+    continent_rect: Rectangle
+    maps: dict[int, ContinentMap]
+
+
+class Floor(BaseModel):
+    """
+    https://wiki.guildwars2.com/wiki/API:2/continents
+    """
+
+    id: int
+    texture_dims: tuple[int, int]
+    clamped_view: list[tuple[int, int]] | None = None
+    regions: dict[int, Region]

@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase, StringsBase
 
 
-class HomeCats(IdsBase[models.HomeCat, int], _type=models.HomeCat):
+class HomeCats(IdsBase[models.HomeCat, int]):
     suffix = "home/cats"
 
 
-class HomeCat(Base[models.HomeCat], _type=models.HomeCat):
+class HomeCat(Base[models.HomeCat]):
     def __init__(self, cat_id: int):
         self.cat_id = cat_id
         super().__init__()
@@ -19,11 +19,11 @@ class HomeCat(Base[models.HomeCat], _type=models.HomeCat):
         return f"home/cats/{self.cat_id}"
 
 
-class HomeNodes(StringsBase[models.HomeNode], _type=models.HomeNode):
+class HomeNodes(StringsBase[models.HomeNode]):
     suffix = "home/nodes"
 
 
-class HomeNode(Base[models.HomeNode], _type=models.HomeNode):
+class HomeNode(Base[models.HomeNode]):
     def __init__(self, node_id: str):
         self.node_id = node_id
         super().__init__()

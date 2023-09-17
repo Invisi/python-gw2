@@ -6,17 +6,26 @@ import os
 import pytest
 
 import gw2
-from gw2 import errors
+from gw2 import errors, models
 
-EFFICIENCY_API_KEY = (
-    "564F181A-F0FC-114A-A55D-3C1DCD45F3767AF3848F-AB29-4EBF-9594-F91E6A75E015"
+API_KEY = os.environ.get(
+    "API_KEY",
+    "564F181A-F0FC-114A-A55D-3C1DCD45F3767AF3848F-AB29-4EBF-9594-F91E6A75E015",
 )
+GUILD_ID = os.environ.get("GUILD_ID", "14762DCE-C2A4-E711-80D5-441EA14F1E44")
 
 
 @pytest.fixture(scope="function")
 def account() -> gw2.Account:
     client = gw2.Account()
-    client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
+    client.auth(API_KEY)
+    return client
+
+
+@pytest.fixture
+def guild() -> gw2.Guild:
+    client = gw2.Guild(GUILD_ID)
+    client.auth(API_KEY)
     return client
 
 
@@ -126,11 +135,11 @@ async def test_build() -> None:
 @pytest.mark.asyncio
 async def test_characters() -> None:
     characters_client = gw2.Characters()
-    characters_client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
+    characters_client.auth(API_KEY)
     characters = await characters_client.all_noniter(concurrent=True)
 
     char_client = gw2.Character(characters[0].name)
-    char_client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
+    char_client.auth(API_KEY)
     character = await char_client.get()
 
     assert character is not None
@@ -333,11 +342,12 @@ async def test_gliders() -> None:
 
 
 @pytest.mark.asyncio
-async def test_guild() -> None:
-    guild_id = "14762DCE-C2A4-E711-80D5-441EA14F1E44"
-    one = await gw2.Guild(guild_id).get()
+async def test_guild(guild: gw2.Guild) -> None:
+    auth_guild = await guild.get()
+    normal_guild = await gw2.Guild("4BBB52AA-D768-4FC6-8EDE-C299F2822F0F").get()
 
-    assert one is not None
+    assert isinstance(auth_guild, models.AuthenticatedGuild)
+    assert isinstance(normal_guild, models.Guild)
 
 
 @pytest.mark.asyncio
@@ -614,8 +624,8 @@ async def test_titles() -> None:
 @pytest.mark.asyncio
 async def test_tokeninfo() -> None:
     async with gw2.TokenInfo() as client:
-        client.auth(os.environ.get("API_KEY", EFFICIENCY_API_KEY))
-        one = client.get()
+        client.auth(API_KEY)
+        one = await client.get()
 
     assert one is not None
 

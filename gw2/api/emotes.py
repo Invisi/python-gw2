@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Emotes(IdsBase[models.Emote, int], _type=models.Emote):
+class Emotes(IdsBase[models.Emote, int]):
     pass
 
 
-class Emote(Base[models.Emote], _type=models.Emote):
+class Emote(Base[models.Emote]):
     def __init__(self, emote_id: str):
         self.emote_id = emote_id
         super().__init__()

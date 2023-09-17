@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Titles(IdsBase[models.Title, int], _type=models.Title):
+class Titles(IdsBase[models.Title, int]):
     pass
 
 
-class Title(Base[models.Title], _type=models.Title):
+class Title(Base[models.Title]):
     def __init__(self, title_id: int):
         self.title_id = title_id
         super().__init__()

@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, StringsBase
 
 
-class Races(StringsBase[models.Race], _type=models.Race):
+class Races(StringsBase[models.Race]):
     pass
 
 
-class Race(Base[models.Race], _type=models.Race):
+class Race(Base[models.Race]):
     def __init__(self, race_id: str):
         self.race_id = race_id
         super().__init__()

@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, StringsBase
 
 
-class Dungeons(StringsBase[models.Dungeon], _type=models.Dungeon):
+class Dungeons(StringsBase[models.Dungeon]):
     pass
 
 
-class Dungeon(Base[models.Dungeon], _type=models.Dungeon):
+class Dungeon(Base[models.Dungeon]):
     def __init__(self, dungeon_id: str):
         self.dungeon_id = dungeon_id
         super().__init__()

@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Finishers(IdsBase[models.Finisher, int], _type=models.Finisher):
+class Finishers(IdsBase[models.Finisher, int]):
     pass
 
 
-class Finisher(Base[models.Finisher], _type=models.Finisher):
+class Finisher(Base[models.Finisher]):
     def __init__(self, finisher_id: int):
         self.finisher_id = finisher_id
         super().__init__()

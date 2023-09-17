@@ -5,7 +5,7 @@ from gw2 import models
 from ._base import Base
 
 
-class Build(Base[models.Build], _type=models.Build):
+class Build(Base[models.Build]):
     pass
 
 

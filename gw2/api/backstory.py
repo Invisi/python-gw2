@@ -5,13 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class BackstoryQuestions(
-    IdsBase[models.BackstoryQuestion, str], _type=models.BackstoryQuestion
-):
+class BackstoryQuestions(IdsBase[models.BackstoryQuestion, str]):
     suffix = "backstory/questions"
 
 
-class BackstoryQuestion(Base[models.BackstoryQuestion], _type=models.BackstoryQuestion):
+class BackstoryQuestion(Base[models.BackstoryQuestion]):
     def __init__(self, upgrade_id: int):
         self.upgrade_id = upgrade_id
         super().__init__()
@@ -22,12 +20,12 @@ class BackstoryQuestion(Base[models.BackstoryQuestion], _type=models.BackstoryQu
 
 
 class BackstoryAnswers(
-    IdsBase[models.BackstoryAnswer, str], _type=models.BackstoryAnswer
+    IdsBase[models.BackstoryAnswer, str],
 ):
     suffix = "backstory/answers"
 
 
-class BackstoryAnswer(Base[models.BackstoryAnswer], _type=models.BackstoryAnswer):
+class BackstoryAnswer(Base[models.BackstoryAnswer]):
     def __init__(self, backstory_id: str):
         self.backstory_id = backstory_id
         super().__init__()

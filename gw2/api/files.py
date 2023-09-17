@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import AllIdsBase, Base
 
 
-class Files(AllIdsBase[models.File, str], _type=models.File):
+class Files(AllIdsBase[models.File, str]):
     pass
 
 
-class File(Base[models.File], _type=models.File):
+class File(Base[models.File]):
     def __init__(self, file_id: str):
         self.file_id = file_id
         super().__init__()

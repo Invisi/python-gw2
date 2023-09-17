@@ -3,7 +3,7 @@ A Python wrapper for easy and typed access of Guild Wars 2's API.
 
 ## Installation
 ### Requirements
-- Python >= 3.10
+- Python >= 3.11
 - httpx
 - pydantic
 

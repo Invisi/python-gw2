@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Matches(IdsBase[models.Match, str], _type=models.Match):
+class Matches(IdsBase[models.Match, str]):
     suffix = "wvw/matches"
 
 
-class Match(Base[models.Match], _type=models.Match):
+class Match(Base[models.Match]):
     def __init__(self, match_id: str):
         self.match_id = match_id
         super().__init__()
@@ -19,11 +19,11 @@ class Match(Base[models.Match], _type=models.Match):
         return f"wvw/matches/{self.match_id}"
 
 
-class MatchOverviews(IdsBase[models.MatchOverview, str], _type=models.MatchOverview):
+class MatchOverviews(IdsBase[models.MatchOverview, str]):
     suffix = "wvw/matches/overview"
 
 
-class MatchOverview(Base[models.MatchOverview], _type=models.MatchOverview):
+class MatchOverview(Base[models.MatchOverview]):
     def __init__(self, match_id: str):
         self.match_id = match_id
         super().__init__()

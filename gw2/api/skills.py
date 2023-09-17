@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Skills(IdsBase[models.Skill, int], _type=models.Skill):
+class Skills(IdsBase[models.Skill, int]):
     pass
 
 
-class Skill(Base[models.Skill], _type=models.Skill):
+class Skill(Base[models.Skill]):
     def __init__(self, skill_id: int):
         self.skill_id = skill_id
         super().__init__()

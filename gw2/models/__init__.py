@@ -26,7 +26,7 @@ from .emotes import Emote
 from .files import File
 from .finishers import Finisher
 from .gliders import Glider
-from .guild import Guild, GuildPermission, GuildUpgrade
+from .guild import AuthenticatedGuild, Guild, GuildPermission, GuildUpgrade
 from .home import HomeCat, HomeNode
 from .item_stats import ItemStat
 from .items import Item
@@ -53,7 +53,7 @@ from .skins import Skin
 from .specializations import Specialization
 from .stories import Story, StorySeason
 from .titles import Title
-from .tokeninfo import TokenInfo
+from .tokeninfo import SubTokenInfo, TokenInfo
 from .traits import Trait
 from .world_bosses import WorldBoss
 from .worlds import World

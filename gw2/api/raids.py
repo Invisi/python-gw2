@@ -5,11 +5,11 @@ from gw2 import models
 from ._base import Base, IdsBase
 
 
-class Raids(IdsBase[models.Raid, int], _type=models.Raid):
+class Raids(IdsBase[models.Raid, int]):
     pass
 
 
-class Raid(Base[models.Raid], _type=models.Raid):
+class Raid(Base[models.Raid]):
     def __init__(self, raid_id: str):
         self.raid_id = raid_id
         super().__init__()
