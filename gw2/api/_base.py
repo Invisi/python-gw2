@@ -377,7 +377,7 @@ class ListBase(_Base[EndpointModel]):
         """
 
         raw_data = await super()._get(_raw=True)
-        return pydantic.TypeAdapter(list[EndpointModel]).validate_json(raw_data)
+        return pydantic.TypeAdapter(self._klass).validate_json(raw_data)
 
 
 class StringsBase(_Base[EndpointModel]):

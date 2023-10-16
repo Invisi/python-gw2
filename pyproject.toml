@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gw2"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 repository = "https://github.com/invisi/python-gw2"
 authors = ["Yannick Linke <invisi@0x0f.net>"]
@@ -11,7 +11,7 @@ license = "MIT"
 python = "^3.11"
 asyncio-throttle = "^1.0.2"
 httpx = "^0.25.0"
-pydantic = "^2.3"
+pydantic = "^2.4"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.5.1"
