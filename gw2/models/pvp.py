@@ -59,7 +59,9 @@ class Game(BaseModel):
     map_id: int
     started: datetime.datetime
     ended: datetime.datetime
-    result: Literal["Victory", "Defeat", "Bye"]  # todo: probably some other results
+    result: Literal[
+        "Victory", "Defeat", "Bye", "Forfeit"
+    ]  # todo: probably some other results
     team: Literal["Red", "Blue"]
     profession: common.Profession
     scores: Score
@@ -230,12 +232,12 @@ class Standings(BaseModel):
         total_points: int
         division: int
         tier: int
-        point: int
+        points: int
         repeats: int
 
     class Current(Best):
-        rating: int
-        decay: int
+        rating: int | None = None
+        decay: int | None = None
 
     current: Current
     best: Best

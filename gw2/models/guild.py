@@ -146,15 +146,23 @@ class Log:
             "joined",
             "invited",
             "kick",
+            "invite_declined",
             "rank_change",
             "treasury",
             "stash",
             "motd",
             "upgrade",
+            "influence",
         ]
 
     class Invite(_Base):
         invited_by: str
+
+    class InviteDeclined(_Base):
+        declined_by: str
+
+    class Join(_Base):
+        user: str
 
     class Kick(_Base):
         kicked_by: str
@@ -178,9 +186,16 @@ class Log:
         count: int
 
     class Upgrade(_Base):
-        action: Literal["queued", "cancelled", "completed", "sped_up"]
-        upgrade_id: int
+        action: Literal["queued", "cancelled", "complete", "completed", "sped_up"]
+        count: int | None = None
+        item_id: int | None = None
         recipe_id: int | None = None  # always optional
+        upgrade_id: int
+
+    class Influence(_Base):
+        activity: Literal["gifted", "daily_login"]
+        participants: list[str] | None = None  # list of account names
+        total_participants: int | None = None
 
 
 class Member(BaseModel):

@@ -38,6 +38,13 @@ EquipmentSlot = Literal[
     "WeaponAquaticB",
     "WeaponB1",
     "WeaponB2",
+    "FishingRod",
+    "FishingBait",
+    "FishingLure",
+    "PowerCore",
+    "SensoryArray",
+    "ServiceChip",
+    "Relic",
 ]
 
 

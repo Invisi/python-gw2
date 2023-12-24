@@ -118,12 +118,15 @@ class Log(
     _Guild,
     ListBase[
         guild.Log.Invite
+        | guild.Log.InviteDeclined
         | guild.Log.Kick
+        | guild.Log.Join
         | guild.Log.Motd
         | guild.Log.RankChange
         | guild.Log.Stash
         | guild.Log.Treasury
         | guild.Log.Upgrade
+        | guild.Log.Influence
     ],
 ):
     @functools.cached_property
