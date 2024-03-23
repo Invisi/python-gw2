@@ -31,11 +31,11 @@ class BuildManifest:
             try:
                 data = response.text.split(" ")
                 return models.BuildManifest(
-                    build_id=data[0],
-                    exe_id=data[1],
-                    exe_size=data[2],
-                    manifest_id=data[3],
-                    manifest_size=data[4],
+                    build_id=data[0],  # type: ignore[arg-type]
+                    exe_id=data[1],  # type: ignore[arg-type]
+                    exe_size=data[2],  # type: ignore[arg-type]
+                    manifest_id=data[3],  # type: ignore[arg-type]
+                    manifest_size=data[4],  # type: ignore[arg-type]
                 )
             except IndexError as e:
                 raise ValueError from e

@@ -49,18 +49,21 @@ class Skill(BaseModel):
     toolbelt_skill: int | None = None
     traited_facts: list[TraitedFact] | None = None
     transform_skills: list[int] | None = None
-    type: Literal[
-        "Bundle",
-        "Elite",
-        "Heal",
-        "Monster",
-        "Pet",
-        "Profession",
-        "Toolbelt",
-        "Transform",
-        "Utility",
-        "Weapon",
-    ] | None = None
+    type: (
+        Literal[
+            "Bundle",
+            "Elite",
+            "Heal",
+            "Monster",
+            "Pet",
+            "Profession",
+            "Toolbelt",
+            "Transform",
+            "Utility",
+            "Weapon",
+        ]
+        | None
+    ) = None
     weapon_type: Weapon | None = None
 
     _normalize_type = field_validator("weapon_type", mode="before")(coerce_weapon)

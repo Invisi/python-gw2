@@ -3,7 +3,7 @@ from gw2 import models
 from gw2.models import common
 
 
-def test_klass():
+def test_klass() -> None:
     assert gw2.Account()._klass == models.Account
 
     assert gw2.Masteries()._klass == list[models.Mastery]

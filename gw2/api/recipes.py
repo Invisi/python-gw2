@@ -9,13 +9,11 @@ from ._base import Base, IdsBase
 class Recipes(IdsBase[models.Recipe, int]):
     @staticmethod
     @overload
-    def search(*, input_id: int) -> "RecipeSearch":
-        ...
+    def search(*, input_id: int) -> "RecipeSearch": ...
 
     @staticmethod
     @overload
-    def search(*, output_id: int) -> "RecipeSearch":
-        ...
+    def search(*, output_id: int) -> "RecipeSearch": ...
 
     @staticmethod
     def search(
@@ -41,12 +39,10 @@ class RecipeSearch(IdsBase[models.Recipe, int]):
     suffix = "recipes/search"
 
     @overload
-    def __init__(self, *, input_id: int):
-        ...
+    def __init__(self, *, input_id: int): ...
 
     @overload
-    def __init__(self, *, output_id: int):
-        ...
+    def __init__(self, *, output_id: int): ...
 
     def __init__(self, *, input_id: int | None = None, output_id: int | None = None):
         self.input_id = input_id

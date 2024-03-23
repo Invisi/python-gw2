@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import logging
+import types
 from asyncio import Future, Task
 from collections.abc import AsyncIterator
 from importlib.metadata import PackageNotFoundError, version
@@ -9,6 +10,7 @@ from typing import (
     Generic,
     Literal,
     Self,
+    TypeGuard,
     TypeVar,
     cast,
     overload,
@@ -120,26 +122,29 @@ class _Base(Generic[EndpointModel]):
         return f"{BASE_URL}/{self.suffix}"
 
     @functools.cached_property
-    def _klass(self) -> EndpointModel:
+    def _klass(self) -> EndpointModel | list[EndpointModel]:
         """
         Returns the actual endpoint model instance for later use, can be a
         `str`, `int`, list[BaseModel], or anything similar
         """
         try:
-            generic_alias = next(
-                filter(lambda x: hasattr(x, "__args__"), self.__orig_bases__)
-            )
+            generic_alias = _get_generic_alias(self)
         except StopIteration as e:
             raise NotImplementedError from e
 
         if issubclass(self.__class__, IdsBase | AllIdsBase | ListBase | StringsBase):
-            return cast(EndpointModel, list[generic_alias.__args__[0]])
+            return cast(
+                list[EndpointModel],
+                list[generic_alias.__args__[0]],  # type: ignore[name-defined]
+            )
         elif issubclass(self.__class__, Base):
             return cast(EndpointModel, generic_alias.__args__[0])
         else:
             raise NotImplementedError
 
-    def _cast(self, data: dict[str, Any] | list | str) -> EndpointModel:
+    def _cast(
+        self, data: dict[str, Any] | list | str
+    ) -> EndpointModel | list[EndpointModel]:
         """
         Casts data into model
 
@@ -163,8 +168,7 @@ class _Base(Generic[EndpointModel]):
         _id: IdsParameter,
         ids: None = None,
         _raw: Literal[True],
-    ) -> str:
-        ...
+    ) -> str: ...
 
     @overload
     async def _get(
@@ -173,8 +177,7 @@ class _Base(Generic[EndpointModel]):
         _id: IdsParameter,
         ids: None = None,
         _raw: Literal[False] = False,
-    ) -> EndpointModel:
-        ...
+    ) -> EndpointModel: ...
 
     @overload
     async def _get(
@@ -183,8 +186,7 @@ class _Base(Generic[EndpointModel]):
         _id: None = None,
         ids: list[IdsVariant] | Literal["all"],
         _raw: Literal[True],
-    ) -> str:
-        ...
+    ) -> str: ...
 
     @overload
     async def _get(
@@ -193,8 +195,7 @@ class _Base(Generic[EndpointModel]):
         _id: None = None,
         ids: list[IdsVariant] | Literal["all"],
         _raw: Literal[False] = False,
-    ) -> list[EndpointModel]:
-        ...
+    ) -> list[EndpointModel]: ...
 
     @overload
     async def _get(
@@ -203,12 +204,10 @@ class _Base(Generic[EndpointModel]):
         _id: None = None,
         ids: None = None,
         _raw: Literal[True],
-    ) -> str:
-        ...
+    ) -> str: ...
 
     @overload
-    async def _get(self) -> EndpointModel:
-        ...
+    async def _get(self) -> EndpointModel: ...
 
     async def _get(
         self,
@@ -377,7 +376,7 @@ class ListBase(_Base[EndpointModel]):
         """
 
         raw_data = await super()._get(_raw=True)
-        return pydantic.TypeAdapter(self._klass).validate_json(raw_data)
+        return cast(list[EndpointModel], self._cast(raw_data))
 
 
 class StringsBase(_Base[EndpointModel]):
@@ -437,7 +436,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
              NotImplementedError: Should never occur but might if the API
                                   response changes in unexpected ways.
         """
-        return cast(EndpointModel, await super()._get(_id=_id))
+        return await super()._get(_id=_id)
 
     async def many(
         self,
@@ -479,7 +478,7 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
                 Future[list[list[EndpointModel]]],
                 asyncio.gather(*tasks),
             ):
-                for _model in cast(list[EndpointModel], results):
+                for _model in results:
                     yield _model
         else:
             for chunk in chunks(ids, 200):
@@ -611,3 +610,13 @@ class AllIdsBase(
             items.append(item)
 
         return items
+
+
+def _get_generic_alias(klass: _Base[EndpointModel]) -> types.GenericAlias:
+    def type_guard(x: Any) -> TypeGuard[types.GenericAlias]:
+        return hasattr(x, "__args__")
+
+    # todo: retire and replace with types.get_original_bases on py3.12
+    orig_bases = klass.__orig_bases__  # type: ignore[attr-defined]
+
+    return cast(types.GenericAlias, next(filter(type_guard, orig_bases)))

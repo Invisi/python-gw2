@@ -1,6 +1,7 @@
 """
 Some very very very basic tests to ensure our types still align.
 """
+
 import os
 
 import pytest

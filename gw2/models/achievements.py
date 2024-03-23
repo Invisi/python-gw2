@@ -39,22 +39,25 @@ class Achievement(BaseModel):
     locked_text: str
     type: Literal["Default", "ItemSet"]
 
-    flags: list[
-        Literal[
-            "Pvp",
-            "CategoryDisplay",
-            "MoveToTop",
-            "IgnoreNearlyComplete",
-            "Repeatable",
-            "Hidden",
-            "RequiresUnlock",
-            "RepairOnLogin",
-            "Daily",
-            "Weekly",
-            "Monthly",
-            "Permanent",
+    flags: (
+        list[
+            Literal[
+                "Pvp",
+                "CategoryDisplay",
+                "MoveToTop",
+                "IgnoreNearlyComplete",
+                "Repeatable",
+                "Hidden",
+                "RequiresUnlock",
+                "RepairOnLogin",
+                "Daily",
+                "Weekly",
+                "Monthly",
+                "Permanent",
+            ]
         ]
-    ] | None = None
+        | None
+    ) = None
     tiers: list[Tier] | None = None
     rewards: list[Reward] | None = None
     bits: list[Bit] | None = None

@@ -1,5 +1,5 @@
 from ._base import BaseModel
-from .characters import Profession, Race
+from .common import Profession, Race
 
 
 class BackstoryQuestion(BaseModel):

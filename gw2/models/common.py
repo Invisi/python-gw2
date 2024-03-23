@@ -153,27 +153,30 @@ class Fact(BaseModel):
     # todo: tagged union, somehow...
     text: str | None = None
     icon: AnyHttpUrl | None = None
-    type: Literal[
-        "AttributeAdjust",
-        "Buff",
-        "BuffConversion",
-        "ComboField",
-        "ComboFinisher",
-        "Damage",
-        "Distance",
-        "NoData",
-        "Number",
-        "Percent",
-        "PrefixedBuff",
-        "Radius",
-        "Range",
-        "Recharge",
-        "StunBreak",
-        "Time",
-        "Unblockable",
-        "Duration",
-        "HealingAdjust",
-    ] | None = None
+    type: (
+        Literal[
+            "AttributeAdjust",
+            "Buff",
+            "BuffConversion",
+            "ComboField",
+            "ComboFinisher",
+            "Damage",
+            "Distance",
+            "NoData",
+            "Number",
+            "Percent",
+            "PrefixedBuff",
+            "Radius",
+            "Range",
+            "Recharge",
+            "StunBreak",
+            "Time",
+            "Unblockable",
+            "Duration",
+            "HealingAdjust",
+        ]
+        | None
+    ) = None
     # AttributeAdjust/Number/Range/Recharge/Unblockable
     value: int | float | None = None
     # AttributeAdjust/BuffConversion
@@ -189,25 +192,31 @@ class Fact(BaseModel):
     # BuffConversion
     source: str | None = None
     # ComboField
-    field_type: Literal[
-        "Air",
-        "Dark",
-        "Fire",
-        "Ice",
-        "Light",
-        "Lightning",
-        "Poison",
-        "Smoke",
-        "Ethereal",
-        "Water",
-    ] | None = None
+    field_type: (
+        Literal[
+            "Air",
+            "Dark",
+            "Fire",
+            "Ice",
+            "Light",
+            "Lightning",
+            "Poison",
+            "Smoke",
+            "Ethereal",
+            "Water",
+        ]
+        | None
+    ) = None
     # ComboFinisher
-    finisher_type: Literal[
-        "Blast",
-        "Leap",
-        "Projectile",
-        "Whirl",
-    ] | None = None
+    finisher_type: (
+        Literal[
+            "Blast",
+            "Leap",
+            "Projectile",
+            "Whirl",
+        ]
+        | None
+    ) = None
     # Damage
     hit_count: int | None = None
     # Distance/Radius

@@ -149,26 +149,33 @@ class OldSeasonLeaderboard(BaseModel):
     https://wiki.guildwars2.com/wiki/API:2/pvp/seasons
     """
 
-    class Ladder(SeasonLeaderboard.Ladder):
-        class Settings(SeasonLeaderboard.Ladder.Settings):
+    class OldLadder(BaseModel):
+        class Settings(BaseModel):
             class Tier(BaseModel):
                 range: tuple[int | float, int | float]
                 color: str | None = None
                 type: Literal["Rank"] | None = None
-                name: Literal[
-                    "Copper", "Bronze", "Silver", "Gold", "Platinum"
-                ] | None = None
+                name: (
+                    Literal["Copper", "Bronze", "Silver", "Gold", "Platinum"] | None
+                ) = None
 
+            name: str
+            duration: int | None = None
+            scoring: str
             tiers: list[Tier]
 
-        class Scoring(SeasonLeaderboard.Ladder.Scoring):
+        class Scoring(BaseModel):
+            id: str
+            type: Literal["Integer"]
+            description: str
             name: Literal["Prestige", "Skill Rating", "Wins", "Losses"]
+            ordering: Literal["MoreIsBetter", "LessIsBetter"]
 
         settings: Settings
         scorings: list[Scoring]
 
-    legendary: Ladder
-    guild: Ladder
+    legendary: OldLadder
+    guild: OldLadder
 
 
 class Season(BaseModel):
