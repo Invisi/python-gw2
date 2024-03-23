@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import AnyHttpUrl
 
-from . import pvp
+from . import common, pvp
 from ._base import BaseModel
 
 GuildPermissionId = Literal[
@@ -171,7 +171,9 @@ class Log:
         motd: str
 
     class RankChange(_Base):
-        changed_by: str
+        # may be missing if guild was created by user
+        # old_rank seems to be "none" in such a case
+        changed_by: str | None = None
         old_rank: str
         new_rank: str
 
@@ -260,10 +262,11 @@ class Team(BaseModel):
     id: int
     members: list[Member]
     name: str
+    state: Literal["Active"]  # todo: other states are unknown
     aggregate: pvp.WinLoss
-    ladders: pvp.Ladders
+    ladders: pvp.Ladders | common.EmptyObject
     games: list[pvp.Game]
-    seasons: list[Season]
+    seasons: list[Season] | None = None
 
 
 class Treasury(BaseModel):

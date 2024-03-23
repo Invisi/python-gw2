@@ -137,6 +137,9 @@ Attribute = Literal[
 ]
 
 
+class EmptyObject(BaseModel): ...
+
+
 class DyeSlot(BaseModel):
     color_id: int
     material: DyeMaterial

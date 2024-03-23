@@ -39,10 +39,10 @@ class Ladders(BaseModel):
 
     unranked: WinLoss
     ranked: WinLoss
-    two_vs_two_ranked: WinLoss = Field(alias="2v2ranked")
-    three_vs_three_ranked: WinLoss = Field(alias="3v3ranked")
-    solo_arena_rated: WinLoss = Field(alias="soloarenarated")
-    team_arena_rated: WinLoss = Field(alias="teamarenarated")
+    two_vs_two_ranked: WinLoss | None = Field(alias="2v2ranked", default=None)
+    three_vs_three_ranked: WinLoss | None = Field(alias="3v3ranked", default=None)
+    solo_arena_rated: WinLoss | None = Field(alias="soloarenarated", default=None)
+    team_arena_rated: WinLoss | None = Field(alias="teamarenarated", default=None)
 
 
 class Game(BaseModel):

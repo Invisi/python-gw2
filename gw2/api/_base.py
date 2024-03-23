@@ -31,7 +31,8 @@ except PackageNotFoundError:
 
 # Global config
 BASE_URL = "https://api.guildwars2.com/v2"
-DEFAULT_TIMEOUT = 10
+# todo: make timeout a global configurable thing
+DEFAULT_TIMEOUT = 30
 SCHEMA = "2021-04-06T21:00:00.000Z"
 # todo: schema per endpoint, assume the above as default.
 #       could be implemented as another property
