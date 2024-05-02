@@ -23,3 +23,9 @@ class GuildNotFoundError(ApiError):
     """
     Raised if a guild was not found
     """
+
+
+class UnknownError(ApiError):
+    """
+    Usually raised if an internal server error occurred
+    """

@@ -39,7 +39,6 @@ async with Character("Some Character") as client:
     # Retrieve data with previously set API key
     data = await client.get()
 
-
     print(data.profession)  # "Elementalist"
 async for recipe in Recipes().many(ids=[1,2,3,4]):
     # Retrieve recipes as async iterator

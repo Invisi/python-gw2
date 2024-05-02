@@ -212,7 +212,7 @@ async def test_continent_floor_region_maps() -> None:
     region_id = 1
 
     many = await gw2.ContinentMaps(continent_id, floor_id, region_id).all_noniter(
-        concurrent=True
+        concurrent=True,
     )
     one = await gw2.ContinentMap(continent_id, floor_id, region_id, many[0].id).get()
 
@@ -227,7 +227,7 @@ async def test_continent_floor_region_map_sectors() -> None:
     map_id = 26
 
     many = await gw2.Sectors(continent_id, floor_id, region_id, map_id).all_noniter(
-        concurrent=True
+        concurrent=True,
     )
     one = await gw2.Sector(continent_id, floor_id, region_id, map_id, many[0].id).get()
 
@@ -242,10 +242,17 @@ async def test_continent_floor_region_map_pois() -> None:
     map_id = 26
 
     many = await gw2.PointsOfInterest(
-        continent_id, floor_id, region_id, map_id
+        continent_id,
+        floor_id,
+        region_id,
+        map_id,
     ).all_noniter(concurrent=True)
     one = await gw2.PointOfInterest(
-        continent_id, floor_id, region_id, map_id, many[0].id
+        continent_id,
+        floor_id,
+        region_id,
+        map_id,
+        many[0].id,
     ).get()
 
     assert one is not None
@@ -259,7 +266,7 @@ async def test_continent_floor_region_tasks() -> None:
     map_id = 26
 
     many = await gw2.Tasks(continent_id, floor_id, region_id, map_id).all_noniter(
-        concurrent=True
+        concurrent=True,
     )
     one = await gw2.Task(continent_id, floor_id, region_id, map_id, many[0].id).get()
 

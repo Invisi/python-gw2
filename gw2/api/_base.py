@@ -1,7 +1,6 @@
 import asyncio
 import functools
 import logging
-import types
 from asyncio import Future, Task
 from collections.abc import AsyncIterator
 from importlib.metadata import PackageNotFoundError, version
@@ -10,7 +9,6 @@ from typing import (
     Generic,
     Literal,
     Self,
-    TypeGuard,
     TypeVar,
     cast,
     overload,
@@ -22,7 +20,14 @@ from asyncio_throttle import Throttler
 from pydantic import ValidationError
 
 from gw2 import errors
-from gw2.utils import chunks
+from gw2.const import (
+    HTTP_BAD_REQUEST,
+    HTTP_FORBIDDEN,
+    HTTP_INTERNAL_SERVER_ERROR,
+    HTTP_PARTIAL_SUCCESS,
+    HTTP_SUCCESS,
+)
+from gw2.utils import chunks, get_generic_alias
 
 try:
     __version__ = version("gw2")
@@ -37,16 +42,13 @@ SCHEMA = "2021-04-06T21:00:00.000Z"
 # todo: schema per endpoint, assume the above as default.
 #       could be implemented as another property
 
-HTTP_SUCCESS = 200
-HTTP_PARTIAL_SUCCESS = 206
-HTTP_BAD_REQUEST = 400
-HTTP_FORBIDDEN = 403
 
 GLOBAL_THROTTLE = Throttler(rate_limit=300, period=60)
 
 
 # TODO: better rate limiting
 #  https://github.com/greaka/gw2api/blob/ab5a08cec3004b3cea8a62b51b3831a097adb989/http/src/rate_limit.rs#L44-L66
+# todo: expose header metadata on returned model
 
 
 LOG = logging.getLogger(__name__)
@@ -129,7 +131,7 @@ class _Base(Generic[EndpointModel]):
         `str`, `int`, list[BaseModel], or anything similar
         """
         try:
-            generic_alias = _get_generic_alias(self)
+            generic_alias = get_generic_alias(self)
         except StopIteration as e:
             raise NotImplementedError from e
 
@@ -144,7 +146,8 @@ class _Base(Generic[EndpointModel]):
             raise NotImplementedError
 
     def _cast(
-        self, data: dict[str, Any] | list | str
+        self,
+        data: dict[str, Any] | list | str,
     ) -> EndpointModel | list[EndpointModel]:
         """
         Casts data into model
@@ -235,6 +238,9 @@ class _Base(Generic[EndpointModel]):
                               server-side caching issues.
              MissingGameAccessError: The API reports this account as not having
                                      access to the game.
+             UnknownError: Internal Server Error reported by the API, currently
+                            known to happen for some accounts and guilds
+                            (@2024-05-02)
              NotImplementedError: Should never occur but might if the API
                                   response changes in unexpected ways.
         """
@@ -280,22 +286,25 @@ class _Base(Generic[EndpointModel]):
         ):
             raise errors.MissingGameAccessError
 
+        if (
+            response.status_code == HTTP_INTERNAL_SERVER_ERROR
+            and "unknown error" in response.text.lower()
+        ):
+            raise errors.UnknownError
+
         # 206 might be returned if only part of the ids were valid, for example
-        if response.status_code in {HTTP_SUCCESS, HTTP_PARTIAL_SUCCESS}:
-            if _raw:
-                return response.text
+        if response.status_code not in {HTTP_SUCCESS, HTTP_PARTIAL_SUCCESS}:
+            LOG.debug(
+                "Unhandled HTTP response: status=%s content=%s",
+                response.status_code,
+                response.text,
+            )
+            response.raise_for_status()
 
-            return self._cast(response.text)
+        if _raw:
+            return response.text
 
-        LOG.debug(
-            "Unhandled HTTP response: status=%s content=%s",
-            response.status_code,
-            response.text,
-        )
-        response.raise_for_status()
-
-        # Raise again because mypy complains otherwise
-        raise httpx.HTTPError("Unknown API error")
+        return self._cast(response.text)
 
     # endregion _get()
 
@@ -558,7 +567,8 @@ class IdsBase(Generic[EndpointModel, EndpointId], _Base[EndpointModel]):
 
 
 class AllIdsBase(
-    Generic[EndpointModel, EndpointId], IdsBase[EndpointModel, EndpointId]
+    Generic[EndpointModel, EndpointId],
+    IdsBase[EndpointModel, EndpointId],
 ):
     """
     Base class for endpoints that return IDs (or names in case of the
@@ -611,13 +621,3 @@ class AllIdsBase(
             items.append(item)
 
         return items
-
-
-def _get_generic_alias(klass: _Base[EndpointModel]) -> types.GenericAlias:
-    def type_guard(x: Any) -> TypeGuard[types.GenericAlias]:
-        return hasattr(x, "__args__")
-
-    # todo: retire and replace with types.get_original_bases on py3.12
-    orig_bases = klass.__orig_bases__  # type: ignore[attr-defined]
-
-    return cast(types.GenericAlias, next(filter(type_guard, orig_bases)))
