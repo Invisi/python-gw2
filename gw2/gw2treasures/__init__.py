@@ -58,14 +58,14 @@ class _TBase(_Base[EndpointModel]):
         if issubclass(self.__class__, TIdsBase):
             return cast(
                 EndpointModel,
-                generic_alias.__args__[0],  # type: ignore[name-defined]
+                generic_alias.__args__[0],
             )
         elif issubclass(self.__class__, TBase):
             return cast(EndpointModel, generic_alias.__args__[0])
         else:
             raise NotImplementedError
 
-    async def _get(
+    async def _get(  # type: ignore[override]
         self,
         *,
         _id: IdsParameter = None,
@@ -151,13 +151,13 @@ class TIdsBase(IdsBase[EndpointModel, EndpointId], _TBase[EndpointModel]):
                 tasks.append(asyncio.ensure_future(self._get(_id=_id)))
 
             for _model in await cast(
-                Future[list[list[EndpointModel]]],
+                Future[list[EndpointModel]],
                 asyncio.gather(*tasks),
             ):
                 yield _model
         else:
             for _id in ids:
-                yield await self._get(_id=_id)
+                yield cast(EndpointModel, await self._get(_id=_id))
 
 
 class TBase(Base[EndpointModel], _TBase[EndpointModel]):

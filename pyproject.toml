@@ -1,20 +1,23 @@
 [tool.poetry]
 name = "gw2"
-version = "0.2.3"
-description = ""
+version = "0.2.4"
+description = "A Python wrapper for easy and typed access of Guild Wars 2's API"
 repository = "https://github.com/invisi/python-gw2"
 authors = ["Yannick Linke <invisi@0x0f.net>"]
 readme = "README.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11"
 asyncio-throttle = "^1.0.2"
-httpx = "^0.26.0"
-pydantic = "^2.5"
+httpx = ">=0.26.0,<0.28.0"
+pydantic = ">=2.5.0,<2.8.0"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.8.0"
+mypy = "1.10.0"
 pytest = "^7.4.3"
 pytest-asyncio = "^0.23.2"
 respx = "^0.20.2"

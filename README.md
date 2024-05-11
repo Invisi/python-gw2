@@ -118,6 +118,7 @@ async for recipe in Recipes().many(ids=[1,2,3,4]):
 
 - /v2/achievements/(daily, tomorrow)
 - /v2/createsubtoken
+- /v2/commerce/*
 </details>
 
 ## Missing features/endpoints

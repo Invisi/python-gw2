@@ -157,9 +157,15 @@ class _Base(Generic[EndpointModel]):
 
         try:
             if isinstance(data, str):
-                return pydantic.TypeAdapter(self._klass).validate_json(data)
+                return cast(
+                    EndpointModel | list[EndpointModel],
+                    pydantic.TypeAdapter(self._klass).validate_json(data),
+                )
 
-            return pydantic.TypeAdapter(self._klass).validate_python(data)
+            return cast(
+                EndpointModel | list[EndpointModel],
+                pydantic.TypeAdapter(self._klass).validate_python(data),
+            )
         except (TypeError, ValueError, ValidationError) as e:
             LOG.exception("Failed to coerce data into model: %s", data)
             raise e
