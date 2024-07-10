@@ -73,7 +73,7 @@ Weapon = Literal[
     "Torch",
     "Trident",
     "Warhorn",
-    #
+    # other "weapons"
     "LargeBundle",
     "SmallBundle",
     "Toy",
@@ -114,13 +114,26 @@ SkillSlot = Literal[
 
 ArmorWeight = Literal["Clothing", "Light", "Medium", "Heavy"]
 ArmorType = Literal[
-    "Boots", "Coat", "Gloves", "Helm", "HelmAquatic", "Leggings", "Shoulders"
+    "Boots",
+    "Coat",
+    "Gloves",
+    "Helm",
+    "HelmAquatic",
+    "Leggings",
+    "Shoulders",
 ]
 
 DyeMaterial = Literal["cloth", "leather", "metal", "fur"]
 
 Region = Literal[
-    "Tyria", "Maguuma", "Desert", "Tundra", "Unknown", "Cantha", "Jade", "Sky"
+    "Tyria",
+    "Maguuma",
+    "Desert",
+    "Tundra",
+    "Unknown",
+    "Cantha",
+    "Jade",
+    "Sky",
 ]
 
 Attribute = Literal[
