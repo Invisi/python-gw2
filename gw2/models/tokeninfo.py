@@ -19,6 +19,7 @@ class TokenInfo(BaseModel):
             "tradingpost",
             "unlocks",
             "wallet",
+            "wvw",
         ]
     ]
     type: Literal["APIKey", "Subtoken"]
