@@ -12,6 +12,8 @@ Access = Literal[
     "HeartOfThorns",
     "PathOfFire",
     "EndOfDragons",
+    "SecretsOfTheObscure",
+    "JanthirWilds",
 ]
 
 
