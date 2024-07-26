@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import Region
 
 
@@ -41,20 +42,24 @@ class Achievement(BaseModel):
 
     flags: (
         list[
-            Literal[
-                "Pvp",
-                "CategoryDisplay",
-                "MoveToTop",
-                "IgnoreNearlyComplete",
-                "Repeatable",
-                "Hidden",
-                "RequiresUnlock",
-                "RepairOnLogin",
-                "Daily",
-                "Weekly",
-                "Monthly",
-                "Permanent",
+            Annotated[
+                Literal[
+                    "Pvp",
+                    "CategoryDisplay",
+                    "MoveToTop",
+                    "IgnoreNearlyComplete",
+                    "Repeatable",
+                    "Hidden",
+                    "RequiresUnlock",
+                    "RepairOnLogin",
+                    "Daily",
+                    "Weekly",
+                    "Monthly",
+                    "Permanent",
+                ],
+                EnumValidator,
             ]
+            | Unknown
         ]
         | None
     ) = None

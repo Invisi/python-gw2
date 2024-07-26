@@ -1,45 +1,52 @@
 import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl
 
+from ..utils import EnumValidator
 from . import common, pvp
-from ._base import BaseModel
+from ._base import BaseModel, Unknown
 
-GuildPermissionId = Literal[
-    "ClaimableEditOptions",
-    "EditBGM",
-    "ActivatePlaceables",
-    "DepositItemsTrove",
-    "WithdrawItemsStash",
-    "WithdrawItemsTrove",
-    "EditAssemblyQueue",
-    "WithdrawCoinsStash",
-    "ActivateWorldEvent",
-    "PlaceArenaDecoration",
-    "DepositItemsStash",
-    "EditMonument",
-    "StartingRole",
-    "SpendFuel",
-    "TeamAdmin",
-    "EditRoles",
-    "Admin",
-    "WithdrawCoinsTrove",
-    "DepositCoinsTrove",
-    "PurchaseUpgrades",
-    "EditEmblem",
-    "ClaimableActivate",
-    "MissionControl",
-    "OpenPortal",
-    "SetGuildHall",
-    "DepositCoinsStash",
-    "PlaceDecoration",
-    "ClaimableSpend",
-    "EditMOTD",
-    "EditAnthem",
-    "DecorationAdmin",
-    "ClaimableClaim",
-]
+GuildPermissionId = (
+    Annotated[
+        Literal[
+            "ClaimableEditOptions",
+            "EditBGM",
+            "ActivatePlaceables",
+            "DepositItemsTrove",
+            "WithdrawItemsStash",
+            "WithdrawItemsTrove",
+            "EditAssemblyQueue",
+            "WithdrawCoinsStash",
+            "ActivateWorldEvent",
+            "PlaceArenaDecoration",
+            "DepositItemsStash",
+            "EditMonument",
+            "StartingRole",
+            "SpendFuel",
+            "TeamAdmin",
+            "EditRoles",
+            "Admin",
+            "WithdrawCoinsTrove",
+            "DepositCoinsTrove",
+            "PurchaseUpgrades",
+            "EditEmblem",
+            "ClaimableActivate",
+            "MissionControl",
+            "OpenPortal",
+            "SetGuildHall",
+            "DepositCoinsStash",
+            "PlaceDecoration",
+            "ClaimableSpend",
+            "EditMOTD",
+            "EditAnthem",
+            "DecorationAdmin",
+            "ClaimableClaim",
+        ],
+        EnumValidator,
+    ]
+    | Unknown
+)
 
 
 class Emblem(BaseModel):
@@ -142,18 +149,24 @@ class Log:
         id: int
         time: datetime.datetime
         user: str | None = None
-        type: Literal[
-            "joined",
-            "invited",
-            "kick",
-            "invite_declined",
-            "rank_change",
-            "treasury",
-            "stash",
-            "motd",
-            "upgrade",
-            "influence",
-        ]
+        type: (
+            Annotated[
+                Literal[
+                    "joined",
+                    "invited",
+                    "kick",
+                    "invite_declined",
+                    "rank_change",
+                    "treasury",
+                    "stash",
+                    "motd",
+                    "upgrade",
+                    "influence",
+                ],
+                EnumValidator,
+            ]
+            | Unknown
+        )
 
     class Invite(_Base):
         invited_by: str
@@ -262,7 +275,9 @@ class Team(BaseModel):
     id: int
     members: list[Member]
     name: str
-    state: Literal["Active"]  # todo: other states are unknown
+    state: (  # todo: other states are unknown
+        Annotated[Literal["Active"], EnumValidator] | Unknown
+    )
     aggregate: pvp.WinLoss
     ladders: pvp.Ladders | common.EmptyObject
     games: list[pvp.Game]

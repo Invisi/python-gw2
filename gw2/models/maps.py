@@ -1,6 +1,7 @@
-from typing import Literal
+from typing import Annotated, Literal
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .continents import Coordinates, Rectangle
 
 
@@ -18,19 +19,25 @@ class Map(BaseModel):
     map_rect: Rectangle
     continent_rect: Rectangle
     # different from ContinentMap
-    type: Literal[
-        "BlueHome",
-        "Center",
-        "EdgeOfTheMists",
-        "GreenHome",
-        "Instance",
-        "JumpPuzzle",
-        "Public",
-        "Pvp",
-        "RedHome",
-        "Tutorial",
-        "Unknown",
-    ]
+    type: (
+        Annotated[
+            Literal[
+                "BlueHome",
+                "Center",
+                "EdgeOfTheMists",
+                "GreenHome",
+                "Instance",
+                "JumpPuzzle",
+                "Public",
+                "Pvp",
+                "RedHome",
+                "Tutorial",
+                "Unknown",
+            ],
+            EnumValidator,
+        ]
+        | Unknown
+    )
     floors: list[int]
     region_id: int | None = None
     region_name: str | None = None

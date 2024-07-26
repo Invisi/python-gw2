@@ -2,7 +2,8 @@ from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl, Field, field_validator
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import Attunement, SkillSlot, Weapon
 from .common import Profession as GameProfession
 
@@ -71,7 +72,13 @@ class Profession(BaseModel):
     skills: list[Skill]
     training: list[Training]
     weapons: dict[Weapon, WeaponDetails]
-    flags: list[Literal["NoRacialSkills", "NoWeaponSwap"]]
+    flags: list[
+        Annotated[
+            Literal["NoRacialSkills", "NoWeaponSwap"],
+            EnumValidator,
+        ]
+        | Unknown
+    ]
     skills_by_palette: list[tuple[int, int]]  # [(skill palette id, skill id)]
 
     @field_validator("weapons", mode="before")

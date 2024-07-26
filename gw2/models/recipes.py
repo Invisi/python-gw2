@@ -1,6 +1,7 @@
-from typing import Literal
+from typing import Annotated, Literal
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import ArmorType, Discipline, Weapon
 
 Trinket = Literal[
@@ -76,7 +77,7 @@ class Recipe(BaseModel):
     # todo: upgrade for currency input, schema 2022-03-09
 
     id: int
-    type: RecipeType
+    type: Annotated[RecipeType, EnumValidator] | Unknown
     output_item_id: int
     output_item_count: int
     time_to_craft_ms: int

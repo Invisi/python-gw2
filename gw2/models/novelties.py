@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 
 
 class Novelty(BaseModel):
@@ -14,11 +15,17 @@ class Novelty(BaseModel):
     name: str
     description: str
     icon: AnyHttpUrl
-    slot: Literal[
-        "Chair",
-        "Music",
-        "HeldItem",
-        "Miscellaneous",
-        "Tonic",
-    ]
+    slot: (
+        Annotated[
+            Literal[
+                "Chair",
+                "Music",
+                "HeldItem",
+                "Miscellaneous",
+                "Tonic",
+            ],
+            EnumValidator,
+        ]
+        | Unknown
+    )
     unlock_item: list[int] | None = None

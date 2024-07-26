@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl, field_validator
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import (
     ArmorType,
     ArmorWeight,
@@ -47,7 +48,7 @@ class Details(BaseModel):
 
 class Skin(BaseModel):
     """
-    https://wiki.guildwars2.com/wiki/API:2/skills
+    https://wiki.guildwars2.com/wiki/API:2/skins
     """
 
     id: int
@@ -59,14 +60,21 @@ class Skin(BaseModel):
         "Gathering",
     ]  # todo: tagged union
     flags: list[
-        Literal[
-            "ShowInWardrobe",
-            "NoCost",
-            "HideIfLocked",
-            "OverrideRarity",
+        Annotated[
+            Literal[
+                "ShowInWardrobe",
+                "NoCost",
+                "HideIfLocked",
+                "OverrideRarity",
+            ],
+            EnumValidator,
         ]
+        | Unknown
     ]
-    restrictions: list[str]  # todo: types
+    restrictions: list[
+        Annotated[Literal["Asura", "Charr", "Human", "Norn", "Sylvari"], EnumValidator]
+        | Unknown
+    ]
     icon: AnyHttpUrl | None = None
     rarity: Rarity
     description: str | None = None

@@ -1,3 +1,4 @@
+from ._base import Unknown
 from .account import Account
 from .achievements import Achievement, AchievementCategory, AchievementGroup
 from .backstory import BackstoryAnswer, BackstoryQuestion

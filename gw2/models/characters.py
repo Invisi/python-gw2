@@ -1,9 +1,10 @@
 import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import (
     Binding,
     BuildTab,
@@ -15,37 +16,43 @@ from .common import (
     Stats,
 )
 
-EquipmentSlot = Literal[
-    "Accessory1",
-    "Accessory2",
-    "Amulet",
-    "Axe",
-    "Backpack",
-    "Boots",
-    "Coat",
-    "Gloves",
-    "Helm",
-    "HelmAquatic",
-    "Leggings",
-    "Pick",
-    "Ring1",
-    "Ring2",
-    "Shoulders",
-    "Sickle",
-    "WeaponA1",
-    "WeaponA2",
-    "WeaponAquaticA",
-    "WeaponAquaticB",
-    "WeaponB1",
-    "WeaponB2",
-    "FishingRod",
-    "FishingBait",
-    "FishingLure",
-    "PowerCore",
-    "SensoryArray",
-    "ServiceChip",
-    "Relic",
-]
+EquipmentSlot = (
+    Annotated[
+        Literal[
+            "Accessory1",
+            "Accessory2",
+            "Amulet",
+            "Axe",
+            "Backpack",
+            "Boots",
+            "Coat",
+            "Gloves",
+            "Helm",
+            "HelmAquatic",
+            "Leggings",
+            "Pick",
+            "Ring1",
+            "Ring2",
+            "Shoulders",
+            "Sickle",
+            "WeaponA1",
+            "WeaponA2",
+            "WeaponAquaticA",
+            "WeaponAquaticB",
+            "WeaponB1",
+            "WeaponB2",
+            "FishingRod",
+            "FishingBait",
+            "FishingLure",
+            "PowerCore",
+            "SensoryArray",
+            "ServiceChip",
+            "Relic",
+        ],
+        EnumValidator,
+    ]
+    | Unknown
+)
 
 
 Location = Literal[

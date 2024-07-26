@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl, Field
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 
 Rarity = Literal[
     "Junk",
@@ -304,8 +305,25 @@ class BuildTab(BaseModel):
         skills: Skills
         aquatic_skills: Skills
         pets: Pets | None = None
-        # XXX: this is currently bugged and should be a revenant legend instead
-        legends: list[str | None] | None = None
+        # todo: XXX: this is currently bugged and should be a revenant legend instead
+        legends: (
+            list[
+                Annotated[
+                    Literal[
+                        "Legend1",
+                        "Legend2",
+                        "Legend3",
+                        "Legend4",
+                        "Legend6",
+                        "Legend5",
+                    ],
+                    EnumValidator,
+                ]
+                | Unknown
+                | None
+            ]
+            | None
+        ) = None
         aquatic_legends: list[str | None] | None = None
 
         # TODO: Actual specialization since that's not in profession (spec ids)

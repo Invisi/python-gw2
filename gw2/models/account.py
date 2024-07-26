@@ -1,20 +1,27 @@
 import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import Stats
 
-Access = Literal[
-    "PlayForFree",
-    # Core game
-    "GuildWars2",
-    # Expansions
-    "HeartOfThorns",
-    "PathOfFire",
-    "EndOfDragons",
-    "SecretsOfTheObscure",
-    "JanthirWilds",
-]
+Access = (
+    Annotated[
+        Literal[
+            "PlayForFree",
+            # Core game
+            "GuildWars2",
+            # Expansions
+            "HeartOfThorns",
+            "PathOfFire",
+            "EndOfDragons",
+            "SecretsOfTheObscure",
+            "JanthirWilds",
+        ],
+        EnumValidator,
+    ]
+    | Unknown
+)
 
 
 class Account(BaseModel):
@@ -104,14 +111,20 @@ class MasteryPoints(BaseModel):
     """
 
     class Total(BaseModel):
-        region: Literal[
-            "Central Tyria",
-            "Heart of Thorns",
-            "Path of Fire",
-            "Icebrood Saga",
-            "End of Dragons",
-            "Secrets of the Obscure",
-        ]
+        region: (
+            Annotated[
+                Literal[
+                    "Central Tyria",
+                    "Heart of Thorns",
+                    "Path of Fire",
+                    "Icebrood Saga",
+                    "End of Dragons",
+                    "Secrets of the Obscure",
+                ],
+                EnumValidator,
+            ]
+            | Unknown
+        )
         spent: int
         earned: int
 
@@ -135,13 +148,19 @@ class Progression(BaseModel):
     https://wiki.guildwars2.com/wiki/API:2/account/progression
     """
 
-    id: Literal[
-        "fractal_agony_impedance",
-        "fractal_empowerment",
-        "fractal_karmic_retribution",
-        "fractal_mist_attunement",
-        "luck",
-    ]
+    id: (
+        Annotated[
+            Literal[
+                "fractal_agony_impedance",
+                "fractal_empowerment",
+                "fractal_karmic_retribution",
+                "fractal_mist_attunement",
+                "luck",
+            ],
+            EnumValidator,
+        ]
+        | Unknown
+    )
     value: int
 
 

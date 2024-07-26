@@ -1,10 +1,11 @@
 import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl, Field
 
+from ..utils import EnumValidator
 from . import common
-from ._base import BaseModel
+from ._base import BaseModel, Unknown
 
 
 class Amulet(BaseModel):
@@ -59,9 +60,18 @@ class Game(BaseModel):
     map_id: int
     started: datetime.datetime
     ended: datetime.datetime
-    result: Literal[
-        "Victory", "Defeat", "Bye", "Forfeit"
-    ]  # todo: probably some other results
+    result: (
+        Annotated[
+            Literal[  # todo: probably some other results
+                "Victory",
+                "Defeat",
+                "Bye",
+                "Forfeit",
+            ],
+            EnumValidator,
+        ]
+        | Unknown
+    )
     team: Literal["Red", "Blue"]
     profession: common.Profession
     scores: Score

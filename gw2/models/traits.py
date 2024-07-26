@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import Fact, TraitedFact
 
 
@@ -17,32 +18,36 @@ class Skill(BaseModel):
     chat_link: str
     categories: (
         list[
-            Literal[
-                "Arcane",
-                "Burst",
-                "Cantrip",
-                "Clone",
-                "Corruption",
-                "Elixir",
-                "Gadget",
-                "Glamour",
-                "LegendaryDwarf",
-                "Mark",
-                "Meditation",
-                "Overload",
-                "Phantasm",
-                "Physical",
-                "PrimalBurst",
-                "Rage",
-                "Shout",
-                "Signet",
-                "Stance",
-                "Survival",
-                "Symbol",
-                "Trick",
-                "Venom",
-                "Virtue",
+            Annotated[
+                Literal[
+                    "Arcane",
+                    "Burst",
+                    "Cantrip",
+                    "Clone",
+                    "Corruption",
+                    "Elixir",
+                    "Gadget",
+                    "Glamour",
+                    "LegendaryDwarf",
+                    "Mark",
+                    "Meditation",
+                    "Overload",
+                    "Phantasm",
+                    "Physical",
+                    "PrimalBurst",
+                    "Rage",
+                    "Shout",
+                    "Signet",
+                    "Stance",
+                    "Survival",
+                    "Symbol",
+                    "Trick",
+                    "Venom",
+                    "Virtue",
+                ],
+                EnumValidator,
             ]
+            | Unknown
         ]
         | None
     ) = None

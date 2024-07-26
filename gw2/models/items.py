@@ -1,8 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AnyHttpUrl
 
-from ._base import BaseModel
+from ..utils import EnumValidator
+from ._base import BaseModel, Unknown
 from .common import (
     Attribute,
     Gender,
@@ -14,48 +15,60 @@ from .common import (
 )
 from .skins import GatheringType
 
-Type = Literal[
-    "Armor",
-    "Back",
-    "Bag",
-    "Consumable",
-    "Container",
-    "CraftingMaterial",
-    "Gathering",
-    "Gizmo",
-    "JadeTechModule",
-    "Key",
-    "MiniPet",
-    "PowerCore",
-    "Tool",
-    "Trait",
-    "Trinket",
-    "Trophy",
-    "UpgradeComponent",
-    "Weapon",
-    "Relic",
-]
+Type = (
+    Annotated[
+        Literal[
+            "Armor",
+            "Back",
+            "Bag",
+            "Consumable",
+            "Container",
+            "CraftingMaterial",
+            "Gathering",
+            "Gizmo",
+            "JadeTechModule",
+            "Key",
+            "MiniPet",
+            "PowerCore",
+            "Tool",
+            "Trait",
+            "Trinket",
+            "Trophy",
+            "UpgradeComponent",
+            "Weapon",
+            "Relic",
+        ],
+        EnumValidator,
+    ]
+    | Unknown
+)
 
 
-Flag = Literal[
-    "AccountBindOnUse",
-    "AccountBound",
-    "Attuned",
-    "BulkConsume",
-    "DeleteWarning",
-    "HideSuffix",
-    "Infused",
-    "MonsterOnly",
-    "NoMysticForge",
-    "NoSalvage",
-    "NoSell",
-    "NoUnderwater",
-    "NotUpgradeable",
-    "SoulbindOnAcquire",
-    "SoulBindOnUse",
-    "Tonic",
-    "Unique",
-]
+Flag = (
+    Annotated[
+        Literal[
+            "AccountBindOnUse",
+            "AccountBound",
+            "Attuned",
+            "BulkConsume",
+            "DeleteWarning",
+            "HideSuffix",
+            "Infused",
+            "MonsterOnly",
+            "NoMysticForge",
+            "NoSalvage",
+            "NoSell",
+            "NoUnderwater",
+            "NotUpgradeable",
+            "SoulbindOnAcquire",
+            "SoulBindOnUse",
+            "Tonic",
+            "Unique",
+        ],
+        EnumValidator,
+    ]
+    | Unknown
+)
 
 
 GameType = Literal[
@@ -94,55 +107,18 @@ class InfusionSlot(BaseModel):
     item_id: int | None = None
 
 
-ConsumableType = Literal[
-    "AppearanceChange",
-    "Booze",
-    "ContractNpc",
-    "Currency",
-    "Food",
-    "Generic",
-    "Halloween",
-    "Immediate",
-    "MountRandomUnlock",
-    "RandomUnlock",
-    "Transmutation",
-    "Unlock",
-    "UpgradeRemoval",
-    "Utility",
-    "TeleportToFriend",
-]
-
-
-UnlockType = Literal[
-    "BagSlot",
-    "BankTab",
-    "BuildLibrarySlot",
-    "BuildLoadoutTab",
-    "Champion",
-    "CollectibleCapacity",
-    "Content",
-    "CraftingRecipe",
-    "Dye",
-    "JadeBotSkin",
-    "GearLoadoutTab",
-    "GliderSkin",
-    "Minipet",
-    "Ms",
-    "Outfit",
-    "RandomUnlock",
-    "SharedSlot",
-]
-
-ArmorType = Literal[
-    "Boots", "Coat", "Gloves", "Helm", "HelmAquatic", "Leggings", "Shoulders"
-]
-ArmorWeight = Literal["Clothing", "Light", "Medium", "Heavy"]
-
-
 class Details:
     class Armor(BaseModel):
-        type: ArmorType
-        weight_class: ArmorWeight
+        type: Literal[
+            "Boots",
+            "Coat",
+            "Gloves",
+            "Helm",
+            "HelmAquatic",
+            "Leggings",
+            "Shoulders",
+        ]
+        weight_class: Literal["Clothing", "Light", "Medium", "Heavy"]
         defense: int
         infusion_slots: list[InfusionSlot]
         attribute_adjustment: float
@@ -164,10 +140,50 @@ class Details:
         no_sell_or_sort: bool
 
     class Consumable(BaseModel):
-        type: ConsumableType
+        type: Literal[
+            "AppearanceChange",
+            "Booze",
+            "ContractNpc",
+            "Currency",
+            "Food",
+            "Generic",
+            "Halloween",
+            "Immediate",
+            "MountRandomUnlock",
+            "RandomUnlock",
+            "Transmutation",
+            "Unlock",
+            "UpgradeRemoval",
+            "Utility",
+            "TeleportToFriend",
+        ]
         description: str | None = None
         duration_ms: int | None = None
-        unlock_type: UnlockType | None = None
+        unlock_type: (
+            Annotated[
+                Literal[
+                    "BagSlot",
+                    "BankTab",
+                    "BuildLibrarySlot",
+                    "BuildLoadoutTab",
+                    "Champion",
+                    "CollectibleCapacity",
+                    "Content",
+                    "CraftingRecipe",
+                    "Dye",
+                    "JadeBotSkin",
+                    "GearLoadoutTab",
+                    "GliderSkin",
+                    "Minipet",
+                    "Ms",
+                    "Outfit",
+                    "RandomUnlock",
+                    "SharedSlot",
+                ],
+                EnumValidator,
+            ]
+            | Unknown
+        ) | None = None
         color_id: int | None = None
         recipe_id: int | None = None
         extra_recipe_ids: list[int] | None = None
@@ -182,7 +198,10 @@ class Details:
 
     class Gizmo(BaseModel):
         type: Literal[
-            "Default", "ContainerKey", "RentableContractNpc", "UnlimitedConsumable"
+            "Default",
+            "ContainerKey",
+            "RentableContractNpc",
+            "UnlimitedConsumable",
         ]
         guild_upgrade_id: int | None = None
         vendor_ids: list[int] | None = None
