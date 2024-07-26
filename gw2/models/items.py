@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import AnyHttpUrl
+from pydantic import AnyHttpUrl, BeforeValidator
 
 from ..utils import EnumValidator
 from ._base import BaseModel, Unknown
@@ -243,7 +243,14 @@ class Details:
         attribute_adjustment: float
         infix_upgrade: InfixUpgrade | None = None
         suffix_item_id: int | None = None
-        secondary_suffix_item_id: int | None = None
+        secondary_suffix_item_id: Annotated[
+            int | None,
+            BeforeValidator(
+                # XXX: shim for items like 28208,
+                # where secondary_suffix_item_id is ""
+                lambda x: None if x == "" else x
+            ),
+        ] = None
         stat_choices: list[int] | None = None
 
     class Gathering(BaseModel):

@@ -50,6 +50,9 @@ GLOBAL_THROTTLE = Throttler(rate_limit=300, period=60)
 #  https://github.com/greaka/gw2api/blob/ab5a08cec3004b3cea8a62b51b3831a097adb989/http/src/rate_limit.rs#L44-L66
 # todo: expose header metadata on returned model
 
+# todo: retries for 50x
+#       e.g. https://github.com/jd/tenacity
+
 
 LOG = logging.getLogger(__name__)
 

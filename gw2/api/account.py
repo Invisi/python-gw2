@@ -266,7 +266,7 @@ class Recipes(ListBase[int]):
 
 
 class SharedInventory(
-    ListBase[account.SharedInventorySlot],
+    ListBase[account.SharedInventorySlot | None],
 ):
     suffix = "account/inventory"
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gw2"
-version = "0.2.6"
+version = "0.2.7"
 description = "A Python wrapper for easy and typed access of Guild Wars 2's API"
 repository = "https://github.com/invisi/python-gw2"
 authors = ["Yannick Linke <invisi@0x0f.net>"]
