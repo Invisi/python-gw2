@@ -78,7 +78,7 @@ class Guild(BaseModel):
 class AuthenticatedGuild(Guild):
     # Optional info with leader/member token
     level: int
-    motd: str
+    motd: str | None = None
     influence: int
     aetherium: int
     resonance: int
