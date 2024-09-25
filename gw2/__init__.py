@@ -96,6 +96,12 @@ from .api.stories import Stories, Story, StorySeason, StorySeasons
 from .api.titles import Title, Titles
 from .api.tokeninfo import TokenInfo
 from .api.traits import Trait, Traits
+from .api.wizards_vault import (
+    WizardsVaultListing,
+    WizardsVaultListings,
+    WizardsVaultObjective,
+    WizardsVaultObjectives,
+)
 from .api.world_bosses import WorldBoss, WorldBosses
 from .api.worlds import World, Worlds
 from .api.wvw import (

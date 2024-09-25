@@ -155,6 +155,26 @@ class Account(Base[models.Account]):
         client.auth(self.api_key)
         return client
 
+    def wizards_vault_daily(self) -> "WizardsVaultDaily":
+        client = WizardsVaultDaily()
+        client.auth(self.api_key)
+        return client
+
+    def wizards_vault_listings(self) -> "WizardsVaultListings":
+        client = WizardsVaultListings()
+        client.auth(self.api_key)
+        return client
+
+    def wizards_vault_special(self) -> "WizardsVaultSpecial":
+        client = WizardsVaultSpecial()
+        client.auth(self.api_key)
+        return client
+
+    def wizards_vault_weekly(self) -> "WizardsVaultWeekly":
+        client = WizardsVaultWeekly()
+        client.auth(self.api_key)
+        return client
+
     def world_bosses(self) -> "WorldBosses":
         client = WorldBosses()
         client.auth(self.api_key)
@@ -281,6 +301,22 @@ class Titles(ListBase[int]):
 
 class Wallet(ListBase[account.WalletEntry]):
     suffix = "account/wallet"
+
+
+class WizardsVaultDaily(Base[account.WizardsVaultDaily]):
+    suffix = "account/wizardsvault/daily"
+
+
+class WizardsVaultListings(ListBase[account.AccountWizardsVaultListing]):
+    suffix = "account/wizardsvault/listings"
+
+
+class WizardsVaultSpecial(Base[account.WizardsVaultSpecial]):
+    suffix = "account/wizardsvault/special"
+
+
+class WizardsVaultWeekly(Base[account.WizardsVaultWeekly]):
+    suffix = "account/wizardsvault/weekly"
 
 
 class WorldBosses(ListBase[str]):

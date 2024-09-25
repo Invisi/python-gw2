@@ -70,6 +70,10 @@ async def test_account(account: gw2.Account) -> None:
         "skins",
         "titles",
         "wallet",
+        "wizards_vault_daily",
+        "wizards_vault_listings",
+        "wizards_vault_special",
+        "wizards_vault_weekly",
         "world_bosses",
     ],
 )
@@ -739,6 +743,20 @@ async def test_traits() -> None:
     many = await gw2.Traits().all_noniter(concurrent=True)
     one = await gw2.Trait(many[0].id).get()
 
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wizards_vault_listings() -> None:
+    many = await gw2.WizardsVaultListings().all_noniter(concurrent=True)
+    one = await gw2.WizardsVaultListing(many[0].id).get()
+    assert one is not None
+
+
+@pytest.mark.asyncio
+async def test_wizards_vault_objectives() -> None:
+    many = await gw2.WizardsVaultObjectives().all_noniter(concurrent=True)
+    one = await gw2.WizardsVaultObjective(many[0].id).get()
     assert one is not None
 
 

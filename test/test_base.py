@@ -1,3 +1,5 @@
+import pytest
+
 import gw2
 from gw2 import models
 from gw2.models import Unknown, common
@@ -22,8 +24,9 @@ def test_unknown() -> None:
     class Test(BaseModel):
         access: Access
 
-    inst = Test(access="JanthirOfTheWilds")  # type: ignore
-    assert inst.access == Unknown("JanthirOfTheWilds")
+    with pytest.warns(RuntimeWarning, match="failed to validate.*"):
+        inst = Test(access="JanthirOfTheWilds")  # type: ignore
+        assert inst.access == Unknown("JanthirOfTheWilds")
 
     inst2 = Test(access="JanthirWilds")
     assert inst2.access == "JanthirWilds"

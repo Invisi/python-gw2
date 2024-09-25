@@ -4,6 +4,7 @@ from typing import Annotated, Literal
 from ..utils import EnumValidator
 from ._base import BaseModel, Unknown
 from .common import Stats
+from .wizards_vault import WizardsVaultListing, WizardsVaultObjective
 
 Access = (
     Annotated[
@@ -192,3 +193,31 @@ class WalletEntry(BaseModel):
 
     id: int
     value: int
+
+
+class AccountWizardsVaultObjective(WizardsVaultObjective):
+    progress_current: int
+    progress_complete: int
+    claimed: bool
+
+
+class AccountWizardsVaultListing(WizardsVaultListing):
+    purchased: int | None = None
+    purchase_limit: int | None = None
+
+
+class WizardsVaultDaily(BaseModel):
+    meta_progress_current: int
+    meta_progress_complete: int
+    meta_reward_item_id: int
+    meta_reward_astral: int
+    meta_reward_claimed: bool
+    objectives: list[AccountWizardsVaultObjective]
+
+
+class WizardsVaultWeekly(WizardsVaultDaily):
+    pass
+
+
+class WizardsVaultSpecial(BaseModel):
+    objectives: list[AccountWizardsVaultObjective]

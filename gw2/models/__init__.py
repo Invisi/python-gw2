@@ -66,6 +66,7 @@ from .stories import Story, StorySeason
 from .titles import Title
 from .tokeninfo import SubTokenInfo, TokenInfo
 from .traits import Trait
+from .wizards_vault import WizardsVaultListing, WizardsVaultObjective
 from .world_bosses import WorldBoss
 from .worlds import World
 from .wvw import (
