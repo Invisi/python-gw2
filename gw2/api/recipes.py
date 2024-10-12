@@ -51,7 +51,7 @@ class RecipeSearch(IdsBase[models.Recipe, int]):
 
     @functools.cached_property
     def _params(self) -> dict:
-        params = {}
+        params = super()._params
         if self.input_id:
             params["input"] = self.input_id
         else:

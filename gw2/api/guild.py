@@ -72,7 +72,7 @@ class GuildSearch(Base[guild.Guild]):
 
     @functools.cached_property
     def _params(self) -> dict:
-        return {"name": self.name}
+        return {**super()._params, "name": self.name}
 
     async def ids(self) -> list[str]:
         raw_data = await super()._get(_raw=True)

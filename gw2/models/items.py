@@ -246,6 +246,8 @@ class Details:
         secondary_suffix_item_id: Annotated[
             int | None,
             BeforeValidator(
+                # todo: remove below after testing, should be fixed in the commit
+                #  that introduced this todo
                 # XXX: shim for items like 28208,
                 # where secondary_suffix_item_id is ""
                 lambda x: None if x == "" else x

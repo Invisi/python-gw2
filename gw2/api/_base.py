@@ -39,8 +39,6 @@ BASE_URL = "https://api.guildwars2.com/v2"
 # todo: make timeout a global configurable thing
 DEFAULT_TIMEOUT = 30
 SCHEMA = "2021-04-06T21:00:00.000Z"
-# todo: schema per endpoint, assume the above as default.
-#       could be implemented as another property
 
 
 GLOBAL_THROTTLE = Throttler(rate_limit=300, period=60)
@@ -74,7 +72,6 @@ def _create_session(timeout: float) -> httpx.AsyncClient:
             "User-Agent": f"Invisi/python-gw2@{__version__}",
             "Accept": "application/json",
             "Accept-Language": "en",  # TODO: configurable
-            "X-Schema-Version": SCHEMA,
         },
     )
 
@@ -361,7 +358,15 @@ class _Base(Generic[EndpointModel]):
         guild search
         """
 
-        return {}
+        # note: specifying schema via query parameter is preferred due to
+        # caching issues. Vary does not include X-Schema-Version, nor does CloudFront
+        # respect any other headers aside Accept-Encoding by default.
+        # As such, the cache may return a different version than requested.
+        # Related Discord discussion in #gw2sharp:
+        # https://discord.com/channels/384735285197537290/589031897963692034/1294790173372059740
+
+        # todo: schema per endpoint
+        return {"v": SCHEMA}
 
     def __repr__(self) -> str:
         return f"<{self.__module__}.{self.__class__.__name__}: {self.url}>"
