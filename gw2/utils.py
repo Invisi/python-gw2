@@ -1,7 +1,7 @@
 import types
 import warnings
-from collections.abc import Iterator
-from typing import TYPE_CHECKING, Any, Callable, TypeGuard, TypeVar, cast
+from collections.abc import Callable, Iterator
+from typing import TYPE_CHECKING, Any, TypeGuard, TypeVar, cast
 
 from pydantic import ValidationError, WrapValidator
 

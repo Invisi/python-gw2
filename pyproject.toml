@@ -1,6 +1,6 @@
 [project]
 name = "gw2"
-version = "0.2.9"
+version = "0.2.10"
 description = "A Python wrapper for easy and typed access of Guild Wars 2's API"
 authors = [{ name = "Yannick Linke", email = "invisi@0x0f.net" }]
 readme = "README.md"
@@ -28,7 +28,6 @@ dev-dependencies = [
 fix = true
 
 [tool.ruff.lint]
-ignore-init-module-imports = true
 select = ["E", "F", "I", "UP", "N", "B", "T20", "Q", "PLC", "PLE", "PLR", "PLW"]
 
 [tool.ruff.lint.flake8-import-conventions]

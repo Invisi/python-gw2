@@ -6,7 +6,8 @@ import asyncio
 import functools
 import logging
 from asyncio import Future, Task
-from typing import AsyncIterator, Literal, cast
+from collections.abc import AsyncIterator
+from typing import Literal, cast
 
 import httpx
 from asyncio_throttle import Throttler
